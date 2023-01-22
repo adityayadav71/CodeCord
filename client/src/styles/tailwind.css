@@ -19,3 +19,13 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+::-webkit-scrollbar {
+  padding: 2px;
+  width: 10px;
+  background-color: transparent;
+}
+/* style of the thumb (the moving part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  background-color: #A1ACBD;
+}
