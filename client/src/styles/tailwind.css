@@ -27,5 +27,27 @@
 }
 /* style of the thumb (the moving part of the scrollbar) */
 ::-webkit-scrollbar-thumb {
-  background-color: #A1ACBD;
+  background-color: #a1acbd;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 0;
+    transform: translateX(-5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0rem);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0rem);
+  }
 }

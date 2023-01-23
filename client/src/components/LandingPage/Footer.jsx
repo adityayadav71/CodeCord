@@ -5,7 +5,7 @@ import logo from "../../assets/svg/logo.svg";
 const Footer = (props) => {
   return (
     <div className="flex text-grey1 px-9 h-1/2 mt-11">
-      <div className="mr-auto">
+      <div className="mr-auto min-w-[30%]">
         <img className="mb-5" src={logo} alt="codecord_logo" />
         <a href="mailto:codecordSupport@gmail.com">codecordSupport@gmail.com</a>
       </div>
