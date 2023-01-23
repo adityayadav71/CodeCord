@@ -4,10 +4,16 @@ import Hero from "./components/LandingPage/Hero";
 import Feature from "./components/LandingPage/Feature";
 import Footer from "./components/LandingPage/Footer";
 import Copyright from "./utilities/Copyright";
+// import Navbar from "./components/HomePage/Navbar";
+// import Form from "./components/Authentication/Form";
+// import SignUp from "./components/Authentication/SignUp";
+// import SignIn from "./components/Authentication/SignIn";
+// import PasswordResetRequest from "./components/Authentication/PasswordResetRequest";
+// import PasswordResetForm from "./components/Authentication/PasswordResetForm";
 
 function App() {
   return (
-    <div className="relative h-screen w-screen overflow-x-hidden">
+    <div className="relative h-screen w-full overflow-x-hidden">
       <Navbar />
       <Hero />
       <Feature
@@ -47,6 +53,11 @@ function App() {
       />
       <Feature supTitle="Sign up for an account" color="accent1" gradient1="topBlueGradient" extra="SignUp" feature="feature1" />
       <Footer />
+      {/* Forms: 
+      <Navbar />
+      <div className="flex flex-row items-center justify-center h-full py-9 px-9">
+        <SignUp />
+      </div> */}
       <Copyright />
     </div>
   );

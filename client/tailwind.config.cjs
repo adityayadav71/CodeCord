@@ -19,6 +19,7 @@ module.exports = {
         graphicDarkBlue: "#0E5BCE",
         grey1: "#A1ACBD",
         grey2: "#D9D9D9",
+        grey3: "#3E4756",
         featureGradient1: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(25, 235, 72, 1) 100%)",
         featureGradient2: "linear-gradient(0deg, rgba(25, 235, 72, 1) 0%, rgba(226, 188, 30, 1) 100%);",
         featureGradient3: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(30, 32, 35, 1) 100%);",
