@@ -43,10 +43,11 @@ const Form = ({ type, fields, buttonName }) => {
     }
   }
   return (
-    <form className="flex flex-col w-[400px] max-w-7xl items-center justify-center px-5 py-12 gap-y-6 text-white bg-secondary rounded-xl">
+    <form className="flex flex-col w-[400px] max-w-7xl mx-auto items-center justify-center px-5 py-12 gap-y-6 text-white bg-secondary rounded-xl">
       <img className="mb-12" src={logo} alt="logo" />
       {inputFields}
       <button className="flex items-center justify-center mt-12 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1">{buttonName}</button>
+      {renderSwitch(type)}
     </form>
   );
 };
