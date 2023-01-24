@@ -2,7 +2,7 @@ import React from "react";
 
 const Hero = (props) => {
   return (
-    <div className="px-9 mt-11 mb-11 h-screen">
+    <div className="px-9 mt-11 mb-11 h-screen max-h-[720px]">
       <h1 className="text-6xl w-4/6 leading-[5rem] font-bold">Communicate, Practice, and Improve Your Coding Skills</h1>
       <p className="text-2xl text-grey2 w-1/2 leading-[2rem]  mt-5">
         Our platform enables software developers to practice, collaborate, and improve their coding skills through a range of tools, resources, and incentives.

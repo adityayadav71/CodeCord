@@ -2,7 +2,7 @@ import logo from "../../assets/svg/logo.svg";
 
 const Navbar = (props) => {
   return (
-    <nav className="flex flex-row items-center py-11 px-9">
+    <nav className="flex flex-row items-center py-11 px-9 w-full">
       <img className="" src={logo} alt="codecord_logo" />
       <div className="flex flex-row items-center gap-x-6 ml-auto">
         <input className="px-4 py-3 w-80 bg-secondary text-grey1 hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 focus:outline focus:outline-2 focus:outline-accent1 rounded-full" type="text" name="search" id="search" placeholder="Search problems, contests, users..." />

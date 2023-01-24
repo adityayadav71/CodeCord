@@ -31,14 +31,14 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
   return (
     <InView
       as="div"
-      threshold={[0.5]}
+      threshold={[0.3]}
       onChange={(inView, entry) => {
         if (inView) {
           setIsInView(true);
         }
       }}
     >
-      <div className={`flex flex-row h-screen gap-x-3 px-9`}>
+      <div className={`flex flex-row ${extra === "SignUp" ? "h-[360px]" : "h-[720px]"} gap-x-3 px-9`}>
         <div>
           <div className={`relative ml-14 w-4 h-4 transition-all duration-300  ${isInView ? colorVariants[color] : ""} ${isInView ? colorVariants[feature] : ""} rounded-full`}>
             {supTitle === "Collaborate" ? <FaUsers className={`${isInView ? "animate-fadeIn" : ""} opacity-0 absolute text-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`} /> : null}
