@@ -11,7 +11,9 @@ module.exports = {
         primary: "#1E2023",
         secondary: "#283647",
         accent1: "#0098FA",
+        lightAccent1: "#43B5FF",
         accent2: "#576577",
+        accent3: "#3C6392",
         easyGreen: "#19EB48",
         mediumYellow: "#E2BC1E",
         hardRed: "#FF0000",
@@ -20,9 +22,13 @@ module.exports = {
         grey1: "#A1ACBD",
         grey2: "#D9D9D9",
         grey3: "#3E4756",
+        black20: "rgba(0, 0, 0, 0.2)",
+        transparent: "rgba(0, 0, 0, 0)",
+        hover: "rgba(60, 99, 146, 0.3)",
         featureGradient1: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(25, 235, 72, 1) 100%)",
         featureGradient2: "linear-gradient(0deg, rgba(25, 235, 72, 1) 0%, rgba(226, 188, 30, 1) 100%);",
         featureGradient3: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(30, 32, 35, 1) 100%);",
+        moreRooms: "linear-gradient(180deg, rgba(81, 78, 78, 0) 0%, #283647 48.96%, #283647 100%);"
       },
     },
     boxShadow: {
