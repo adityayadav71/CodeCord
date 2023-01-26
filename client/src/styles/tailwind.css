@@ -30,6 +30,10 @@
   background-color: #a1acbd;
 }
 
+.roomsScroll::-webkit-scrollbar {
+  display: none;
+}
+
 .swiper-button-prev {
   background-image: url(../assets/svg/arrow-left.svg);
   background-repeat: no-repeat;
