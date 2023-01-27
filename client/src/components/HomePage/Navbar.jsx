@@ -3,7 +3,7 @@ import { FaBell, FaSearch, FaUserAlt } from "react-icons/fa";
 
 const HomeNavbar = (props) => {
   return (
-    <div className="flex flex-row items-center justify-start border-b border-b-accent2 w-full">
+    <div className="flex flex-row items-center justify-start border-b max-w-[2560px] border-b-accent2 w-full">
       <img className="p-3 hover:cursor-pointer" src="../../../favicon.svg" alt="logo" />
       <ul className="flex flex-row items-center justify-center">
         <li className="p-4 border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-accent1">Contest</li>
