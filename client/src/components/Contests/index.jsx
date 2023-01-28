@@ -19,7 +19,7 @@ const Contest = (props) => {
   return (
     <div className="flex flex-col h-full grow items-center">
       <Navbar />
-      <div className="flex flex-row w-full px-6 py-4 grow gap-x-6 max-w-[2560px]">
+      <div className="flex flex-row w-full px-6 py-4 grow gap-x-6 max-w-[1440px]">
         <div className="flex flex-col grow">
           <h1 className="text-4xl font-bold mb-12">Upcoming Contests</h1>
           <Swiper className="relative ml-0 h-40 w-[753px] mb-9" navigation={true} modules={[Navigation]} spaceBetween={12} slidesPerView={2}>

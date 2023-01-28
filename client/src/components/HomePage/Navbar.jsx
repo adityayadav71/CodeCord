@@ -3,12 +3,12 @@ import { FaBell, FaSearch, FaUserAlt } from "react-icons/fa";
 
 const HomeNavbar = (props) => {
   return (
-    <div className="flex flex-row items-center justify-start border-b max-w-[2560px] border-b-accent2 w-full">
+    <div className="flex flex-row items-center justify-start border-b max-w-[1440px] border-b-accent2 w-full">
       <img className="p-3 hover:cursor-pointer" src="../../../favicon.svg" alt="logo" />
       <ul className="flex flex-row items-center justify-center">
-        <li className="p-4 border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-accent1">Contest</li>
-        <li className="p-4 border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-primary">Problems</li>
-        <li className="p-4 border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-primary">Discussions</li>
+        <li className="p-4 text-lg border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-accent1">Contest</li>
+        <li className="p-4 text-lg border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-primary">Problems</li>
+        <li className="p-4 text-lg border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-primary">Discussions</li>
       </ul>
       <div className="flex flex-row items-center gap-x-6 ml-auto">
         <FaSearch className="text-2xl hover:cursor-pointer" />
