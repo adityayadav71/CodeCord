@@ -7,7 +7,7 @@ const LiveRooms = (props) => {
     <aside className="relative flex flex-col px-5 py-6 gap-y-4 w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
       <section className="flex flex-col grow h-80">
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
-        <div className="flex flex-col gap-y-3 grow roomsScroll overflow-scroll w-full">
+        <div className="flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full">
           <RoomCard name="Room name" description="Room description" participants="2" />
           <RoomCard name="Room name" description="Room description" participants="2" />
           <RoomCard name="Room name" description="Room description" participants="2" />

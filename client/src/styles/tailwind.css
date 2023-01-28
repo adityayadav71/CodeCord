@@ -30,7 +30,7 @@
   background-color: #a1acbd;
 }
 
-.roomsScroll::-webkit-scrollbar {
+.hideScrollbar::-webkit-scrollbar {
   display: none;
 }
 
