@@ -10,10 +10,13 @@ module.exports = {
       colors: {
         primary: "#1E2023",
         secondary: "#283647",
+        lightSecondary: "#3c526c",
         accent1: "#0098FA",
         lightAccent1: "#43B5FF",
         accent2: "#576577",
         accent3: "#3C6392",
+        accent4: "#212A35",
+        green: "#2CBB5D",
         easyGreen: "#19EB48",
         mediumYellow: "#E2BC1E",
         hardRed: "#FF0000",
@@ -36,6 +39,8 @@ module.exports = {
       feature2: "0px 0px 54px 45px #19EB48",
       feature3: "0px 0px 54px 45px #E2BC1E",
       signUp: "0px 4px 23px 2px #0098FA",
+      dropDown: "0px 4px 30px rgba(0, 0, 0, 0.25)",
+      heading: "0px 4px 4px rgba(0, 0, 0, 0.25)"
     },
     animation: {
       fadeIn: "fadeIn 2s ease-out forwards",
@@ -48,6 +53,7 @@ module.exports = {
       grow: { "0%": { height: "0%" }, "100%": { height: "100%" } },
       fadeIn: { "0%": { opacity: 0 }, "100%": { opacity: 1 } },
     },
+    display: ["group-hover"]
   },
   plugins: [],
 };

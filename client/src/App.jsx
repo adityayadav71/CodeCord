@@ -2,6 +2,7 @@ import { React } from "react";
 import Copyright from "./utilities/Copyright";
 import LandingPage from "./components/LandingPage/index";
 import Contest from "./components/Contests/index";
+import Problem from "./components/Problems/index";
 import Navbar from "./components/HomePage/Navbar";
 import Form from "./components/Authentication/Form";
 
@@ -17,7 +18,8 @@ function App() {
         <Form type="Password Reset" fields={["New Password", "Confirm New Password"]} buttonName="Reset My Password" />
       </div>
       <Copyright /> */}
-      <Contest />
+      {/* <Contest /> */}
+      <Problem />
     </div>
   );
 }
