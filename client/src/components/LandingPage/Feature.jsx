@@ -1,11 +1,22 @@
 import { React, useState } from "react";
 import { InView } from "react-intersection-observer";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
+import ContestCard from "../Contests/UpcomingContest";
+import TagFilter from "../Problems/TagFilter";
 
 const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2, feature, list, extra }) => {
   const listItems = list?.map((item) => {
     return <li className="mb-3 text-grey2">{item}</li>;
   });
+  const [topicsExpanded, setTopicsExpanded] = useState(false);
+  const [companiesExpanded, setCompaniesExpanded] = useState(false);
+  function toggleTopics() {
+    setTopicsExpanded((prev) => !prev);
+  }
+
+  function toggleCompanies() {
+    setCompaniesExpanded((prev) => !prev);
+  }
   const colorVariants = {
     accent1: "bg-[#0098FA]",
     easyGreen: "bg-[#19EB48]",
@@ -60,7 +71,7 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
                 <span className={`${textVariants[color]}`}>{TitleHighLight}</span>
                 {Title}
               </h1>
-              <div className="flex flex-row grow gap-x-6 items-center">
+              <div className="flex flex-row grow gap-x-6 justify-content-center items-center">
                 <InView
                   as="div"
                   threshold={[1]}
@@ -72,9 +83,31 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
                 >
                   <ul className={`${listIsInView ? "animate-slideOut" : ""} -translate-x-2 origin-top-right opacity-0 list-outside list-disc ml-6 leading-8 text-2xl`}>{listItems}</ul>
                 </InView>
-                <div className="flex flex-row items-center justify-center w-full h-full">
-                  <img className={`${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`} src="" alt="" />
-                </div>
+
+                {supTitle === "Collaborate" ? null : null}
+                {supTitle === "Compete" ? (
+                  <div className="flex flex-row items-center justify-center w-full h-full">
+                    <div></div>
+                    <div className={`self-start ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
+                      <ContestCard style={{ "margin-left": 80, "margin-bottom": 10, "pointer-events": "none" }} name="Weekly Contest 1" timeStamp="15th Jan 2023 8:00 AM GMT+5:30" live="true" />
+                      <ContestCard style={{ "margin-right": 80, "pointer-events": "none" }} name="Weekly Contest 2" timeStamp="16th Jan 2023 8:00 AM GMT+5:30" live="false" />
+                    </div>
+                  </div>
+                ) : null}
+                {supTitle === "Solve" ? (
+                  <div className={`flex flex-row items-center justify-center w-full h-full ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
+                    <div className="relative w-1/2 h-1/2">
+                      <TagFilter
+                        style={{ "pointer-events": "none" }}
+                        isTagsActive="true"
+                        topicsExpanded={topicsExpanded}
+                        toggleTopics={toggleTopics}
+                        companiesExpanded={companiesExpanded}
+                        toggleCompanies={toggleCompanies}
+                      />
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           )}

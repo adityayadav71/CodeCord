@@ -21,12 +21,13 @@
 }
 
 ::-webkit-scrollbar {
-  padding: 2px;
-  width: 10px;
+  padding: 5px;
+  width: 5px;
   background-color: transparent;
 }
 /* style of the thumb (the moving part of the scrollbar) */
 ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
   background-color: #a1acbd;
 }
 
