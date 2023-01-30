@@ -5,10 +5,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 const Problem = ({ number, name, acceptance, difficulty, submissionCount, status }) => {
-  function loadSubmissions() {
-    let html = [];
+  const loadSubmissions = () => {
+    let submissions = [];
     for (let i = submissionCount; i > 0; i--) {
-      html.push(
+      submissions.push(
         <SwiperSlide>
           <a href="#" className="hover:text-accent1">
             <FaRegFileCode />
@@ -16,8 +16,8 @@ const Problem = ({ number, name, acceptance, difficulty, submissionCount, status
         </SwiperSlide>
       );
     }
-    return html;
-  }
+    return submissions;
+  };
   return (
     <div className="flex flex-row items-center p-3 text-lg odd:bg-hover">
       <div className="w-20">{status === "solved" ? <FaCheckCircle className="text-green" /> : status === "attempted" ? <RiPulseLine className="text-mediumYellow" /> : ""}</div>

@@ -9,7 +9,7 @@ const Difficulty = ({ isDifficultyActive, handleClick, addTag }) => {
         {isDifficultyActive ? <FaAngleDown className="rotate-180 transition-all duration-300" /> : <FaAngleDown className="transition-all duration-300" />}
       </div>
       <div
-        className={`absolute transition-all duration-100 ${
+        className={`difficulty-dropdown absolute transition-all duration-100 ${
           isDifficultyActive ? "opacity-1 scale-100" : "opacity-0 scale-0"
         } top-16 shadow shadow-dropDown left-0 p-3 w-40 hover:cursor-pointer bg-secondary rounded-xl`}
       >

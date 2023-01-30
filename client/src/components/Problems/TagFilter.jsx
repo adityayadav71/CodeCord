@@ -1,17 +1,41 @@
 import { React, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaRegTimesCircle } from "react-icons/fa";
 
-const TagFilter = ({ isTagsActive, addTag }) => {
+const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
   const [topicsExpanded, setTopicsExpanded] = useState(false);
   const [companiesExpanded, setCompaniesExpanded] = useState(false);
 
-  function toggleTopics() {
+  const toggleTopics = () => {
     setTopicsExpanded((prev) => !prev);
-  }
+  };
 
-  function toggleCompanies() {
+  const toggleCompanies = () => {
     setCompaniesExpanded((prev) => !prev);
-  }
+  };
+
+  const activateTag = (event) => {
+    const target = event.target.textContent;
+    event.target.classList.remove("bg-accent2");
+    event.target.classList.add("bg-accent1");
+    const tag = (
+      <div className="flex flex-row items-center gap-x-2 h-fit w-fit px-3 bg-accent4 rounded-xl">
+        {target}
+        <button>
+          <FaRegTimesCircle />
+        </button>
+      </div>
+    );
+    const index = activeTags.filter((tag) => tag?.props?.children[0] == target);
+    if (index.length === 0) {
+      setActiveTags((prevTags) => [...prevTags, tag]);
+    }
+    if (index.length === 1) {
+      const newActiveTags = activeTags.map((tag) => (tag?.props?.children[0] !== target ? tag : null));
+      event.target.classList.remove("bg-accent1");
+      event.target.classList.add("bg-accent2");
+      setActiveTags(() => newActiveTags);
+    }
+  };
 
   return (
     <div
@@ -32,22 +56,22 @@ const TagFilter = ({ isTagsActive, addTag }) => {
           </div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${topicsExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Arrays
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             HashTable
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Strings
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Dynamic Programming
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Math
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Recursion
           </p>
         </div>
@@ -60,34 +84,31 @@ const TagFilter = ({ isTagsActive, addTag }) => {
           <div className="bg-accent4 shadow shadow-heading rounded-2xl px-4">Companies</div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${companiesExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Amazon
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Microsoft
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Apple
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Google
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Facebook
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Netflix
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
-            Facebook
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Flipkart
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             Bloomberg
           </p>
-          <p className="px-3 bg-accent2 hover:bg-grey1 rounded-xl" onClick={addTag}>
+          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
             PayPal
           </p>
         </div>
