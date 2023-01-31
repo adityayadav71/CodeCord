@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { InView } from "react-intersection-observer";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
-import TagFilter from "../Problems/TagFilter";
+import AllTags from "../Problems/AllTags";
 
 const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2, feature, list, extra }) => {
   const listItems = list?.map((item) => {
@@ -97,7 +97,7 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
                 {supTitle === "Solve" ? (
                   <div className={`flex flex-row items-center justify-center w-full h-full ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
                     <div className="relative w-1/2 h-1/2">
-                      <TagFilter
+                      <AllTags
                         style={{ "pointer-events": "none" }}
                         isTagsActive="true"
                         topicsExpanded={topicsExpanded}

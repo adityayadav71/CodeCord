@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import { FaSearch, FaRegTimesCircle } from "react-icons/fa";
+import TagButton from "./TagButton";
 
 const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
   const [topicsExpanded, setTopicsExpanded] = useState(false);
@@ -15,26 +16,36 @@ const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
 
   const activateTag = (event) => {
     const target = event.target.textContent;
-    event.target.classList.remove("bg-accent2");
-    event.target.classList.add("bg-accent1");
+    // event.target.classList.remove("bg-accent2");
+    // event.target.classList.add("bg-accent1");
     const tag = (
       <div className="flex flex-row items-center gap-x-2 h-fit w-fit px-3 bg-accent4 rounded-xl">
         {target}
-        <button>
-          <FaRegTimesCircle />
+        <button className={target} onClick={deActivateTag}>
+          <FaRegTimesCircle className="hover:text-accent1" />
         </button>
       </div>
     );
-    const index = activeTags.filter((tag) => tag?.props?.children[0] == target);
+    const index = activeTags.filter((tag) => tag?.props?.children[0] === target);
     if (index.length === 0) {
       setActiveTags((prevTags) => [...prevTags, tag]);
     }
     if (index.length === 1) {
       const newActiveTags = activeTags.map((tag) => (tag?.props?.children[0] !== target ? tag : null));
-      event.target.classList.remove("bg-accent1");
-      event.target.classList.add("bg-accent2");
+      // event.target.classList.remove("bg-accent1");
+      // event.target.classList.add("bg-accent2");
       setActiveTags(() => newActiveTags);
     }
+  };
+
+  const deActivateTag = (event) => {
+    const target = event.currentTarget.classList;
+    // console.log(target[0]);
+    const index = activeTags.indexOf(target[0]);
+    // console.log(activeTags);
+    // console.log(index);
+
+    setActiveTags((prev) => (index > -1 ? prev.splice(index, 1) : prev));
   };
 
   return (
@@ -56,24 +67,12 @@ const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
           </div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${topicsExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Arrays
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            HashTable
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Strings
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Dynamic Programming
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Math
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Recursion
-          </p>
+          <TagButton tagName="Arrays" activateTag={activateTag} />
+          <TagButton tagName="HashTable" activateTag={activateTag} />
+          <TagButton tagName="Strings" activateTag={activateTag} />
+          <TagButton tagName="Dynamic Programming" activateTag={activateTag} />
+          <TagButton tagName="Math" activateTag={activateTag} />
+          <TagButton tagName="Recursion" activateTag={activateTag} />
         </div>
       </div>
       <button className="ml-1 mb-3 text-accent1" onClick={toggleTopics}>
@@ -84,33 +83,14 @@ const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
           <div className="bg-accent4 shadow shadow-heading rounded-2xl px-4">Companies</div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${companiesExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Amazon
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Microsoft
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Apple
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Google
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Facebook
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Netflix
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Flipkart
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            Bloomberg
-          </p>
-          <p className="px-3 bg-accent2 hover:bg-accent1 rounded-xl" onClick={activateTag}>
-            PayPal
-          </p>
+          <TagButton tagName="Amazon" activateTag={activateTag} />
+          <TagButton tagName="Microsoft" activateTag={activateTag} />
+          <TagButton tagName="Google" activateTag={activateTag} />
+          <TagButton tagName="Facebook" activateTag={activateTag} />
+          <TagButton tagName="Netflix" activateTag={activateTag} />
+          <TagButton tagName="Flipkart" activateTag={activateTag} />
+          <TagButton tagName="Bloomberg" activateTag={activateTag} />
+          <TagButton tagName="Paypal" activateTag={activateTag} />
         </div>
       </div>
       <button className="ml-1 text-accent1" onClick={toggleCompanies}>
