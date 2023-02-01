@@ -2,7 +2,8 @@ import { React, useState, useEffect } from "react";
 import Navbar from "../HomePage/Navbar";
 import LiveRooms from "../Rooms/LiveRooms";
 import Copyright from "../../utilities/Copyright";
-import { FaSearch, FaCheckCircle, FaRegTimesCircle } from "react-icons/fa";
+import { FaSearch, FaCheckCircle, FaRegTimesCircle, FaUndo, FaMinus, FaCheck } from "react-icons/fa";
+import { RiPulseLine } from "react-icons/ri";
 import Pagination from "./Pagination";
 import ProblemList from "./ProblemList";
 import Difficulty from "./Difficulty";
@@ -62,7 +63,12 @@ const Problems = (props) => {
     const target = event.target.textContent;
     const tagName = target.toLowerCase().replace(/\s/g, "-");
     const tag = (
-      <div className="flex flex-row items-center gap-x-2 h-fit w-fit px-3 bg-accent4 rounded-xl">
+      <div
+        className={`flex flex-row items-center gap-x-2 h-fit w-fit px-3 ${
+          tagName === "easy" ? "text-easyGreen" : tagName === "medium" ? "text-mediumYellow" : tagName === "hard" ? "text-hardRed" : ""
+        } bg-accent4 rounded-xl`}
+      >
+        {tagName === "to-do" ? <FaMinus /> : tagName === "solved" ? <FaCheck className="text-easyGreen" /> : tagName === "attempted" ? <RiPulseLine className="text-mediumYellow" /> : ""}
         {target}
         <button className={tagName} onClick={removeTag}>
           <FaRegTimesCircle className="hover:text-accent1" />
@@ -76,6 +82,12 @@ const Problems = (props) => {
     } else if (event.target.closest(".status-dropdown")) {
       setActiveStatus([tag]);
     }
+  };
+
+  const resetFilters = () => {
+    setActiveDifficulty(() => []);
+    setActiveStatus(() => []);
+    setActiveTags(() => []);
   };
 
   return (
@@ -97,10 +109,20 @@ const Problems = (props) => {
               Create Contest
             </button>
           </div>
-          <div className="flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
-            {activeDifficulty}
-            {activeStatus}
-            {activeTags}
+          <div className="flex flex-row">
+            <div className="relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
+              {activeDifficulty}
+              {activeStatus}
+              {activeTags}
+            </div>
+            {activeDifficulty.length === 0 && activeStatus.length === 0 && activeTags.length === 0 ? (
+              ""
+            ) : (
+              <button className="self-start ml-auto flex flex-row items-center p-3 gap-x-3 text-grey1" onClick={resetFilters}>
+                <FaUndo />
+                Reset
+              </button>
+            )}
           </div>
           <ProblemList />
           <Pagination />

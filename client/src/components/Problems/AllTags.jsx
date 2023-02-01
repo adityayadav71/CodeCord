@@ -1,10 +1,25 @@
-import { React, useState } from "react";
-import { FaSearch, FaRegTimesCircle } from "react-icons/fa";
+import { React, useState, useEffect } from "react";
+import { FaSearch } from "react-icons/fa";
 import TagButton from "./TagButton";
 
-const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
+const AllTags = ({ isTagsActive, activeTags, setActiveTags }) => {
   const [topicsExpanded, setTopicsExpanded] = useState(false);
   const [companiesExpanded, setCompaniesExpanded] = useState(false);
+
+  useEffect(() => {
+    const reset = (event) => {
+      if (!event.target.closest(".allTags")) {
+        setTimeout(() => {
+          setTopicsExpanded(false);
+          setCompaniesExpanded(false);
+        }, 1000);
+      }
+    };
+    document.addEventListener("click", reset);
+    return () => {
+      document.removeEventListener("click", reset);
+    };
+  }, []);
 
   const toggleTopics = () => {
     setTopicsExpanded((prev) => !prev);
@@ -14,44 +29,10 @@ const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
     setCompaniesExpanded((prev) => !prev);
   };
 
-  const activateTag = (event) => {
-    const target = event.target.textContent;
-    // event.target.classList.remove("bg-accent2");
-    // event.target.classList.add("bg-accent1");
-    const tag = (
-      <div className="flex flex-row items-center gap-x-2 h-fit w-fit px-3 bg-accent4 rounded-xl">
-        {target}
-        <button className={target} onClick={deActivateTag}>
-          <FaRegTimesCircle className="hover:text-accent1" />
-        </button>
-      </div>
-    );
-    const index = activeTags.filter((tag) => tag?.props?.children[0] === target);
-    if (index.length === 0) {
-      setActiveTags((prevTags) => [...prevTags, tag]);
-    }
-    if (index.length === 1) {
-      const newActiveTags = activeTags.map((tag) => (tag?.props?.children[0] !== target ? tag : null));
-      // event.target.classList.remove("bg-accent1");
-      // event.target.classList.add("bg-accent2");
-      setActiveTags(() => newActiveTags);
-    }
-  };
-
-  const deActivateTag = (event) => {
-    const target = event.currentTarget.classList;
-    // console.log(target[0]);
-    const index = activeTags.indexOf(target[0]);
-    // console.log(activeTags);
-    // console.log(index);
-
-    setActiveTags((prev) => (index > -1 ? prev.splice(index, 1) : prev));
-  };
-
   return (
     <div
-      className={`absolute transition-all duration-300 ${
-        isTagsActive ? "opacity-1 z-[1] top-16" : "opacity-0 z-[-1] top-20"
+      className={`allTags absolute transition-all duration-300 ${
+        isTagsActive ? "opacity-1 z-20 top-16" : "opacity-0 -z-10 top-20"
       } shadow shadow-dropDown left-0 p-3 h-fit w-96 hover:cursor-pointer bg-secondary rounded-xl`}
     >
       <div className="flex flex-col items-start justify-start gap-y-4 h-full">
@@ -67,12 +48,12 @@ const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
           </div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${topicsExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <TagButton tagName="Arrays" activateTag={activateTag} />
-          <TagButton tagName="HashTable" activateTag={activateTag} />
-          <TagButton tagName="Strings" activateTag={activateTag} />
-          <TagButton tagName="Dynamic Programming" activateTag={activateTag} />
-          <TagButton tagName="Math" activateTag={activateTag} />
-          <TagButton tagName="Recursion" activateTag={activateTag} />
+          <TagButton tagName="Arrays" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="HashTable" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Strings" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Dynamic Programming" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Math" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Recursion" activeTags={activeTags} setActiveTags={setActiveTags} />
         </div>
       </div>
       <button className="ml-1 mb-3 text-accent1" onClick={toggleTopics}>
@@ -83,14 +64,14 @@ const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
           <div className="bg-accent4 shadow shadow-heading rounded-2xl px-4">Companies</div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${companiesExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <TagButton tagName="Amazon" activateTag={activateTag} />
-          <TagButton tagName="Microsoft" activateTag={activateTag} />
-          <TagButton tagName="Google" activateTag={activateTag} />
-          <TagButton tagName="Facebook" activateTag={activateTag} />
-          <TagButton tagName="Netflix" activateTag={activateTag} />
-          <TagButton tagName="Flipkart" activateTag={activateTag} />
-          <TagButton tagName="Bloomberg" activateTag={activateTag} />
-          <TagButton tagName="Paypal" activateTag={activateTag} />
+          <TagButton tagName="Amazon" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Microsoft" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Google" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Facebook" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Netflix" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Flipkart" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Bloomberg" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Paypal" activeTags={activeTags} setActiveTags={setActiveTags} />
         </div>
       </div>
       <button className="ml-1 text-accent1" onClick={toggleCompanies}>
@@ -100,4 +81,4 @@ const TagFilter = ({ isTagsActive, activeTags, setActiveTags }) => {
   );
 };
 
-export default TagFilter;
+export default AllTags;

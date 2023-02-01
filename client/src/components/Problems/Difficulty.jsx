@@ -10,7 +10,7 @@ const Difficulty = ({ isDifficultyActive, handleClick, addTag }) => {
       </div>
       <div
         className={`difficulty-dropdown absolute transition-all duration-100 ${
-          isDifficultyActive ? "opacity-1 scale-100" : "opacity-0 scale-0"
+          isDifficultyActive ? "z-20  opacity-1 scale-100" : "opacity-0 scale-0"
         } top-16 shadow shadow-dropDown left-0 p-3 w-40 hover:cursor-pointer bg-secondary rounded-xl`}
       >
         <div className="hover:bg-accent3 mb-3 text-easyGreen rounded-lg px-3 py-1" value="Easy" onClick={addTag}>

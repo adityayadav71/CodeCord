@@ -11,7 +11,7 @@ const Status = ({ isStatusActive, handleClick, addTag }) => {
       </div>
       <div
         className={`status-dropdown absolute transition-all duration-100 ${
-          isStatusActive ? "opacity-1 scale-100" : "opacity-0 scale-0"
+          isStatusActive ? "z-20 opacity-1 scale-100" : "opacity-0 scale-0"
         } top-16 shadow shadow-dropDown left-0 p-3 w-40 hover:cursor-pointer bg-secondary rounded-xl`}
       >
         <div className="flex flex-row gap-x-3 items-center hover:bg-accent3 mb-3 rounded-lg px-3 py-1" value="Easy" onClick={addTag}>
