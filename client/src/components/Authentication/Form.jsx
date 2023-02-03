@@ -12,8 +12,8 @@ const Form = ({ type, fields, buttonName }) => {
         return (
           <div className="flex flex-row items-center justify-center gap-x-3">
             <p className="text-white text-lg">Have an Account?</p>
-            <a className="text-grey1 text-base" href="#">
-              Sign in
+            <a className="text-grey1 text-base" href="/login">
+              Login
             </a>
           </div>
         );
@@ -21,10 +21,10 @@ const Form = ({ type, fields, buttonName }) => {
       case "Sign In": {
         return (
           <div className="flex flex-row w-full items-center justify-between">
-            <a className="text-grey1 text-lg" href="#">
+            <a className="text-grey1 text-lg" href="/reset/request">
               Forgot Password?
             </a>
-            <a className="text-grey1 text-base" href="#">
+            <a className="text-grey1 text-base" href="/signup">
               Sign up
             </a>
           </div>
@@ -34,8 +34,8 @@ const Form = ({ type, fields, buttonName }) => {
         return (
           <div className="flex flex-row w-full items-center justify-between">
             <p className="text-grey1 text-sm">We will send a password reset link to this email address</p>
-            <a className="text-grey1 text-base" href="#">
-              Sign in
+            <a className="text-grey1 text-base" href="/login">
+              Login
             </a>
           </div>
         );

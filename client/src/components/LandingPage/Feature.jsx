@@ -97,14 +97,7 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
                 {supTitle === "Solve" ? (
                   <div className={`flex flex-row items-center justify-center w-full h-full ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
                     <div className="relative w-1/2 h-1/2">
-                      <AllTags
-                        style={{ "pointer-events": "none" }}
-                        isTagsActive="true"
-                        topicsExpanded={topicsExpanded}
-                        toggleTopics={toggleTopics}
-                        companiesExpanded={companiesExpanded}
-                        toggleCompanies={toggleCompanies}
-                      />
+                      <AllTags style={{ "pointer-events": "none" }} isTagsActive="true" activeTags={[]} setActiveTags={[]} />
                     </div>
                   </div>
                 ) : null}

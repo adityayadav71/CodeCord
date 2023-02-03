@@ -1,14 +1,31 @@
 import React from "react";
+import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import { FaBell, FaSearch, FaUserAlt } from "react-icons/fa";
 
 const HomeNavbar = (props) => {
+  const [activeTab, setActiveTab] = useState("Contest");
   return (
-    <div className="flex flex-row items-center justify-start border-b max-w-[1440px] border-b-accent2 w-full">
-      <img className="p-3 hover:cursor-pointer" src="../../../favicon.svg" alt="logo" />
-      <ul className="flex flex-row items-center justify-center">
-        <li className="p-4 text-lg border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-accent1">Contest</li>
-        <li className="p-4 text-lg border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-primary">Problems</li>
-        <li className="p-4 text-lg border-b-2 cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 border-b-primary">Discussions</li>
+    <div className="flex flex-row justify-start border-b max-w-[1440px] border-b-accent2 w-full">
+      <Link to="/">
+        <img className="p-3 hover:cursor-pointer" src="../../../favicon.svg" alt="logo" />
+      </Link>
+      <ul className="flex flex-row justify-center">
+        <NavLink to="/contest" onClick={() => setActiveTab("Contest")}>
+          <li className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 ${activeTab === "Contest" ? " border-b-2 border-b-accent1" : ""}`}>
+            Contest
+          </li>
+        </NavLink>
+        <NavLink to="/problem" onClick={() => setActiveTab("Problems")}>
+          <li className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 ${activeTab === "Problems" ? " border-b-2 border-b-accent1" : ""}`}>
+            Problems
+          </li>
+        </NavLink>
+        <NavLink to="/discussion" onClick={() => setActiveTab("Discussions")}>
+          <li className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 hover:border-b-accent1 transition duration-300 ${activeTab === "Discussions" ? " border-b-2 border-b-accent1" : ""}`}>
+            Discussions
+          </li>
+        </NavLink>
       </ul>
       <div className="flex flex-row items-center gap-x-6 ml-auto">
         <FaSearch className="text-2xl hover:cursor-pointer" />
