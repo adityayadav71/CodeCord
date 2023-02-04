@@ -3,11 +3,11 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
-import AllTags from "../Problems/AllTags";
+import Tags from "../Problems/Tags";
 
 const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2, feature, list, extra }) => {
-  const listItems = list?.map((item) => {
-    return <li className="mb-3 text-grey2">{item}</li>;
+  const listItems = list?.map((item, i) => {
+    return <li key={i} className="mb-3 text-grey2">{item}</li>;
   });
   const colorVariants = {
     accent1: "bg-[#0098FA]",
@@ -83,15 +83,15 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
                   <div className="flex flex-row items-center justify-center w-full h-full">
                     <div></div>
                     <div className={`self-start ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
-                      <ContestCard style={{ "margin-left": 80, "margin-bottom": 10, "pointer-events": "none" }} name="Weekly Contest 1" timeStamp="15th Jan 2023 8:00 AM GMT+5:30" live="true" />
-                      <ContestCard style={{ "margin-right": 80, "pointer-events": "none" }} name="Weekly Contest 2" timeStamp="16th Jan 2023 8:00 AM GMT+5:30" live="false" />
+                      <ContestCard style={{ "marginLeft": 80, "marginBottom": 10, "pointerEvents": "none" }} name="Weekly Contest 1" timeStamp="15th Jan 2023 8:00 AM GMT+5:30" live="true" />
+                      <ContestCard style={{ "marginRight": 80, "pointerEvents": "none" }} name="Weekly Contest 2" timeStamp="16th Jan 2023 8:00 AM GMT+5:30" live="false" />
                     </div>
                   </div>
                 ) : null}
                 {supTitle === "Solve" ? (
-                  <div className={`flex flex-row items-center justify-center w-full h-full ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
+                  <div className={`flex flex-row mt-48 justify-center w-full h-full ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
                     <div className="relative w-1/2 h-1/2">
-                      <AllTags style={{ "pointer-events": "none" }} isTagsActive="true" activeTags={[]} setActiveTags={[]} />
+                      <Tags disableEvents={true} isTagsActive={[]} activeTags={[]} setActiveTags={[]} handleClick={[]} />
                     </div>
                   </div>
                 ) : null}

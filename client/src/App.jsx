@@ -11,7 +11,7 @@ import LandingLayout from "./layouts/LandingLayout";
 
 function App() {
   return (
-    <div className="relative flex flex-col h-screen w-full overflow-x-hidden">
+    <div className="mx-auto h-full w-full max-w-[1440px] overflow-x-hidden">
       <>
         <Routes>
           <Route path="/" element={<LandingLayout />}>

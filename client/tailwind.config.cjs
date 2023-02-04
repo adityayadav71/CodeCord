@@ -31,7 +31,7 @@ module.exports = {
         featureGradient1: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(25, 235, 72, 1) 100%)",
         featureGradient2: "linear-gradient(0deg, rgba(25, 235, 72, 1) 0%, rgba(226, 188, 30, 1) 100%);",
         featureGradient3: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(30, 32, 35, 1) 100%);",
-        moreRooms: "linear-gradient(180deg, rgba(81, 78, 78, 0) 0%, #283647 48.96%, #283647 100%);"
+        moreRooms: "linear-gradient(180deg, rgba(81, 78, 78, 0) 0%, #283647 48.96%, #283647 100%);",
       },
     },
     boxShadow: {
@@ -40,7 +40,7 @@ module.exports = {
       feature3: "0px 0px 54px 45px #E2BC1E",
       signUp: "0px 4px 23px 2px #0098FA",
       dropDown: "0px 4px 30px rgba(0, 0, 0, 0.25)",
-      heading: "0px 4px 4px rgba(0, 0, 0, 0.25)"
+      heading: "0px 4px 4px rgba(0, 0, 0, 0.25)",
     },
     animation: {
       fadeIn: "fadeIn 2s ease-out forwards",
@@ -53,7 +53,7 @@ module.exports = {
       grow: { "0%": { height: "0%" }, "100%": { height: "100%" } },
       fadeIn: { "0%": { opacity: 0 }, "100%": { opacity: 1 } },
     },
-    display: ["group-hover"]
+    display: ["group-hover"],
   },
   plugins: [],
 };

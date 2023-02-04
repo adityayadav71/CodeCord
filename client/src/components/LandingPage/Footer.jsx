@@ -5,7 +5,7 @@ import logo from "../../assets/svg/logo.svg";
 
 const Footer = (props) => {
   return (
-    <div className="flex text-grey1 px-9 h-64 mt-11">
+    <div className="flex text-grey1 px-9 h-64 mt-11 mb-11">
       <div className="mr-auto min-w-[30%]">
         <img className="mb-5" src={logo} alt="codecord_logo" />
         <a href="mailto:codecordSupport@gmail.com">codecordSupport@gmail.com</a>
@@ -20,28 +20,28 @@ const Footer = (props) => {
             <li>Contact</li>
           </a>
           <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li>Contribue</li>
+            <li>Contribute</li>
           </a>
         </ul>
       </div>
       <div className="w-80">
         <h3 className="text-lg mb-6 font-bold text-white">Features</h3>
         <ul>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li>
-              <Link to="/app/problem">Problems</Link>
-            </li>
-          </a>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li>
-              <Link to="/app/problem">Contests</Link>
-            </li>
-          </a>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li>
-              <Link to="/app/problem">Create a Room</Link>
-            </li>
-          </a>
+          <li>
+            <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
+              Problems
+            </Link>
+          </li>
+          <li>
+            <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
+              Contests
+            </Link>
+          </li>
+          <li>
+            <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
+              Create a Room
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="w-80">

@@ -20,6 +20,12 @@
   -webkit-text-size-adjust: 100%;
 }
 
+#root,
+html,
+body {
+  height: 100vh;
+}
+
 ::-webkit-scrollbar {
   padding: 5px;
   width: 5px;
