@@ -1,14 +1,11 @@
-import React from "react"
-import Navbar from "./Navbar";
+import React from "react";
 import Hero from "./Hero";
 import Feature from "./Feature";
 import Footer from "./Footer";
-import Copyright from "../../utilities/Copyright";
 
 const LandingPage = (props) => {
   return (
-  <div className="relative h-screen w-full overflow-x-hidden">
-      <Navbar />
+    <>
       <Hero />
       <Feature
         supTitle="Collaborate"
@@ -47,9 +44,8 @@ const LandingPage = (props) => {
       />
       <Feature supTitle="Sign up for an account" color="accent1" gradient1="topBlueGradient" extra="SignUp" feature="feature1" />
       <Footer />
-      <Copyright />
-    </div>
-  )
+    </>
+  );
 };
 
 export default LandingPage;

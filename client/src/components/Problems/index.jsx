@@ -1,7 +1,5 @@
 import { React, useState, useEffect } from "react";
-import Navbar from "../HomePage/Navbar";
 import LiveRooms from "../Rooms/LiveRooms";
-import Copyright from "../../utilities/Copyright";
 import { FaSearch, FaCheckCircle, FaRegTimesCircle, FaUndo, FaMinus, FaCheck } from "react-icons/fa";
 import { RiPulseLine } from "react-icons/ri";
 import Pagination from "./Pagination";
@@ -91,45 +89,41 @@ const Problems = (props) => {
   };
 
   return (
-    <div className="flex flex-col h-full grow items-center">
-      <Navbar />
-      <div className="flex flex-row w-full px-6 py-4 gap-x-6 max-w-[1440px] grow">
-        <div className="flex flex-col grow">
-          <TopicFilter />
-          <div className="flex flex-row gap-x-3">
-            <Difficulty isDifficultyActive={isDifficultyActive} handleClick={handleClick} addTag={addTag} />
-            <Status isStatusActive={isStatusActive} handleClick={handleClick} addTag={addTag} />
-            <Tags isTagsActive={isTagsActive} handleClick={handleClick} activeTags={activeTags} setActiveTags={setActiveTags} />
-            <div className={`searchbar relative h-fit w-fit flex flex-row items-center`}>
-              <FaSearch className="absolute left-2" />
-              <input className="h-fit w-fit p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-lg" type="text" placeholder="Search questions" />
-            </div>
-            <button className="flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg">
-              <FaCheckCircle className="text-xl" />
-              Create Contest
-            </button>
+    <div className="flex flex-row w-full px-6 py-4 gap-x-6 max-w-[1440px] grow">
+      <div className="flex flex-col grow">
+        <TopicFilter />
+        <div className="flex flex-row gap-x-3">
+          <Difficulty isDifficultyActive={isDifficultyActive} handleClick={handleClick} addTag={addTag} />
+          <Status isStatusActive={isStatusActive} handleClick={handleClick} addTag={addTag} />
+          <Tags isTagsActive={isTagsActive} handleClick={handleClick} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <div className={`searchbar relative h-fit w-fit flex flex-row items-center`}>
+            <FaSearch className="absolute left-2" />
+            <input className="h-fit w-fit p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-lg" type="text" placeholder="Search questions" />
           </div>
-          <div className="flex flex-row">
-            <div className="relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
-              {activeDifficulty}
-              {activeStatus}
-              {activeTags}
-            </div>
-            {activeDifficulty.length === 0 && activeStatus.length === 0 && activeTags.length === 0 ? (
-              ""
-            ) : (
-              <button className="self-start ml-auto flex flex-row items-center p-3 gap-x-3 text-grey1" onClick={resetFilters}>
-                <FaUndo />
-                Reset
-              </button>
-            )}
-          </div>
-          <ProblemList />
-          <Pagination />
+          <button className="flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg">
+            <FaCheckCircle className="text-xl" />
+            Create Contest
+          </button>
         </div>
-        <LiveRooms />
+        <div className="flex flex-row">
+          <div className="relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
+            {activeDifficulty}
+            {activeStatus}
+            {activeTags}
+          </div>
+          {activeDifficulty.length === 0 && activeStatus.length === 0 && activeTags.length === 0 ? (
+            ""
+          ) : (
+            <button className="self-start ml-auto flex flex-row items-center p-3 gap-x-3 text-grey1" onClick={resetFilters}>
+              <FaUndo />
+              Reset
+            </button>
+          )}
+        </div>
+        <ProblemList />
+        <Pagination />
       </div>
-      <Copyright />
+      <LiveRooms />
     </div>
   );
 };

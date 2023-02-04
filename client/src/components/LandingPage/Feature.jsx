@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import { InView } from "react-intersection-observer";
+import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
 import AllTags from "../Problems/AllTags";
@@ -8,15 +9,6 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
   const listItems = list?.map((item) => {
     return <li className="mb-3 text-grey2">{item}</li>;
   });
-  const [topicsExpanded, setTopicsExpanded] = useState(false);
-  const [companiesExpanded, setCompaniesExpanded] = useState(false);
-  function toggleTopics() {
-    setTopicsExpanded((prev) => !prev);
-  }
-
-  function toggleCompanies() {
-    setCompaniesExpanded((prev) => !prev);
-  }
   const colorVariants = {
     accent1: "bg-[#0098FA]",
     easyGreen: "bg-[#19EB48]",
@@ -62,9 +54,11 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
         <div className={`flex flex-col ml-32 w-full`}>
           <p className={`${extra === "SignUp" ? "text-5xl" : "text-4xl"} ${isInView ? "animate-slideOutDelayed" : ""} -translate-x-2 origin-top-right opacity-0 font-bold mb-20`}>{supTitle}</p>
           {extra === "SignUp" ? (
-            <button className="p-4 w-40 text-3xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 hover:shadow hover:shadow-signUp  bg-accent1 text-white font-bold rounded-xl">
-              Sign up
-            </button>
+            <Link to="/app/auth/signup">
+              <button className="p-4 w-40 text-3xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 hover:shadow hover:shadow-signUp  bg-accent1 text-white font-bold rounded-xl">
+                Sign up
+              </button>
+            </Link>
           ) : (
             <div className="flex flex-col grow">
               <h1 className={`text-5xl font-bold tracking-wide mb-11 ${isInView ? "animate-slideOut" : ""} -translate-x-2 origin-top-right opacity-0`}>

@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
+import { UserContext } from "../../layouts/AppLayout";
 
-const PastContest = ({name, timeStamp}) => {
+const PastContest = ({ name, timeStamp }) => {
+  const isLoggedIn = useContext(UserContext);
   return (
     <div className="p-4 flex flex-row justify-between hover:bg-hover hover:text-accent1 hover:cursor-pointer rounded-xl">
       <div>
         <h1 className="text-xl font-bold">{name}</h1>
         <p className="text-base text-grey1">{timeStamp}</p>
       </div>
-      <button className="p-3 font-bold text-lg bg-accent1 transition-all duration-300 hover:bg-lightAccent1 text-white rounded-xl">Create Room</button>
+      {isLoggedIn ? <button className="p-3 font-bold text-lg bg-accent1 transition-all duration-300 hover:bg-lightAccent1 text-white rounded-xl">Create Room</button> : ""}
     </div>
   );
 };
