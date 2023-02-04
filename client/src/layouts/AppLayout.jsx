@@ -8,7 +8,7 @@ export const UserContext = createContext();
 const AppLayout = (props) => {
   return (
     <UserContext.Provider value={false}>
-      <div className="flex flex-col h-full grow">
+      <div className="flex flex-col h-full">
         <Navbar />
         <Outlet />
         <Copyright />
