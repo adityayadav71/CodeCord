@@ -89,7 +89,7 @@ const Problems = (props) => {
   };
 
   return (
-    <div className="flex flex-row w-full px-6 py-4 gap-x-6 max-w-[1440px] grow">
+    <div className="flex flex-row w-full px-6 py-4 gap-x-6 grow">
       <div className="flex flex-col grow">
         <TopicFilter />
         <div className="flex flex-row gap-x-3">
