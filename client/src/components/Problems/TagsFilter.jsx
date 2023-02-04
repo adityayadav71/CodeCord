@@ -2,13 +2,13 @@ import { React, useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import TagButton from "./TagButton";
 
-const AllTags = ({ isTagsActive, activeTags, setActiveTags }) => {
+const TagsFilter = ({ isTagsActive, activeTags, setActiveTags, disableEvents }) => {
   const [topicsExpanded, setTopicsExpanded] = useState(false);
   const [companiesExpanded, setCompaniesExpanded] = useState(false);
 
   useEffect(() => {
     const reset = (event) => {
-      if (!event.target.closest(".allTags")) {
+      if (!event.target.closest(".TagsFilter")) {
         setTimeout(() => {
           setTopicsExpanded(false);
           setCompaniesExpanded(false);
@@ -31,7 +31,7 @@ const AllTags = ({ isTagsActive, activeTags, setActiveTags }) => {
 
   return (
     <div
-      className={`allTags absolute transition-all duration-300 ${
+      className={`TagsFilter ${disableEvents ? "pointer-events-none" : ""} absolute transition-all duration-300 ${
         isTagsActive ? "opacity-1 z-20 top-16" : "opacity-0 -z-10 top-20"
       } shadow shadow-dropDown left-0 p-3 h-fit w-96 hover:cursor-pointer bg-secondary rounded-xl`}
     >
@@ -81,4 +81,4 @@ const AllTags = ({ isTagsActive, activeTags, setActiveTags }) => {
   );
 };
 
-export default AllTags;
+export default TagsFilter;
