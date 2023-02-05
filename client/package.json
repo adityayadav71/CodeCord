@@ -10,17 +10,24 @@
     "build:tailwind": "tailwindcss build src/styles/tailwind.css -o src/styles/index.css"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.3",
+    "@codemirror/view": "^6.7.3",
+    "@uiw/codemirror-extensions-basic-setup": "^4.19.7",
+    "@uiw/codemirror-theme-tokyo-night": "^4.19.7",
+    "@uiw/react-codemirror": "^4.19.7",
     "@vitejs/plugin-react": "^3.1.0",
-    "re-resizable": "^6.9.9",
+    "codemirror": "^6.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-intersection-observer": "^9.4.1",
     "react-router-dom": "^6.8.0",
+    "react-split": "^2.0.14",
     "swiper": "^9.0.2",
     "vite": "^4.1.1"
   },
   "devDependencies": {
+    "@types/codemirror": "^5.60.7",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "autoprefixer": "^10.4.13",

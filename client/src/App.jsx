@@ -5,6 +5,7 @@ import LandingPage from "./components/LandingPage/index";
 import Contest from "./components/Contests/index";
 import Problem from "./components/Problems/index";
 import Discussion from "./components/Discussions/index";
+import Editor from "./components/Editor/index";
 import Form from "./components/Authentication/Form";
 import AppLayout from "./layouts/AppLayout";
 import LandingLayout from "./layouts/LandingLayout";
@@ -19,7 +20,10 @@ function App() {
           </Route>
           <Route path="/app" element={<AppLayout />}>
             <Route path="contest" element={<Contest />} />
-            <Route path="problem" element={<Problem />} />
+            <Route path="problem">
+              <Route index element={<Problem />} />
+              <Route path=":name" element={<Editor />} />
+            </Route>
             <Route path="discussion" element={<Discussion />} />
             <Route path="auth">
               <Route path="signup" element={<Form type="Sign Up" fields={["Username", "Password", "Confirm New Password", "Email Address"]} buttonName="Sign Up" />} />
