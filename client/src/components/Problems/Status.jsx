@@ -1,4 +1,3 @@
-import React from "react";
 import { FaAngleDown, FaMinus, FaCheck } from "react-icons/fa";
 import { RiPulseLine } from "react-icons/ri";
 

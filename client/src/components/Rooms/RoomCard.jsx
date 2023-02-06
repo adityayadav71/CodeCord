@@ -1,5 +1,3 @@
-import React from "react";
-
 const RoomCard = ({name, description, participants}) => {
   return (
     <div className="flex flex-col p-3 bg-accent2 rounded-xl w-full h-32 leading-tight last:mb-24">

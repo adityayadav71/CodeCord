@@ -1,4 +1,3 @@
-import React from "react";
 import { FaAngleDown } from "react-icons/fa";
 
 const Difficulty = ({ isDifficultyActive, handleClick, addTag }) => {

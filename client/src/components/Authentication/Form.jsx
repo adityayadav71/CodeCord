@@ -1,4 +1,3 @@
-import React from "react";
 import TextInput from "./TextInput";
 import logo from "../../assets/svg/logo.svg";
 import { Link } from "react-router-dom";

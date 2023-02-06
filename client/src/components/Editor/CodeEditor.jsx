@@ -1,4 +1,3 @@
-import React from "react";
 import { FaUserAlt } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";

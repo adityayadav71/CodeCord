@@ -1,4 +1,3 @@
-import React from "react";
 import { FaRegCalendarPlus } from "react-icons/fa";
 
 const UpcomingContest = ({ name, timeStamp, live, style }) => {

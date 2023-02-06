@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaBell, FaSearch, FaUserAlt } from "react-icons/fa";
 import { UserContext } from "../../layouts/AppLayout";

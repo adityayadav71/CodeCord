@@ -1,4 +1,3 @@
-import React from "react";
 import { FaCog, FaPlus, FaUndo } from "react-icons/fa";
 
 const Console = (props) => {

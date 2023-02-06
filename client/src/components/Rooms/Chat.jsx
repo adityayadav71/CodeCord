@@ -1,4 +1,3 @@
-import React from "react";
 import { FaMicrophone, FaUserAlt } from "react-icons/fa";
 
 const Chat = (props) => {

@@ -1,4 +1,3 @@
-import React from "react";
 import { AiFillLike, AiFillDislike, AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
 
 const Description = (props) => {

@@ -1,5 +1,3 @@
-import React from "react";
-
 const Topic = ({ tagName, number }) => {
   return (
     <button className="group h-fit hover:text-accent1 ">

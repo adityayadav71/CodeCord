@@ -1,5 +1,3 @@
-import React from "react"
-
 const Discussion = (props) => {
   return (
     <div className="grow">

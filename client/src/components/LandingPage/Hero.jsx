@@ -1,5 +1,3 @@
-import React from "react";
-
 const Hero = (props) => {
   return (
     <div className="relative px-9 mt-11 mb-11 h-screen max-h-[720px]">

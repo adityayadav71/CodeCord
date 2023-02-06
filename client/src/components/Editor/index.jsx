@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Split from "react-split";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 import Description from "./Description";
