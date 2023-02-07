@@ -37,6 +37,11 @@ body {
   background-color: #a1acbd;
 }
 
+button {
+  transition: all;
+  transition-duration: 300ms;
+}
+
 .hideScrollbar::-webkit-scrollbar {
   display: none;
 }
