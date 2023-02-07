@@ -4,8 +4,17 @@ import { RiPulseLine } from "react-icons/ri";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { UserContext } from "../../layouts/AppLayout";
+import { Link } from "react-router-dom";
 
-const Problem = ({ number, name, acceptance, difficulty, submissions, userSubmissions, status }) => {
+const Problem = ({
+  number,
+  name,
+  acceptance,
+  difficulty,
+  submissions,
+  userSubmissions,
+  status,
+}) => {
   const isLoggedIn = useContext(UserContext);
   const loadSubmissions = () => {
     let submissions = [];
@@ -21,24 +30,48 @@ const Problem = ({ number, name, acceptance, difficulty, submissions, userSubmis
     return submissions;
   };
   return (
-    <div className="flex flex-row items-center p-3 text-lg odd:bg-hover">
-      <div className="w-20">{status === "solved" ? <FaCheckCircle className="text-green" /> : status === "attempted" ? <RiPulseLine className="text-mediumYellow" /> : ""}</div>
-      <div className="grow">
-        <a href="#" className="hover:text-accent1">
-          {number}. {name}
-        </a>
+    <Link to={`/app/problem/${name.toLowerCase().replace(/\s/g, "-")}`} className="odd:bg-hover">
+      <div className="flex flex-row items-center p-3 text-lg">
+        <div className="w-20">
+          {status === "solved" ? (
+            <FaCheckCircle className="text-green" />
+          ) : status === "attempted" ? (
+            <RiPulseLine className="text-mediumYellow" />
+          ) : (
+            ""
+          )}
+        </div>
+        <div className="grow">
+          <a href="#" className="hover:text-accent1">
+            {number}. {name}
+          </a>
+        </div>
+        <div className="w-40">{acceptance}%</div>
+        <div
+          className={`w-40 font-bold ${
+            difficulty === "easy"
+              ? "text-easyGreen"
+              : difficulty === "medium"
+              ? "text-mediumYellow"
+              : "text-hardRed"
+          }`}
+        >
+          {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+        </div>
+        <p className="hideScrollbar w-40 flex flex-row gap-x-3">
+          {submissions}
+        </p>
+        {isLoggedIn && (
+          <Swiper
+            className="hideScrollbar w-40 flex flex-row gap-x-3"
+            spaceBetween={12}
+            slidesPerView={6}
+          >
+            {loadSubmissions()}
+          </Swiper>
+        )}
       </div>
-      <div className="w-40">{acceptance}%</div>
-      <div className={`w-40 font-bold ${difficulty === "easy" ? "text-easyGreen" : difficulty === "medium" ? "text-mediumYellow" : "text-hardRed"}`}>
-        {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
-      </div>
-      <p className="hideScrollbar w-40 flex flex-row gap-x-3">{submissions}</p>
-      {isLoggedIn && (
-        <Swiper className="hideScrollbar w-40 flex flex-row gap-x-3" spaceBetween={12} slidesPerView={6}>
-          {loadSubmissions()}
-        </Swiper>
-      )}
-    </div>
+    </Link>
   );
 };
 
