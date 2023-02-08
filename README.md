@@ -21,6 +21,11 @@ Apart from the usual leetcode features, it provides the feature to create a live
 - Ability to make **friends** with other users.
 - **Interview rooms** with additional video calling feature.
 
+### Links and Resources:
+[Vercel-Deployment](https://www.codeack.tk/)
+[Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1) 
+
+
 ## Tech Stack
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
