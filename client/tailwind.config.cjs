@@ -17,9 +17,12 @@ module.exports = {
         accent3: "#3C6392",
         accent4: "#212A35",
         green: "#2CBB5D",
+        greenBackGround: "#294D35",
         easyGreen: "#19EB48",
         mediumYellow: "#E2BC1E",
+        yellowBackGround: "#5E4E26",
         hardRed: "#FF0000",
+        redBackGround: "#5A302F",
         graphicLightBlue: "#0064FA",
         graphicDarkBlue: "#0E5BCE",
         grey1: "#A1ACBD",
@@ -46,6 +49,7 @@ module.exports = {
       signUp: "0px 4px 23px 2px #0098FA",
       dropDown: "0px 4px 30px rgba(0, 0, 0, 0.25)",
       heading: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+      modal: "0px 0px 100px 364px rgba(0, 0, 0, 0.3);"
     },
     animation: {
       fadeIn: "fadeIn 2s ease-out forwards",

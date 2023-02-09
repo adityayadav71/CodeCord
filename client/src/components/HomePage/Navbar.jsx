@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaBell, FaSearch, FaUserAlt } from "react-icons/fa";
 import { UserContext } from "../../layouts/AppLayout";
+import CreateRoom from "../Rooms/CreateRoom";
 
 const HomeNavbar = () => {
   const isLoggedIn = useContext(UserContext);
@@ -9,6 +10,23 @@ const HomeNavbar = () => {
     return pathname.startsWith(to);
   };
   const { pathname } = useLocation();
+  const [modal, setModal] = useState("")
+  const openRoomModal = () => {
+    console.log("open")
+    setModal(<CreateRoom />)
+  }
+  useEffect(() => {
+    const closeModal = (event) => {
+      console.log(!event.target.closest(".modal"), !event.target.classList.contains("open-modal"), !event.target.closest(".modal") || !event.target.classList.contains("open-modal"))
+      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal")) {
+        setModal("");
+      }
+    };
+    document.addEventListener("click", closeModal);
+    return () => {
+      document.removeEventListener("click", closeModal);
+    };
+  }, []);
   return (
     <div className="flex flex-row justify-start border-b max-w-[1440px] border-b-accent2 w-full">
       <Link to="/">
@@ -45,7 +63,7 @@ const HomeNavbar = () => {
         {isLoggedIn ? (
           <>
             <FaSearch className="text-2xl hover:cursor-pointer" />
-            <button className="p-3 hover:cursor-pointer hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 bg-accent1 text-white text-base font-bold rounded-xl">
+            <button className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 bg-accent1 text-white text-base font-bold rounded-xl" onClick={openRoomModal}>
               Create/Join a Room
             </button>
             <FaBell className="text-2xl hover:cursor-pointer" />
@@ -71,6 +89,7 @@ const HomeNavbar = () => {
           </>
         )}
       </div>
+      {modal}
     </div>
   );
 };

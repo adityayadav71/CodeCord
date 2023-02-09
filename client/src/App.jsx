@@ -9,6 +9,7 @@ import Editor from "./components/Editor/index";
 import Form from "./components/Authentication/Form";
 import AppLayout from "./layouts/AppLayout";
 import LandingLayout from "./layouts/LandingLayout";
+import CreateRoom from "./components/Rooms/CreateRoom";
 
 function App() {
   return (
@@ -17,6 +18,9 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingLayout />}>
             <Route index element={<LandingPage />} />
+          </Route>
+          <Route path="/create">
+            <Route index element={<CreateRoom />} />
           </Route>
           <Route path="/app" element={<AppLayout />}>
             <Route path="contest" element={<Contest />} />
