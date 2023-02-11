@@ -1,23 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  FaUndo,
-  FaRegTimesCircle,
-  FaMinus,
-  FaCheck,
-  FaSearch,
-} from "react-icons/fa";
-import { RiPulseLine } from "react-icons/ri";
-
-import Difficulty from "../Problems/Difficulty";
 import ProblemList from "../Problems/ProblemList";
 import Pagination from "../Problems/Pagination";
-import Status from "../Problems/Status";
-import Tags from "../Problems/Tags";
 import RoomTypeSelector from "./RoomTypeSelector";
 import ParticipantLimit from "./ParticipantLimit";
 import RoomDuration from "./RoomDuration";
 import RoomInviteLink from "./RoomInviteLink";
 import RoomVisibility from "./RoomVisibility";
+import ProblemFilter from "../Problems/ProblemFilter";
 
 const CreateRoom = ({ isContest }) => {
   const updateTimeLimit = () => {
@@ -43,114 +32,13 @@ const CreateRoom = ({ isContest }) => {
     });
   });
 
-  useEffect(() => {
-    const closeDropdown = (event) => {
-      if (!event.target.closest(".dropdown")) {
-        setDifficultyActive(false);
-        setTagsActive(false);
-        setStatusActive(false);
-      }
-    };
-    document.addEventListener("click", closeDropdown);
-    return () => {
-      document.removeEventListener("click", closeDropdown);
-    };
-  }, []);
-
-  const [isDifficultyActive, setDifficultyActive] = useState(false);
-  const [isStatusActive, setStatusActive] = useState(false);
-  const [isTagsActive, setTagsActive] = useState(false);
   const [isLimitActive, setLimitActive] = useState(false);
   const [participantLimit, setParticipantLimit] = useState(10);
-  const [activeDifficulty, setActiveDifficulty] = useState([]);
-  const [activeStatus, setActiveStatus] = useState([]);
-  const [activeTags, setActiveTags] = useState([]);
-
   const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
-  const [selected, setSelected] = useState(0);
   const [visibility, setVisibility] = useState("private");
   const [timeLimit, setTimeLimit] = useState(10);
   const [hrs, sethrs] = useState("");
   const [mins, setmins] = useState("10 mins");
-
-  const handleClick = (event) => {
-    const target = event.target.closest(".dropdown").dataset.value;
-    if (target === "Difficulty") {
-      setDifficultyActive((prevState) => !prevState);
-      setStatusActive(false);
-      setTagsActive(false);
-    } else if (target === "Status") {
-      setDifficultyActive(false);
-      setStatusActive((prevState) => !prevState);
-      setTagsActive(false);
-    } else if (target === "Tags") {
-      setDifficultyActive(false);
-      setTagsActive((prevState) => !prevState);
-      setStatusActive(false);
-    }
-  };
-
-  const addTag = (event) => {
-    const target = event.target.textContent;
-    const tagName = target.toLowerCase().replace(/\s/g, "-");
-    const tag = (
-      <div
-        className={`flex flex-row items-center gap-x-2 h-fit w-fit px-3 ${
-          tagName === "easy"
-            ? "text-easyGreen"
-            : tagName === "medium"
-            ? "text-mediumYellow"
-            : tagName === "hard"
-            ? "text-hardRed"
-            : ""
-        } bg-accent4 rounded-xl`}
-      >
-        {tagName === "to-do" ? (
-          <FaMinus />
-        ) : tagName === "solved" ? (
-          <FaCheck className="text-easyGreen" />
-        ) : tagName === "attempted" ? (
-          <RiPulseLine className="text-mediumYellow" />
-        ) : (
-          ""
-        )}
-        {target}
-        <button className={tagName} onClick={removeTag}>
-          <FaRegTimesCircle className="hover:text-accent1" />
-        </button>
-      </div>
-    );
-    setStatusActive(false);
-    setDifficultyActive(false);
-    if (event.target.closest(".difficulty-dropdown")) {
-      setActiveDifficulty([tag]);
-    } else if (event.target.closest(".status-dropdown")) {
-      setActiveStatus([tag]);
-    }
-  };
-
-  const removeTag = (event) => {
-    const target = event.currentTarget.classList;
-    if (
-      target.contains("easy") ||
-      target.contains("medium") ||
-      target.contains("hard")
-    ) {
-      setActiveDifficulty([]);
-    } else if (
-      target.contains("to-do") ||
-      target.contains("solved") ||
-      target.contains("attempted")
-    ) {
-      setActiveStatus([]);
-    }
-  };
-
-  const resetFilters = () => {
-    setActiveDifficulty(() => []);
-    setActiveStatus(() => []);
-    setActiveTags(() => []);
-  };
 
   const toHoursAndMinutes = (totalMinutes) => {
     const hours = Math.floor(totalMinutes / 60);
@@ -202,59 +90,7 @@ const CreateRoom = ({ isContest }) => {
         </div>
 
         <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
-          <div className="flex flex-row gap-x-3">
-            <div className="relative flex flex-row">
-              <input
-                type="text"
-                className="bg-secondary pl-3 pr-8 py-2 focus:outline-none focus:ring-2 ring-inset ring-accent1 rounded-lg"
-                placeholder="Search problems"
-              />
-              <FaSearch className="absolute top-1/2 -translate-y-1/2 right-3" />
-            </div>
-            <div className="flex flex-row gap-x-3 items-center">
-              <Difficulty
-                isDifficultyActive={isDifficultyActive}
-                handleClick={handleClick}
-                addTag={addTag}
-              />
-              <Status
-                isStatusActive={isStatusActive}
-                handleClick={handleClick}
-                addTag={addTag}
-              />
-              <Tags
-                isTagsActive={isTagsActive}
-                handleClick={handleClick}
-                activeTags={activeTags}
-                setActiveTags={setActiveTags}
-              />
-            </div>
-            <p className="ml-auto text-lg text-green font-bold">
-              {selected
-                ? `${selected}/4 problems selected`
-                : "Select upto 4 problems"}
-            </p>
-          </div>
-          <div className="flex flex-row">
-            <div className="relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
-              {activeDifficulty}
-              {activeStatus}
-              {activeTags}
-            </div>
-            {activeDifficulty.length === 0 &&
-            activeStatus.length === 0 &&
-            activeTags.length === 0 ? (
-              ""
-            ) : (
-              <button
-                className="self-start ml-auto flex flex-row items-center p-3 gap-x-3 text-grey1"
-                onClick={resetFilters}
-              >
-                <FaUndo />
-                Reset
-              </button>
-            )}
-          </div>
+          <ProblemFilter filterInsideModal={true}/>
           <div className="grow overflow-y-scroll mb-3">
             <ProblemList type="select" />
           </div>
