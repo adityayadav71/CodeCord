@@ -8,7 +8,7 @@ const Tags = ({ isTagsActive, activeTags, setActiveTags, handleClick, disableEve
       <div
         className={`${
           disableEvents && "pointer-events-none bg-lightSecondary"
-        } flex flex-row items-center hover:bg-lightSecondary justify-between gap-x-3 bg-secondary mb-3 w-fit p-3 hover:cursor-pointer outline-none rounded-lg`}
+        } flex flex-row items-center hover:bg-lightSecondary justify-between gap-x-3 bg-secondary w-fit p-3 hover:cursor-pointer outline-none rounded-lg`}
         onClick={handleClick}
       >
         Tags

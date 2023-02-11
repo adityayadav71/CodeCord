@@ -64,7 +64,7 @@ const pagination = (props) => {
         <div
           className={`absolute transition-all duration-100 ${
             isLimitChangerActive ? "z-20  opacity-1 scale-100" : "opacity-0 scale-0"
-          } bottom-12 shadow shadow-dropDown left-0 p-3 w-40 hover:cursor-pointer bg-secondary rounded-xl`}
+          } bottom-12 shadow shadow-dropDown right-0 p-3 w-40 hover:cursor-pointer bg-secondary rounded-xl`}
         >
           <div className="flex flex-row items-center justify-between hover:bg-accent3 mb-3 rounded-lg px-3 py-1" data-value="20" onClick={setLimit}>
             20 / Page

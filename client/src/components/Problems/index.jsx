@@ -8,6 +8,7 @@ import Difficulty from "./Difficulty";
 import Status from "./Status";
 import Tags from "./Tags";
 import TopicFilter from "./TopicFilter";
+import CreateRoom from "../Rooms/CreateRoom";
 
 const Problems = (props) => {
   useEffect(() => {
@@ -88,11 +89,28 @@ const Problems = (props) => {
     setActiveTags(() => []);
   };
 
+  const [modal, setModal] = useState()
+  const openRoomModal = () => {
+    setModal(<CreateRoom isContest={true}/>)
+  }
+
+  useEffect(() => {
+    const closeModal = (event) => {
+      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal")) {
+        setModal("");
+      }
+    };
+    document.addEventListener("click", closeModal);
+    return () => {
+      document.removeEventListener("click", closeModal);
+    };
+  }, []);
+
   return (
     <div className="flex flex-row w-full px-6 py-4 gap-x-6 grow">
       <div className="flex flex-col grow">
         <TopicFilter />
-        <div className="flex flex-row gap-x-3">
+        <div className="flex flex-row gap-x-3 mb-3">
           <Difficulty isDifficultyActive={isDifficultyActive} handleClick={handleClick} addTag={addTag} />
           <Status isStatusActive={isStatusActive} handleClick={handleClick} addTag={addTag} />
           <Tags isTagsActive={isTagsActive} handleClick={handleClick} activeTags={activeTags} setActiveTags={setActiveTags} />
@@ -100,10 +118,11 @@ const Problems = (props) => {
             <FaSearch className="absolute left-2" />
             <input className="h-fit w-fit p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-lg" type="text" placeholder="Search questions" />
           </div>
-          <button className="flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg">
+          <button className="open-modal flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg" onClick={openRoomModal}>
             <FaCheckCircle className="text-xl" />
             Create Contest
           </button>
+          {modal}
         </div>
         <div className="flex flex-row">
           <div className="relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
@@ -120,7 +139,7 @@ const Problems = (props) => {
             </button>
           )}
         </div>
-        <ProblemList />
+        <ProblemList type=""/>
         <Pagination />
       </div>
       <LiveRooms />

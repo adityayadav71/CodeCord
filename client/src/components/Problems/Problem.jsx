@@ -1,4 +1,4 @@
-import { React, useContext } from "react";
+import { React, useContext, useEffect } from "react";
 import { FaCheckCircle, FaRegFileCode } from "react-icons/fa";
 import { RiPulseLine } from "react-icons/ri";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,6 +14,7 @@ const Problem = ({
   submissions,
   userSubmissions,
   status,
+  type,
 }) => {
   const isLoggedIn = useContext(UserContext);
   const loadSubmissions = () => {
@@ -30,7 +31,7 @@ const Problem = ({
     return submissions;
   };
   return (
-    <Link to={`/app/problem/${name.toLowerCase().replace(/\s/g, "-")}`} className="odd:bg-hover">
+    <div className="odd:bg-hover">
       <div className="flex flex-row items-center p-3 text-lg">
         <div className="w-20">
           {status === "solved" ? (
@@ -42,9 +43,12 @@ const Problem = ({
           )}
         </div>
         <div className="grow">
-          <a href="#" className="hover:text-accent1">
+          <Link
+            to={`/app/problem/${name.toLowerCase().replace(/\s/g, "-")}`}
+            className="hover:text-accent1"
+          >
             {number}. {name}
-          </a>
+          </Link>
         </div>
         <div className="w-40">{acceptance}%</div>
         <div
@@ -61,7 +65,7 @@ const Problem = ({
         <p className="hideScrollbar w-40 flex flex-row gap-x-3">
           {submissions}
         </p>
-        {isLoggedIn && (
+        {isLoggedIn && type !== "select" && (
           <Swiper
             className="hideScrollbar w-40 flex flex-row gap-x-3"
             spaceBetween={12}
@@ -70,8 +74,14 @@ const Problem = ({
             {loadSubmissions()}
           </Swiper>
         )}
+        {type === "select" && (
+          <input
+            type="checkbox"
+            className="problem-selected w-20 flex flex-row gap-x-3"
+          />
+        )}
       </div>
-    </Link>
+    </div>
   );
 };
 
