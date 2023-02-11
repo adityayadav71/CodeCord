@@ -59,7 +59,7 @@ const Problems = (props) => {
   };
 
   const addTag = (event) => {
-    const target = event.target.textContent;
+    const target = event.currentTarget.textContent;
     const tagName = target.toLowerCase().replace(/\s/g, "-");
     const tag = (
       <div
