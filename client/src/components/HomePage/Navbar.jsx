@@ -10,14 +10,12 @@ const HomeNavbar = () => {
     return pathname.startsWith(to);
   };
   const { pathname } = useLocation();
-  const [modal, setModal] = useState("")
+  const [modal, setModal] = useState()
   const openRoomModal = () => {
-    console.log("open")
-    setModal(<CreateRoom />)
+    setModal(<CreateRoom isContest={false}/>)
   }
   useEffect(() => {
     const closeModal = (event) => {
-      console.log(!event.target.closest(".modal"), !event.target.classList.contains("open-modal"), !event.target.closest(".modal") || !event.target.classList.contains("open-modal"))
       if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal")) {
         setModal("");
       }

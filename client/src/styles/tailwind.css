@@ -37,6 +37,17 @@ body {
   background-color: #a1acbd;
 }
 
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 0rem;
+  width: 0rem;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 0rem;
+  width: 0rem;
+}
+
 button {
   transition: all;
   transition-duration: 300ms;

@@ -1,18 +1,51 @@
 import { useEffect, useState } from "react";
-import { FaAngleDown } from "react-icons/fa";
-import { IoCopy } from "react-icons/io5";
+import {
+  FaUndo,
+  FaRegTimesCircle,
+  FaMinus,
+  FaCheck,
+  FaSearch,
+} from "react-icons/fa";
+import { RiPulseLine } from "react-icons/ri";
+
 import Difficulty from "../Problems/Difficulty";
 import ProblemList from "../Problems/ProblemList";
+import Pagination from "../Problems/Pagination";
 import Status from "../Problems/Status";
 import Tags from "../Problems/Tags";
+import RoomTypeSelector from "./RoomTypeSelector";
+import ParticipantLimit from "./ParticipantLimit";
+import RoomDuration from "./RoomDuration";
+import RoomInviteLink from "./RoomInviteLink";
+import RoomVisibility from "./RoomVisibility";
 
-const CreateRoom = (props) => {
+const CreateRoom = ({ isContest }) => {
+  const updateTimeLimit = () => {
+    const slider = document.getElementById("slider");
+    const timeLimit = slider.value;
+    const percent = (timeLimit * 100) / 120;
+    slider.style.background = `linear-gradient(90deg, ${
+      "rgb(44 187 93)" + percent + "%"
+    } , ${"rgb(41 77 53)" + percent + "%"})`;
+    setTimeLimit(timeLimit);
+  };
+
+  useEffect(() => {
+    sethrs(() => {
+      const hours = toHoursAndMinutes(timeLimit).hours;
+      if (hours === 1) return `${hours} hr`;
+      else if (hours > 1) return `${hours} hrs`;
+    });
+    setmins(() => {
+      const mins = toHoursAndMinutes(timeLimit).minutes;
+      if (mins === 1) return `${mins} min`;
+      else if (mins > 1) return `${mins} mins`;
+    });
+  });
+
   useEffect(() => {
     const closeDropdown = (event) => {
-      if (
-        !event.target.closest(".dropdown") ||
-        event.target.closest(".searchbar")
-      ) {
+      if (!event.target.closest(".dropdown")) {
         setDifficultyActive(false);
         setTagsActive(false);
         setStatusActive(false);
@@ -27,8 +60,18 @@ const CreateRoom = (props) => {
   const [isDifficultyActive, setDifficultyActive] = useState(false);
   const [isStatusActive, setStatusActive] = useState(false);
   const [isTagsActive, setTagsActive] = useState(false);
+  const [isLimitActive, setLimitActive] = useState(false);
+  const [participantLimit, setParticipantLimit] = useState(10);
+  const [activeDifficulty, setActiveDifficulty] = useState([]);
+  const [activeStatus, setActiveStatus] = useState([]);
   const [activeTags, setActiveTags] = useState([]);
-  const [roomType, setRoomType] = useState("Default");
+
+  const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
+  const [selected, setSelected] = useState(0);
+  const [visibility, setVisibility] = useState("private");
+  const [timeLimit, setTimeLimit] = useState(10);
+  const [hrs, sethrs] = useState("");
+  const [mins, setmins] = useState("10 mins");
 
   const handleClick = (event) => {
     const target = event.target.closest(".dropdown").dataset.value;
@@ -44,23 +87,6 @@ const CreateRoom = (props) => {
       setDifficultyActive(false);
       setTagsActive((prevState) => !prevState);
       setStatusActive(false);
-    }
-  };
-
-  const removeTag = (event) => {
-    const target = event.currentTarget.classList;
-    if (
-      target.contains("easy") ||
-      target.contains("medium") ||
-      target.contains("hard")
-    ) {
-      setActiveDifficulty([]);
-    } else if (
-      target.contains("to-do") ||
-      target.contains("solved") ||
-      target.contains("attempted")
-    ) {
-      setActiveStatus([]);
     }
   };
 
@@ -103,82 +129,137 @@ const CreateRoom = (props) => {
     }
   };
 
+  const removeTag = (event) => {
+    const target = event.currentTarget.classList;
+    if (
+      target.contains("easy") ||
+      target.contains("medium") ||
+      target.contains("hard")
+    ) {
+      setActiveDifficulty([]);
+    } else if (
+      target.contains("to-do") ||
+      target.contains("solved") ||
+      target.contains("attempted")
+    ) {
+      setActiveStatus([]);
+    }
+  };
+
   const resetFilters = () => {
     setActiveDifficulty(() => []);
     setActiveStatus(() => []);
     setActiveTags(() => []);
   };
 
+  const toHoursAndMinutes = (totalMinutes) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return { hours, minutes };
+  };
+
   return (
-    <div className="modal z-[9999] shadow shadow-modal absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary w-max flex flex-col gap-y-3 rounded-lg p-6">
-      <div className="flex flex-row gap-x-3">
-        <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
-          <h1 className="text-xl font-bold">Create Room</h1>
-          <div className="grid grid-cols-2 grid-rows-2 gap-6">
-            <div className="flex flex-row justify-center items-center bg-lightPrimary p-3 rounded-lg">
-              <button className={`px-3 w-full rounded-lg ${roomType === "Default" ? "bg-accent1": ""}`} onClick={() => setRoomType("Default")}>Default</button>
-              <button className={`px-3 w-full rounded-lg ${roomType === "Contest" ? "bg-accent1": ""}`} onClick={() => setRoomType("Contest")}>Contest</button>
-            </div>
-            <div className="flex flex-row justify-between items-center px-3 py-2 bg-lightPrimary rounded-lg">
-              Participants Limit
-              <FaAngleDown />
-            </div>
-            <div className="bg-greenBackGround rounded-lg">
-              <div></div>
-            </div>
-            <div className="relative">
-              <button className="absolute flex items-center justify-center right-0 w-1/5 h-full bg-accent1 p-3 rounded-lg">
-                <IoCopy className="text-lg" />
-              </button>
-              <input
-                className="w-full ring-2 ring-inset ring-accent1 bg-lightPrimary p-3 focus:outline-none rounded-lg"
-                type="text"
-                placeholder="Invite link"
+    <div>
+      <div className="absolute top-0 left-0 h-full w-full z-[9998]"></div>
+      <div className="modal fixed z-[9999] h-[95%] w-[60%] overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6">
+        <div className="flex flex-row gap-x-3 mb-3">
+          <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
+            <div className="flex flex-row gap-x-3 mb-3">
+              <h1 className="text-xl font-bold">Create Room</h1>
+              <RoomVisibility
+                visibility={visibility}
+                setVisibility={setVisibility}
               />
             </div>
+            <div className="grid grid-cols-2 grid-rows-2 gap-5">
+              <RoomTypeSelector roomType={roomType} setRoomType={setRoomType} />
+              <ParticipantLimit
+                participantLimit={participantLimit}
+                setParticipantLimit={setParticipantLimit}
+                isLimitActive={isLimitActive}
+                setLimitActive={setLimitActive}
+              />
+              <RoomDuration
+                roomType={roomType}
+                updateTimeLimit={updateTimeLimit}
+                hrs={hrs}
+                mins={mins}
+              />
+              <RoomInviteLink />
+            </div>
+          </div>
+          <div className="flex flex-col gap-y-3 pl-12 grow-0">
+            <h1 className="text-xl font-bold mb-12">Join Room</h1>
+            <input
+              className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
+              type="text"
+              placeholder="Invite Code"
+            />
+            <button className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg">
+              START
+            </button>
           </div>
         </div>
-        <div className="flex flex-col gap-y-3 pl-12 grow-0">
-          <h1 className="text-xl font-bold">Join Room</h1>
-          <input
-            className="ring-2 ring-inset ring-accent1 bg-lightPrimary p-3 focus:outline-none rounded-lg mb-3"
-            type="text"
-            placeholder="Invite Code"
-          />
-          <button className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg">
-            START
-          </button>
-        </div>
-      </div>
-      <p>Select upto 4 problems</p>
-      <div className="flex flex-col gap-x-3">
-        <div className="flex flex-row gap-x-3 items-center">
-          <input
-            type="text"
-            className="ring-2 ring-inset ring-accent1 bg-lightPrimary px-3 py-2 focus:outline-none rounded-lg"
-            placeholder="Search problems"
-          />
-          <div className="flex flex-row gap-x-3 items-center">
-            <Difficulty
-              isDifficultyActive={isDifficultyActive}
-              handleClick={handleClick}
-              addTag={addTag}
-            />
-            <Status
-              isStatusActive={isStatusActive}
-              handleClick={handleClick}
-              addTag={addTag}
-            />
-            <Tags
-              isTagsActive={isTagsActive}
-              handleClick={handleClick}
-              activeTags={activeTags}
-              setActiveTags={setActiveTags}
-            />
+
+        <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
+          <div className="flex flex-row gap-x-3">
+            <div className="relative flex flex-row">
+              <input
+                type="text"
+                className="bg-secondary pl-3 pr-8 py-2 focus:outline-none focus:ring-2 ring-inset ring-accent1 rounded-lg"
+                placeholder="Search problems"
+              />
+              <FaSearch className="absolute top-1/2 -translate-y-1/2 right-3" />
+            </div>
+            <div className="flex flex-row gap-x-3 items-center">
+              <Difficulty
+                isDifficultyActive={isDifficultyActive}
+                handleClick={handleClick}
+                addTag={addTag}
+              />
+              <Status
+                isStatusActive={isStatusActive}
+                handleClick={handleClick}
+                addTag={addTag}
+              />
+              <Tags
+                isTagsActive={isTagsActive}
+                handleClick={handleClick}
+                activeTags={activeTags}
+                setActiveTags={setActiveTags}
+              />
+            </div>
+            <p className="ml-auto text-lg text-green font-bold">
+              {selected
+                ? `${selected}/4 problems selected`
+                : "Select upto 4 problems"}
+            </p>
           </div>
+          <div className="flex flex-row">
+            <div className="relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
+              {activeDifficulty}
+              {activeStatus}
+              {activeTags}
+            </div>
+            {activeDifficulty.length === 0 &&
+            activeStatus.length === 0 &&
+            activeTags.length === 0 ? (
+              ""
+            ) : (
+              <button
+                className="self-start ml-auto flex flex-row items-center p-3 gap-x-3 text-grey1"
+                onClick={resetFilters}
+              >
+                <FaUndo />
+                Reset
+              </button>
+            )}
+          </div>
+          <div className="grow overflow-y-scroll mb-3">
+            <ProblemList type="select" />
+          </div>
+          <Pagination />
         </div>
-        <div></div>
-        <ProblemList />
       </div>
     </div>
   );
