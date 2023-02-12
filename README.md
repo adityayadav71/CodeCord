@@ -22,9 +22,8 @@ Apart from the usual leetcode features, it provides the feature to create a live
 - **Interview rooms** with additional video calling feature.
 
 ### Links and Resources:
-[Vercel-Deployment](https://www.codeack.tk/)
-[Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1) 
-
+1. [Vercel-Deployment](https://www.codeack.tk/)
+2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1) 
 
 ## Tech Stack
 
