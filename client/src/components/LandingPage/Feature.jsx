@@ -3,22 +3,28 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
+import Editor from "../Editor/index";
 import Tags from "../Problems/Tags";
 
-const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2, feature, list, extra }) => {
-  const listItems = list?.map((item, i) => {
-    return <li key={i} className="mb-3 text-grey2">{item}</li>;
-  });
+const Feature = ({
+  supTitle,
+  TitleHighLight,
+  Title,
+  color,
+  gradient,
+  glow,
+  list,
+  extra,
+}) => {
+  const listItems = list?.map((item, index) => (
+    <li key={index} className="mb-3 text-grey2">
+      {item}
+    </li>
+  ));
   const colorVariants = {
     accent1: "bg-[#0098FA]",
     easyGreen: "bg-[#19EB48]",
     mediumYellow: "bg-[#E2BC1E]",
-    topBlueGradient: "from-[#0098FA]",
-    bottomBlueGradient: "to-[#0098FA]",
-    topGreenGradient: "from-[#19EB48]",
-    bottomGreenGradient: "to-[#19EB48]",
-    topYellowGradient: "from-[#E2BC1E]",
-    bottomYellowGradient: "to-[#E2BC1E]",
     feature1: "shadow-[0px_0px_54px_45px_#0098FA]",
     feature2: "shadow-[0px_0px_54px_45px_#19EB48]",
     feature3: "shadow-[0px_0px_54px_45px_#E2BC1E]",
@@ -28,6 +34,19 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
     easyGreen: "text-[#19EB48]",
     mediumYellow: "text-[#E2BC1E]",
   };
+  const iconLookup = {
+    Collaborate: FaUsers,
+    Compete: FaGlobeAsia,
+    Solve: FaProjectDiagram,
+    "Sign up for an account": FaUser,
+  };
+  const gradientLookup = {
+    featureGradient1: "bg-gradient-to-b from-accent1 to-easyGreen",
+    featureGradient2: "bg-gradient-to-b from-easyGreen to-mediumYellow",
+    featureGradient3: "bg-gradient-to-b from-mediumYellow to-accent1",
+    featureGradient4: "bg-gradient-to-b from-accent1 to-primary",
+  };
+  const Icon = iconLookup[supTitle];
   const [isInView, setIsInView] = useState(false);
   const [listIsInView, setListIsInView] = useState(false);
 
@@ -41,18 +60,42 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
         }
       }}
     >
-      <div className={`flex flex-row ${extra === "SignUp" ? "h-[360px]" : "h-[720px]"} gap-x-3 px-9`}>
-        <div>
-          <div className={`relative ml-14 w-4 h-4 transition-all duration-300  ${isInView ? colorVariants[color] : ""} ${isInView ? colorVariants[feature] : ""} rounded-full`}>
-            {supTitle === "Collaborate" ? <FaUsers className={`${isInView ? "animate-fadeIn" : ""} opacity-0 absolute text-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`} /> : null}
-            {supTitle === "Compete" ? <FaGlobeAsia className={`${isInView ? "animate-fadeIn" : ""} opacity-0 absolute text-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`} /> : null}
-            {supTitle === "Solve" ? <FaProjectDiagram className={`${isInView ? "animate-fadeIn" : ""} opacity-0 absolute text-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`} /> : null}
-            {supTitle === "Sign up for an account" ? <FaUser className={`${isInView ? "animate-fadeIn" : ""} opacity-0 absolute text-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`} /> : null}
+      <section
+        className={`flex flex-row 
+        ${extra === "SignUp" ? "h-[30rem]" : "h-[60rem]"} 
+        gap-x-3 px-9`}
+      >
+        <aside>
+          <div
+            className={`relative ml-14 w-4 h-4 transition-all duration-300  
+            ${isInView ? colorVariants[color] : ""} 
+            ${isInView ? colorVariants[glow] : ""} 
+            rounded-full`}
+          >
+            {Icon ? (
+              <Icon
+                className={`${
+                  isInView ? "animate-fadeIn" : ""
+                } opacity-0 absolute text-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+              />
+            ) : null}
           </div>
-          <div className={`${isInView ? "animate-grow" : ""} z-[-1] ml-14 top-full w-3 rounded bg-gradient-to-b ${colorVariants[gradient1]} ${colorVariants[gradient2]}`}></div>
-        </div>
-        <div className={`flex flex-col ml-32 w-full`}>
-          <p className={`${extra === "SignUp" ? "text-5xl" : "text-4xl"} ${isInView ? "animate-slideOutDelayed" : ""} -translate-x-2 origin-top-right opacity-0 font-bold mb-20`}>{supTitle}</p>
+          <div
+            className={`
+              ${isInView ? "animate-grow" : ""} 
+              z-[-1] ml-14 top-full w-3 rounded 
+              ${gradientLookup[gradient]}`}
+          ></div>
+        </aside>
+
+        <div className="flex flex-col ml-32 w-full h-full">
+          <p
+            className={`${extra === "SignUp" ? "text-5xl" : "text-4xl"} 
+            ${isInView ? "animate-slideOutDelayed" : ""} 
+            -translate-x-2 origin-top-right opacity-0 font-bold mb-20`}
+          >
+            {supTitle}
+          </p>
           {extra === "SignUp" ? (
             <Link to="/app/auth/signup">
               <button className="p-4 w-40 text-3xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 hover:shadow hover:shadow-signUp  bg-accent1 text-white font-bold rounded-xl">
@@ -60,12 +103,19 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
               </button>
             </Link>
           ) : (
-            <div className="flex flex-col grow">
-              <h1 className={`text-5xl font-bold tracking-wide mb-11 ${isInView ? "animate-slideOut" : ""} -translate-x-2 origin-top-right opacity-0`}>
-                <span className={`${textVariants[color]}`}>{TitleHighLight}</span>
+            <div className="flex flex-col grow overflow-hidden">
+              <h1
+                className={`text-5xl font-bold tracking-wide mb-11 ${
+                  isInView ? "animate-slideOut" : ""
+                } -translate-x-2 origin-top-right opacity-0`}
+              >
+                <span className={`${textVariants[color]}`}>
+                  {TitleHighLight}
+                </span>
                 {Title}
               </h1>
-              <div className="flex flex-row grow gap-x-6 justify-content-center items-center">
+              <div className="flex flex-row w-full h-full gap-x-6 justify-content-center items-center">
+
                 <InView
                   as="div"
                   threshold={[1]}
@@ -75,31 +125,67 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient1, gradient2,
                     }
                   }}
                 >
-                  <ul className={`${listIsInView ? "animate-slideOut" : ""} -translate-x-2 origin-top-right opacity-0 list-outside list-disc ml-6 leading-8 text-2xl`}>{listItems}</ul>
+                  <ul
+                    className={`
+                    ${listIsInView ? "animate-slideOut" : ""} 
+                    -translate-x-2 origin-top-right opacity-0 list-outside list-disc ml-6 leading-8 text-2xl grow`}
+                  >
+                    {listItems}
+                  </ul>
                 </InView>
 
-                {supTitle === "Collaborate" ? null : null}
+                {supTitle === "Collaborate" ? (
+                  <Editor style={{ height: "720px" , pointerEvents: "none" }} />
+                ) : null}
                 {supTitle === "Compete" ? (
-                  <div className="flex flex-row items-center justify-center w-full h-full">
-                    <div></div>
-                    <div className={`self-start ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
-                      <ContestCard style={{ "marginLeft": 80, "marginBottom": 10, "pointerEvents": "none" }} name="Weekly Contest 1" timeStamp="15th Jan 2023 8:00 AM GMT+5:30" live="true" />
-                      <ContestCard style={{ "marginRight": 80, "pointerEvents": "none" }} name="Weekly Contest 2" timeStamp="16th Jan 2023 8:00 AM GMT+5:30" live="false" />
+                  <div className="flex flex-row items-center justify-center w-full h-full grow">
+                    <div
+                      className={`self-start 
+                      ${listIsInView ? "animate-slideUp" : ""} 
+                      opacity-0 -translate-y-2`}
+                    >
+                      <ContestCard
+                        style={{
+                          marginLeft: 80,
+                          marginBottom: 10,
+                          pointerEvents: "none",
+                        }}
+                        name="Weekly Contest 1"
+                        timeStamp="15th Jan 2023 8:00 AM GMT+5:30"
+                        live="true"
+                      />
+                      <ContestCard
+                        style={{ marginRight: 80, pointerEvents: "none" }}
+                        name="Weekly Contest 2"
+                        timeStamp="16th Jan 2023 8:00 AM GMT+5:30"
+                        live="false"
+                      />
                     </div>
                   </div>
                 ) : null}
                 {supTitle === "Solve" ? (
-                  <div className={`flex flex-row mt-48 justify-center w-full h-full ${listIsInView ? "animate-slideUp" : ""} opacity-0 -translate-y-2`}>
+                  <div
+                    className={`flex flex-row pt-44 justify-center w-full h-full
+                    ${listIsInView ? "animate-slideUp" : ""} 
+                    opacity-0 -translate-y-2 grow`}
+                  >
                     <div className="relative w-1/2 h-1/2">
-                      <Tags disableEvents={true} isTagsActive={[]} activeTags={[]} setActiveTags={[]} handleClick={[]} />
+                      <Tags
+                        disableEvents={true}
+                        isTagsActive={() => null}
+                        activeTags={() => null}
+                        setActiveTags={() => null}
+                        handleClick={() => null}
+                      />
                     </div>
                   </div>
                 ) : null}
+
               </div>
             </div>
           )}
         </div>
-      </div>
+      </section>
     </InView>
   );
 };

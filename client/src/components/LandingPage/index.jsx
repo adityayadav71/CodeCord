@@ -11,9 +11,8 @@ const LandingPage = (props) => {
         TitleHighLight="Create rooms"
         Title=" and invite your friends to compete"
         color="accent1"
-        gradient1="topBlueGradient"
-        gradient2="bottomGreenGradient"
-        feature="feature1"
+        gradient="featureGradient1"
+        glow="feature1"
         list={[
           "Set a timer and solve a set amount of problems.",
           "Use score board to compare performance.",
@@ -26,9 +25,8 @@ const LandingPage = (props) => {
         TitleHighLight="Attend Weekly Global Contests"
         Title=" and improve your contest rating"
         color="easyGreen"
-        gradient1="topGreenGradient"
-        gradient2="bottomYellowGradient"
-        feature="feature2"
+        gradient="featureGradient2"
+        glow="feature2"
         extra="noText"
       />
       <Feature
@@ -36,12 +34,21 @@ const LandingPage = (props) => {
         TitleHighLight="Filter problems by topics, difficulty "
         Title=" and solve them"
         color="mediumYellow"
-        gradient1="topYellowGradient"
-        gradient2="bottomBlueGradient"
-        feature="feature3"
-        list={["Solve problems independently.", "Solve problems asked in big tech company interviews.", "Use tags to include specific type of problems in contest rooms."]}
+        gradient="featureGradient3"
+        glow="feature3"
+        list={[
+          "Solve problems independently.",
+          "Solve problems asked in big tech company interviews.",
+          "Use tags to include specific type of problems in contest rooms.",
+        ]}
       />
-      <Feature supTitle="Sign up for an account" color="accent1" gradient1="topBlueGradient" extra="SignUp" feature="feature1" />
+      <Feature
+        supTitle="Sign up for an account"
+        color="accent1"
+        gradient="featureGradient4"
+        extra="SignUp"
+        glow="feature1"
+      />
       <Footer />
     </>
   );

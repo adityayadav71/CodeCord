@@ -36,10 +36,6 @@ module.exports = {
         transparentSecondary: "rgba(40, 54, 71, 0.37)",
         tagYellowBg: "rgba(215, 129, 0, 0.37)",
         glass: "rgba(60, 99, 146, .15)",
-        featureGradient1: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(25, 235, 72, 1) 100%)",
-        featureGradient2: "linear-gradient(0deg, rgba(25, 235, 72, 1) 0%, rgba(226, 188, 30, 1) 100%);",
-        featureGradient3: "linear-gradient(0deg, rgba(0, 152, 250, 1) 0%, rgba(30, 32, 35, 1) 100%);",
-        moreRooms: "linear-gradient(180deg, rgba(81, 78, 78, 0) 0%, #283647 48.96%, #283647 100%);",
       },
     },
     boxShadow: {
