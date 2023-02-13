@@ -46,7 +46,7 @@ const Editor = (props) => {
 
   return (
     <Split
-      className="flex flex-row grow overflow-hidden"
+      className="flex flex-row grow overflow-hidden h-full"
       onDrag={handleDrag}
       sizes={sizes}
       minSize={[0, 500, 0]}

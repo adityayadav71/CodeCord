@@ -10,13 +10,16 @@ const HomeNavbar = () => {
     return pathname.startsWith(to);
   };
   const { pathname } = useLocation();
-  const [modal, setModal] = useState()
+  const [modal, setModal] = useState();
   const openRoomModal = () => {
-    setModal(<CreateRoom isContest={false}/>)
-  }
+    setModal(<CreateRoom isContest={false} />);
+  };
   useEffect(() => {
     const closeModal = (event) => {
-      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal")) {
+      if (
+        !event.target.closest(".modal") &&
+        !event.target.classList.contains("open-modal")
+      ) {
         setModal("");
       }
     };
@@ -26,16 +29,24 @@ const HomeNavbar = () => {
     };
   }, []);
   return (
-    <div className="flex flex-row justify-start border-b max-w-[1440px] border-b-accent2 w-full">
+    <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
       <Link to="/">
-        <img className="p-3 hover:cursor-pointer" src="../../../favicon.svg" alt="logo" />
+        <img
+          className="p-3 hover:cursor-pointer"
+          src="../../../favicon.svg"
+          alt="logo"
+        />
       </Link>
 
       <ul className="flex flex-row justify-center">
         <li className="flex">
           <NavLink
             to="/app/contest"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/contest") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
+              isActive(pathname, "/app/contest")
+                ? "border-b-2 border-b-accent1"
+                : ""
+            }`}
           >
             Contest
           </NavLink>
@@ -43,7 +54,11 @@ const HomeNavbar = () => {
         <li className="flex">
           <NavLink
             to="/app/problem"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/problem") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
+              isActive(pathname, "/app/problem")
+                ? "border-b-2 border-b-accent1"
+                : ""
+            }`}
           >
             Problems
           </NavLink>
@@ -51,7 +66,11 @@ const HomeNavbar = () => {
         <li className="flex">
           <NavLink
             to="/app/discussion"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/discussion") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
+              isActive(pathname, "/app/discussion")
+                ? "border-b-2 border-b-accent1"
+                : ""
+            }`}
           >
             Discussions
           </NavLink>
@@ -61,7 +80,10 @@ const HomeNavbar = () => {
         {isLoggedIn ? (
           <>
             <FaSearch className="text-2xl hover:cursor-pointer" />
-            <button className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 bg-accent1 text-white text-base font-bold rounded-xl" onClick={openRoomModal}>
+            <button
+              className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 bg-accent1 text-white text-base font-bold rounded-xl"
+              onClick={openRoomModal}
+            >
               Create/Join a Room
             </button>
             <FaBell className="text-2xl hover:cursor-pointer" />
