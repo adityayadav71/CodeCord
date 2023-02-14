@@ -3,7 +3,7 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
-import Editor from "../Editor/index";
+import editorSvg from "../../assets/svg/feature1.svg"
 import Tags from "../Problems/Tags";
 
 const Feature = ({
@@ -103,7 +103,7 @@ const Feature = ({
               </button>
             </Link>
           ) : (
-            <div className="flex flex-col grow overflow-hidden">
+            <div className="flex flex-col grow">
               <h1
                 className={`text-5xl font-bold tracking-wide mb-11 ${
                   isInView ? "animate-slideOut" : ""
@@ -135,7 +135,9 @@ const Feature = ({
                 </InView>
 
                 {supTitle === "Collaborate" ? (
-                  <Editor style={{ height: "720px" , pointerEvents: "none" }} />
+                  <img className={`self-start 
+                  ${listIsInView ? "animate-slideUp" : ""} 
+                  opacity-0 -translate-y-2 shadow-2xl w-[853px] h-[480px]`} src={editorSvg} alt="Room-Feature-UI-Image" />
                 ) : null}
                 {supTitle === "Compete" ? (
                   <div className="flex flex-row items-center justify-center w-full h-full grow">
