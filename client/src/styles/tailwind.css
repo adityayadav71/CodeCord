@@ -10,7 +10,8 @@
   box-sizing: border-box;
   position: relative;
 
-  color-scheme: light dark;
+  color-scheme: dark;
+  color: #ffffff;
   background-color: #1e2023;
 
   font-synthesis: none;
