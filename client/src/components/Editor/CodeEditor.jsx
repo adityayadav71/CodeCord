@@ -2,13 +2,18 @@ import { FaUserAlt } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
+import { historyField } from "@codemirror/commands";
+import { java } from "@codemirror/lang-java";
+import { dracula } from "@uiw/codemirror-themes-all";
 
-const CodeEditor = ({ editorHeight, theme }) => {
+const CodeEditor = ({ language }) => {
+  const stateFields = { history: historyField };
+
   const serializedState = localStorage.getItem("myEditorState");
   const value = localStorage.getItem("editorValue") || "";
+
   return (
-    <div className="flex flex-col grow">
+    <div className="flex flex-col h-full">
       <Swiper
         className="flex flex-row items-center shrink-0 w-full gap-x-5 border-b border-lightAccent3 relative"
         slidesPerView={4}
@@ -46,29 +51,27 @@ const CodeEditor = ({ editorHeight, theme }) => {
           </button>
         </SwiperSlide>
       </Swiper>
-      <div className="grow shrink w-full">
-        <CodeMirror
-          value={value}
-          initialState={
-            serializedState
-              ? {
-                  json: JSON.parse(serializedState || ""),
-                  fields: stateFields,
-                }
-              : undefined
-          }
-          onChange={(value, viewUpdate) => {
-            localStorage.setItem("editorValue", value);
+      <CodeMirror
+        className="grow w-full overflow-scroll hideScrollbar"
+        value={value}
+        theme={dracula}
+        height="100%"
+        initialState={
+          serializedState
+            ? {
+                json: JSON.parse(serializedState || ""),
+                fields: stateFields,
+              }
+            : undefined
+        }
+        onChange={(value, viewUpdate) => {
+          localStorage.setItem("editorValue", value);
 
-            const state = viewUpdate.state.toJSON(stateFields);
-            localStorage.setItem("myEditorState", JSON.stringify(state));
-          }}
-          height={editorHeight}
-          extensions={[javascript({ jsx: true })]}
-          theme={theme}
-          autoFocus={true}
-        />
-      </div>
+          const state = viewUpdate.state.toJSON(stateFields);
+          localStorage.setItem("myEditorState", JSON.stringify(state));
+        }}
+        extensions={[java()]}
+      />
     </div>
   );
 };

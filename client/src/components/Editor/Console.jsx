@@ -1,9 +1,9 @@
-import { FaCog, FaPlus, FaUndo } from "react-icons/fa";
+import { FaCog, FaExpand, FaPlus, FaUndo } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
 const Console = (props) => {
   return (
-    <div className="flex flex-col justify-content-end h-full p-3">
+    <div className="flex flex-col justify-content-end h-full p-3 overflow-hidden">
       <div className="flex flex-row justify-between items-center border-b border-lightSecondary">
         <div>
           <button className="w-28 p-3 border-b-2 border-accent1">
@@ -16,6 +16,7 @@ const Console = (props) => {
         <div className="flex flex-row items-center gap-x-3">
           <FaUndo className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" />
           <FaCog className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" />
+          <FaExpand className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" />
         </div>
       </div>
       <div className="grow flex flex-col py-3 px-4 overflow-y-scroll">
