@@ -87,23 +87,35 @@ const LandingPage = (props) => {
       {!isAtTop && (
         <nav className="drop-shadow-lg transition duration-300 fixed top-0 left-0 flex flex-row gap-x-3 items-center justify-between bg-primary w-full">
           <ul className="flex flex-row items-center text-md ml-6">
-            <li
-              className={`m-4 p-2
-              ${activeSection === "Collaborate" ? "border-b border-b-white" : ""}`}
-            >
+            <li className={`m-4 p-2 relative`}>
               Collaborate
+              <div
+                className={`absolute ${
+                  activeSection === "Collaborate"
+                    ? "left-0 bottom-0 w-full h-[1px] bg-white animate-expandBorder"
+                    : ""
+                }`}
+              ></div>
             </li>
-            <li
-              className={`m-4 p-2
-              ${activeSection === "Compete" ? "border-b border-b-white" : ""}`}
-            >
+            <li className={`m-4 p-2 relative`}>
               Compete
+              <div
+                className={`absolute ${
+                  activeSection === "Compete"
+                    ? "left-0 bottom-0 w-full h-[1px] bg-white animate-expandBorder"
+                    : ""
+                }`}
+              ></div>
             </li>
-            <li
-              className={`m-4 p-2
-              ${activeSection === "Solve" ? "border-b border-b-white" : ""}`}
-            >
+            <li className={`m-4 p-2 relative`}>
               Solve
+              <div
+                className={`absolute ${
+                  activeSection === "Solve"
+                    ? "left-0 bottom-0 w-full h-[1px] bg-white animate-expandBorder"
+                    : ""
+                }`}
+              ></div>
             </li>
           </ul>
           <div className="flex flex-row items-center gap-x-6 ml-auto">
