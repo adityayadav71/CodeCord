@@ -3,7 +3,7 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
-import editorSvg from "../../assets/svg/feature1.svg"
+import editorSvg from "../../assets/svg/feature1.svg";
 import Tags from "../Problems/Tags";
 
 const Feature = ({
@@ -64,6 +64,15 @@ const Feature = ({
         className={`flex flex-row 
         ${extra === "SignUp" ? "h-[30rem]" : "h-[60rem]"} 
         gap-x-3 px-9`}
+        id={`${
+          supTitle === "Collaborate"
+            ? "Collaborate"
+            : supTitle === "Compete"
+            ? "Compete"
+            : supTitle === "Solve"
+            ? "Solve"
+            : ""
+        }`}
       >
         <aside>
           <div
@@ -115,7 +124,6 @@ const Feature = ({
                 {Title}
               </h1>
               <div className="flex flex-row w-full h-full gap-x-6 justify-content-center items-center">
-
                 <InView
                   as="div"
                   threshold={[1]}
@@ -135,9 +143,13 @@ const Feature = ({
                 </InView>
 
                 {supTitle === "Collaborate" ? (
-                  <img className={`self-start 
+                  <img
+                    className={`self-start 
                   ${listIsInView ? "animate-slideUp" : ""} 
-                  opacity-0 -translate-y-2 shadow-2xl w-[853px] h-[480px]`} src={editorSvg} alt="Room-Feature-UI-Image" />
+                  opacity-0 -translate-y-2 shadow-2xl w-[853px] h-[480px]`}
+                    src={editorSvg}
+                    alt="Room-Feature-UI-Image"
+                  />
                 ) : null}
                 {supTitle === "Compete" ? (
                   <div className="flex flex-row items-center justify-center w-full h-full grow">
@@ -182,7 +194,6 @@ const Feature = ({
                     </div>
                   </div>
                 ) : null}
-
               </div>
             </div>
           )}

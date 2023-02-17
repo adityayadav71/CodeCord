@@ -53,7 +53,7 @@ module.exports = {
       slideOutDelayed: "slideOut 0.5s 0.1s ease-out forwards",
       slideOut: "slideOut 0.5s ease-out forwards",
       slideUp: "slideUp 0.5s ease-out forwards",
-      expandBorder: "expandBorder 0.3s ease-out forwards",
+      expandBorder: "expandBorder 1s ease-out forwards",
     },
     keyframes: {
       grow: { "0%": { height: "0%" }, "100%": { height: "100%" } },

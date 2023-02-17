@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = (props) => {
   return (
-    <nav className="flex flex-row items-center py-11 px-9 w-full">
+    <nav className="flex flex-row items-center py-11 px-9 w-full" id="top">
       <img className="" src={logo} alt="codecord_logo" />
       <div className="flex flex-row items-center gap-x-6 ml-auto">
         <input
