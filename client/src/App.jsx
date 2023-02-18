@@ -1,4 +1,3 @@
-import { React } from "react";
 import { Routes, Route } from "react-router-dom";
 import NotFound from "./utilities/NotFound";
 import LandingPage from "./components/LandingPage/index";
@@ -6,10 +5,13 @@ import Contest from "./components/Contests/index";
 import Problem from "./components/Problems/index";
 import Discussion from "./components/Discussions/index";
 import Editor from "./components/Editor/index";
-import Form from "./components/Authentication/Form";
 import AppLayout from "./layouts/AppLayout";
 import LandingLayout from "./layouts/LandingLayout";
 import CreateRoom from "./components/Rooms/CreateRoom";
+import PasswordReset from "./components/Authentication/PasswordReset";
+import ForgotPassword from "./components/Authentication/ForgotPassword";
+import Login from "./components/Authentication/Login";
+import SignUp from "./components/Authentication/SignUp";
 
 function App() {
   return (
@@ -30,51 +32,10 @@ function App() {
             </Route>
             <Route path="discussion" element={<Discussion />} />
             <Route path="auth">
-              <Route
-                path="signup"
-                element={
-                  <Form
-                    type="Sign Up"
-                    fields={[
-                      "Username",
-                      "Password",
-                      "Confirm New Password",
-                      "Email Address",
-                    ]}
-                    buttonName="Sign Up"
-                  />
-                }
-              />
-              <Route
-                path="login"
-                element={
-                  <Form
-                    type="Sign In"
-                    fields={["Username or Email", "Password"]}
-                    buttonName="Sign In"
-                  />
-                }
-              />
-              <Route
-                path="reset/request"
-                element={
-                  <Form
-                    type="Password Reset Request"
-                    fields={["Registered Email Address"]}
-                    buttonName="Reset My Password"
-                  />
-                }
-              />
-              <Route
-                path="reset"
-                element={
-                  <Form
-                    type="Password Reset"
-                    fields={["New Password", "Confirm New Password"]}
-                    buttonName="Reset My Password"
-                  />
-                }
-              />
+              <Route path="signup" element={<SignUp />} />
+              <Route path="login" element={<Login />} />
+              <Route path="reset/request" element={<ForgotPassword />} />
+              <Route path="reset/:token" element={<PasswordReset />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
