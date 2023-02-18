@@ -235,5 +235,8 @@ exports.isLoggedIn = async (req, res, next) => {
       return next(new AppError("Something went wrong!", 500));
     }
   }
-  next();
+  return res.json({
+    status: "success",
+    isLoggedIn: false,
+  });
 };
