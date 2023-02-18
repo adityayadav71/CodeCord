@@ -145,9 +145,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   // 3) Send password reset link to user email address
   try {
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/app/auth/reset/${resetToken}`;
+    const resetURL = `http://127.0.0.1:5173/app/auth/reset/${resetToken}`;
 
     await new Email(user, resetURL).sendPasswordReset();
 
@@ -200,3 +198,42 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+
+      // 2) Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return res.json({
+          status: "success",
+          isLoggedIn: false,
+        });
+      }
+
+      // 3) Check if user changed password after the token was issued
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return res.json({
+          status: "success",
+          isLoggedIn: false,
+        });
+      }
+
+      // THERE IS A LOGGED IN USER
+      res.locals.user = currentUser;
+      return res.json({
+        status: "success",
+        isLoggedIn: true,
+      });
+    } catch (err) {
+      return next(new AppError("Something went wrong!", 500));
+    }
+  }
+  next();
+};
