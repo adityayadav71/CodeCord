@@ -62,7 +62,7 @@ userSchema.pre("save", async function (next) {
 userSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
 
-  this.passwordChangedAt = Date.now() - 1000;
+  this.passwordChangedAt = Date.now() - 1000; // - 1000 ensures that the token is created after the password has changed
   next();
 });
 
@@ -94,7 +94,7 @@ userSchema.methods.createPasswordResetToken = function () {
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
-  return this;
+  return resetToken;
 };
 
 const User = mongoose.model("User", userSchema);
