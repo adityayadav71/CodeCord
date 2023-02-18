@@ -3,7 +3,7 @@ import { FaCheckCircle, FaRegFileCode } from "react-icons/fa";
 import { RiPulseLine } from "react-icons/ri";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { UserContext } from "../../layouts/AppLayout";
+import { AuthContext } from "../../App";
 import { Link } from "react-router-dom";
 
 const Problem = ({
@@ -16,7 +16,7 @@ const Problem = ({
   status,
   type,
 }) => {
-  const isLoggedIn = useContext(UserContext);
+  const { isLoggedIn } = useContext(AuthContext);
   const loadSubmissions = () => {
     let submissions = [];
     for (let i = userSubmissions; i > 0; i--) {

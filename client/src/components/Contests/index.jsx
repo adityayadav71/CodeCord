@@ -6,10 +6,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper";
-import { UserContext } from "../../layouts/AppLayout";
+import { AuthContext } from "../../App";
 
 const Contest = () => {
-  const isLoggedIn = useContext(UserContext);
+  const { isLoggedIn } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("past-contests");
 
   return (

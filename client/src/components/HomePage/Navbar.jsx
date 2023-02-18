@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaBell, FaSearch, FaUserAlt } from "react-icons/fa";
-import { UserContext } from "../../layouts/AppLayout";
+import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
 
 const HomeNavbar = () => {
-  const isLoggedIn = useContext(UserContext);
+  const { isLoggedIn } = useContext(AuthContext);
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
   };

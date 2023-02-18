@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/svg/logo.svg";
 import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
+import { AuthContext } from "../../App";
 
 const Login = (props) => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Login = (props) => {
     formState: { errors },
   } = useForm();
   const [apiErrors, setAPIErrors] = useState();
+  const { setIsLoggedIn } = useContext(AuthContext);
 
   const onSubmit = async (formData) => {
     const response = await fetch(`/api/v1/users/login`, {
@@ -23,6 +25,12 @@ const Login = (props) => {
       body: JSON.stringify(formData),
     });
     const result = await response.json();
+
+    const data = await fetch(`/api/v1/users/isLoggedIn`, {
+      method: "GET",
+    });
+    const res = await data.json();
+    setIsLoggedIn(res.setIsLoggedIn);
 
     result.status === "success"
       ? navigate("/", { replace: true })

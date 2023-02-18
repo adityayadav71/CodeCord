@@ -29,7 +29,7 @@ const PasswordReset = (props) => {
     );
     const result = await response.json();
     result.status === "success"
-      ? navigate("/", { replace: true })
+      ? navigate("/app/auth/login", { replace: true })
       : setAPIErrors(<FormErrors message={result.message} />);
   };
 

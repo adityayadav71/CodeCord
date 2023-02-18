@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { UserContext } from "../../layouts/AppLayout";
+import { AuthContext } from "../../App";
 import Problem from "./Problem";
 
 const ProblemList = ({type}) => {
-  const isLoggedIn = useContext(UserContext);
+  const { isLoggedIn } = useContext(AuthContext);
   return (
     <div className="flex flex-col bg-secondary rounded-xl mb-3 grow overflow-clip">
       <div className="flex flex-row items-center p-3 text-md border-b-[1px] border-hover">
