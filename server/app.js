@@ -10,11 +10,16 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
+app.enable('trust proxy')
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1 - Global Middlewares
-app.use(cors());
+app.use(cors({
+  origin: "http://127.0.0.1:5173",
+  credentials: true
+}));
 app.options("*", cors());
 
 if (process.env.NODE_ENV === "DEV") {
