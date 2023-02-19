@@ -32,7 +32,7 @@ function App() {
       setIsLoggedIn(result.isLoggedIn);
     }
     fetchData();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>

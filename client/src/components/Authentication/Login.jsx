@@ -30,10 +30,10 @@ const Login = (props) => {
       method: "GET",
     });
     const res = await data.json();
-    setIsLoggedIn(res.setIsLoggedIn);
+    setIsLoggedIn(res.isLoggedIn);
 
     result.status === "success"
-      ? navigate("/", { replace: true })
+      ? navigate("/", { replace: false })
       : setAPIErrors(<FormErrors message={result.message} />);
   };
 

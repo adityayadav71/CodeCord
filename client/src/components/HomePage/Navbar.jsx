@@ -1,16 +1,20 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { FaBell, FaSearch, FaUserAlt } from "react-icons/fa";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { FaBell, FaSearch, FaCog, FaUserAlt } from "react-icons/fa";
+import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
 
 const HomeNavbar = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
   };
   const { pathname } = useLocation();
   const [modal, setModal] = useState();
+  const [profileActive, setProfileActive] = useState(false);
+  const [searchbarActive, setSearchbarActive] = useState(false);
   const openRoomModal = () => {
     setModal(<CreateRoom isContest={false} />);
   };
@@ -18,9 +22,13 @@ const HomeNavbar = () => {
     const closeModal = (event) => {
       if (
         !event.target.closest(".modal") &&
-        !event.target.classList.contains("open-modal")
+        !event.target.classList.contains("open-modal") &&
+        !event.target.closest(".profile") &&
+        !event.target.closest(".searchbar")
       ) {
         setModal("");
+        setProfileActive(false);
+        setSearchbarActive(false);
       }
     };
     document.addEventListener("click", closeModal);
@@ -28,6 +36,27 @@ const HomeNavbar = () => {
       document.removeEventListener("click", closeModal);
     };
   }, []);
+  
+  const logout = async () => {
+    const response = await fetch("/api/v1/users/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true,
+      },
+    });
+
+    const data = await fetch(`/api/v1/users/isLoggedIn`, {
+      method: "GET",
+    });
+    const res = await data.json();
+    setIsLoggedIn(res.isLoggedIn);
+
+    const result = await response.json();
+    if (result.status === "success") {
+      navigate("/", { replace: true });
+    }
+  };
   return (
     <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
       <Link to="/">
@@ -76,10 +105,30 @@ const HomeNavbar = () => {
           </NavLink>
         </li>
       </ul>
-      <div className="flex flex-row items-center gap-x-6 ml-auto">
+      <div className="flex flex-row items-center gap-x-6 ml-auto mr-3">
         {isLoggedIn ? (
           <>
-            <FaSearch className="text-2xl hover:cursor-pointer" />
+            <div
+              className={
+                "searchbar relative flex flex-row items-center right-5"
+              }
+            >
+              <FaSearch
+                className={`absolute ${
+                  searchbarActive ? "" : "text-2xl translate-x-64"
+                } hover:cursor-pointer left-2 transition-all duration-300`}
+                onClick={() => setSearchbarActive((prev) => !prev)}
+              />
+              <input
+                className={`h-full ${
+                  searchbarActive
+                    ? "scale-x-1 opacity-1"
+                    : "scale-x-0 opacity-0"
+                } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-full transition-all duration-300`}
+                type="text"
+                placeholder="Search problems, contests, users..."
+              />
+            </div>
             <button
               className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 bg-accent1 text-white text-base font-bold rounded-xl"
               onClick={openRoomModal}
@@ -87,13 +136,74 @@ const HomeNavbar = () => {
               Create/Join a Room
             </button>
             <FaBell className="text-2xl hover:cursor-pointer" />
-            <div className="w-11 h-11 flex flex-row items-center justify-center rounded-full bg-grey2">
-              <FaUserAlt className="text-2xl hover:cursor-pointer" />
+            <div className="relative profile">
+              <div
+                className="w-11 h-11 flex flex-row items-center justify-center rounded-full bg-grey2"
+                onClick={() => setProfileActive((prev) => !prev)}
+              >
+                <FaUserAlt className="text-2xl hover:cursor-pointer" />
+              </div>
+              <div
+                className={`${
+                  profileActive
+                    ? "opacity-1 top-16 translate-y-0"
+                    : "opacity-0 -translate-y-2 top-20"
+                } 
+                z-20 absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
+              >
+                <ul className="flex flex-col gap-y-3">
+                  <li>
+                    <Link
+                      to="/app/profile"
+                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
+                    >
+                      <FaUserAlt />
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/app/settings"
+                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
+                    >
+                      <FaCog />
+                      Settings
+                    </Link>
+                  </li>
+                  <li
+                    className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
+                    onClick={logout}
+                  >
+                    <RiLogoutCircleRLine />
+                    Logout
+                  </li>
+                </ul>
+              </div>
             </div>
           </>
         ) : (
           <>
-            <FaSearch className="text-2xl hover:cursor-pointer" />
+            <div
+              className={
+                "searchbar relative flex flex-row items-center right-5"
+              }
+            >
+              <FaSearch
+                className={`absolute ${
+                  searchbarActive ? "" : "text-2xl translate-x-64"
+                } hover:cursor-pointer left-2 transition-all duration-300`}
+                onClick={() => setSearchbarActive((prev) => !prev)}
+              />
+              <input
+                className={`h-full ${
+                  searchbarActive
+                    ? "scale-x-1 opacity-1"
+                    : "scale-x-0 opacity-0"
+                } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-full transition-all duration-300`}
+                type="text"
+                placeholder="Search problems, contests, users..."
+              />
+            </div>
             <Link
               to="/app/auth/login"
               className="p-3 w-36 text-xl transition-all ease-in-out duration-300 hover:cursor-pointer border border-white text-white text-center font-bold rounded-xl hover:shadow-signUp hover:shadow"
