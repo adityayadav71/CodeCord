@@ -5,6 +5,7 @@ import logo from "../../assets/svg/logo.svg";
 import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
 import { AuthContext } from "../../App";
+import { login, checkLogInStatus } from "../../api/authDataAPI";
 
 const Login = (props) => {
   const navigate = useNavigate();
@@ -14,27 +15,20 @@ const Login = (props) => {
     formState: { errors },
   } = useForm();
   const [apiErrors, setAPIErrors] = useState();
+  const [status, setStatus] = useState();
   const { setIsLoggedIn } = useContext(AuthContext);
 
   const onSubmit = async (formData) => {
-    const response = await fetch(`/api/v1/users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const result = await response.json();
-
-    const data = await fetch(`/api/v1/users/isLoggedIn`, {
-      method: "GET",
-    });
-    const res = await data.json();
-    setIsLoggedIn(res.isLoggedIn);
-
-    result.status === "success"
-      ? navigate("/", { replace: false })
-      : setAPIErrors(<FormErrors message={result.message} />);
+    setStatus("waiting");
+    try {
+      await login(formData);
+      const isLoggedIn = await checkLogInStatus();
+      setIsLoggedIn(isLoggedIn);
+      navigate("/", { replace: true });
+    } catch (err) {
+      setAPIErrors(<FormErrors message={err.response.data.message} />);
+    }
+    setStatus("");
   };
 
   return (
@@ -79,7 +73,11 @@ const Login = (props) => {
           )}
         </div>
         {apiErrors}
-        <button className="flex items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1">
+        <button
+          disabled={status === "waiting"}
+          className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1"
+        >
+          {status === "waiting" && <div className="spinner-border"></div>}
           Login
         </button>
         <div className="flex flex-row w-full items-center justify-between">

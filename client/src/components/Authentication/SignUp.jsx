@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/svg/logo.svg";
 import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
+import { signup } from "../../api/authDataAPI";
 
 const SignUp = (props) => {
   const navigate = useNavigate();
@@ -14,20 +15,17 @@ const SignUp = (props) => {
     watch,
   } = useForm();
   const [apiErrors, setAPIErrors] = useState();
+  const [status, setStatus] = useState();
 
   const onSubmit = async (formData) => {
-    const response = await fetch(`/api/v1/users/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const result = await response.json();
-
-    result.status === "success"
-      ? navigate("/", { replace: true })
-      : setAPIErrors(<FormErrors message={result.message} />);
+    setStatus("waiting");
+    try {
+      await signup(formData);
+      navigate("/", { replace: true });
+    } catch (err) {
+      setAPIErrors(<FormErrors message={err.response.data.message} />);
+    }
+    setStatus("");
   };
 
   return (
@@ -69,9 +67,11 @@ const SignUp = (props) => {
             placeholder="Password"
             {...register("password", {
               required: "Please provide a password.",
-              minLength: {
-                value: 8,
-                message: "Password must be at least 8 characters",
+              pattern: {
+                value:
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                message:
+                  "Must have 8 characters, at least one letter, one digit and one special character(@, $, !, %, *, #, ?, &)",
               },
             })}
           ></input>
@@ -121,7 +121,11 @@ const SignUp = (props) => {
           )}
         </div>
         {apiErrors}
-        <button className="flex items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1">
+        <button
+          disabled={status === "waiting"}
+          className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1"
+        >
+          {status === "waiting" && <div className="spinner-border"></div>}
           Sign Up
         </button>
         <div className="flex flex-row items-center justify-center gap-x-3">

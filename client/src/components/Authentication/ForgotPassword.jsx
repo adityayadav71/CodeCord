@@ -4,6 +4,7 @@ import logo from "../../assets/svg/logo.svg";
 import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
 import FormSuccess from "./FormSuccess";
+import { forgotPassword } from "../../api/authDataAPI";
 
 const ForgotPassword = (props) => {
   const {
@@ -13,26 +14,23 @@ const ForgotPassword = (props) => {
   } = useForm();
   const [successMessage, setSuccessMessage] = useState();
   const [apiErrors, setAPIErrors] = useState();
+  const [status, setStatus] = useState();
 
   const onSubmit = async (formData) => {
-    const response = await fetch(`/api/v1/users/forgotPassword`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const result = await response.json();
-
-    result.status === "success"
-      ? setSuccessMessage(
-          <FormSuccess
-            message={
-              "Password reset link sent successfully to registered email address."
-            }
-          />
-        )
-      : setAPIErrors(<FormErrors message={result.message} />);
+    setStatus("waiting");
+    try {
+      await forgotPassword(formData);
+      setSuccessMessage(
+        <FormSuccess
+          message={
+            "Password reset link sent successfully to registered email address."
+          }
+        />
+      );
+    } catch (err) {
+      setAPIErrors(<FormErrors message={err.response.data.message} />);
+    }
+    setStatus("");
   };
 
   return (
@@ -65,7 +63,11 @@ const ForgotPassword = (props) => {
               )}
             </div>
             {apiErrors}
-            <button className="flex items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1">
+            <button
+              disabled={status === "waiting"}
+              className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1"
+            >
+              {status === "waiting" && <div className="spinner-border"></div>}
               Reset My Password
             </button>
             <div className="flex flex-row w-full items-center justify-between">

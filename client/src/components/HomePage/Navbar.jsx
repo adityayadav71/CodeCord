@@ -1,13 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaBell, FaSearch, FaCog, FaUserAlt } from "react-icons/fa";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
 
-const HomeNavbar = () => {
-  const navigate = useNavigate();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+const HomeNavbar = ({ handleLogout }) => {
+  const { isLoggedIn } = useContext(AuthContext);
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
   };
@@ -36,27 +35,7 @@ const HomeNavbar = () => {
       document.removeEventListener("click", closeModal);
     };
   }, []);
-  
-  const logout = async () => {
-    const response = await fetch("/api/v1/users/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": true,
-      },
-    });
 
-    const data = await fetch(`/api/v1/users/isLoggedIn`, {
-      method: "GET",
-    });
-    const res = await data.json();
-    setIsLoggedIn(res.isLoggedIn);
-
-    const result = await response.json();
-    if (result.status === "success") {
-      navigate("/", { replace: true });
-    }
-  };
   return (
     <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
       <Link to="/">
@@ -172,7 +151,7 @@ const HomeNavbar = () => {
                   </li>
                   <li
                     className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
-                    onClick={logout}
+                    onClick={handleLogout}
                   >
                     <RiLogoutCircleRLine />
                     Logout

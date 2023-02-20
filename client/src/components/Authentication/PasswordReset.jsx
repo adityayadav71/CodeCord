@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/svg/logo.svg";
 import FormErrors from "./FormErrors";
+import FormSuccess from "./FormSuccess";
+import { resetPassword } from "../../api/authDataAPI";
 
 const PasswordReset = (props) => {
   const params = useParams();
@@ -15,22 +17,26 @@ const PasswordReset = (props) => {
     watch,
   } = useForm();
   const [apiErrors, setAPIErrors] = useState();
+  const [successMessage, setSuccessMessage] = useState();
+  const [status, setStatus] = useState();
 
   const onSubmit = async (formData) => {
-    const response = await fetch(
-      `/api/v1/users/resetPassword/${params.token}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }
-    );
-    const result = await response.json();
-    result.status === "success"
-      ? navigate("/app/auth/login", { replace: true })
-      : setAPIErrors(<FormErrors message={result.message} />);
+    setStatus("waiting");
+    try {
+      await resetPassword(formData, params.token);
+      setSuccessMessage(
+        <FormSuccess
+          message={"Password reset successfully! Redirecting to Login page."}
+        />
+      );
+      setTimeout(() => {
+        navigate("/app/auth/login", { replace: true });
+        setStatus("");
+      }, 2000);
+    } catch (err) {
+      setStatus("");
+      setAPIErrors(<FormErrors message={err.response.data.message} />);
+    }
   };
 
   return (
@@ -42,7 +48,7 @@ const PasswordReset = (props) => {
         <img className="mb-12" src={logo} alt="logo" />
         <div className="w-full">
           <input
-          type="password"
+            type="password"
             className={`w-full rounded-xl h-18 px-6 py-6 text-base 
             ${errors.password ? "border border-hardRed" : ""} 
             outline-none focus:border focus:border-accent1 bg-grey3`}
@@ -62,7 +68,7 @@ const PasswordReset = (props) => {
         </div>
         <div className="w-full">
           <input
-          type="password"
+            type="password"
             className={`w-full rounded-xl h-18 px-6 py-6 text-base
             ${errors.passwordConfirm ? "border border-hardRed" : ""}
             outline-none focus:border focus:border-accent1 bg-grey3`}
@@ -84,7 +90,12 @@ const PasswordReset = (props) => {
           )}
         </div>
         {apiErrors}
-        <button className="flex items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1">
+        {successMessage}
+        <button
+          disabled={status === "waiting"}
+          className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1"
+        >
+          {status === "waiting" && <div className="spinner-border"></div>}
           Reset My Password
         </button>
       </form>
