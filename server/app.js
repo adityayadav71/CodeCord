@@ -1,5 +1,10 @@
 const express = require("express");
 const morgan = require("morgan");
+const rateLimit = require("express-rate-limit")
+const helmet = require("helmet")
+const mongoSanitize = require("express-mongo-sanitize")
+const xss = require("xss-clean")
+const hpp = require("hpp")
 const cors = require("cors");
 const path = require("path")
 
@@ -16,6 +21,9 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1 - Global Middlewares
+// Set security HTTP headers
+app.use(helmet())
+
 app.use(cors({
   origin: "http://127.0.0.1:5173",
   credentials: true
@@ -26,9 +34,31 @@ if (process.env.NODE_ENV === "DEV") {
   app.use(morgan("dev"));
 }
 
-app.use(express.json());
-app.use(express.static(`${__dirname}/public`));
+// Limit the number of requests to the API
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP. Please try again in an hour."
+})
+app.use("/api", limiter);
+
+// Body parser, for reading data from req.body
+app.use(express.json({ limit: '10kb'}));
+
+// Data Sanitization, against NoSQL query injection
+app.use(mongoSanitize())
+
+// Data Sanitization, against XSS
+app.use(xss());
+
+// Preventing parameter pollution
+app.use(hpp());
+
+// Cookie parser, for parsing cookies as objects
 app.use(cookieParser());
+
+// Serving Static files
+app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
