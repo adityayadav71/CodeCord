@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import NotFound from "./utilities/NotFound";
 import LandingPage from "./components/LandingPage/index";
 import Contest from "./components/Contests/index";
@@ -12,27 +12,32 @@ import PasswordReset from "./components/Authentication/PasswordReset";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
 import Login from "./components/Authentication/Login";
 import SignUp from "./components/Authentication/SignUp";
-import { createContext, React, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
+import { logout, checkLogInStatus } from "./api/authDataAPI";
 
 export const AuthContext = createContext(null);
 
 function App() {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("/api/v1/users/isLoggedIn", {
-        method: "GET",
-        headers: {
-          "Access-Control-Allow-Credentials": true,
-        },
-        credentials: "include",
-      });
-      const result = await response.json();
-      setIsLoggedIn(result.isLoggedIn);
+    const setLoggedIn = async () => {
+      const status = await checkLogInStatus();
+      setIsLoggedIn(status);
+    };
+    setLoggedIn();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const loggedOut = await logout();
+      setIsLoggedIn(!loggedOut);
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.log(err);
     }
-    fetchData();
-  }, [isLoggedIn]);
+  };
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
@@ -40,7 +45,7 @@ function App() {
         <>
           <Routes>
             {isLoggedIn ? (
-              <Route path="/" element={<AppLayout />}>
+              <Route path="/" element={<AppLayout handleLogout={handleLogout}/>}>
                 <Route index element={<Contest />} />
               </Route>
             ) : (
