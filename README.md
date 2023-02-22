@@ -14,7 +14,7 @@ Apart from the usual leetcode features, it provides the feature to create a live
 3. In a contest, a live scoreboard to maintain user ranks depending on time taken and number of attempts.
 4. Every user in the room can view each others code live by clicking user tabs on top of code editor(hidden until end in case of contest).
 
-![Room Design Prototype](room.jpg)
+![Room Design Prototype](room.png)
 
 #### Potential future features:
 
