@@ -28,10 +28,10 @@ app.use(
   cors({
     origin: [
       "http://127.0.0.1:5173",
-      "https://www.codeack.tk/",
-      "https://code-cord.vercel.app/",
-      "https://code-cord-adityayadav71.vercel.app/",
-      "https://code-cord-git-main-adityayadav71.vercel.app/",
+      "https://www.codeack.tk",
+      "https://code-cord.vercel.app",
+      "https://code-cord-adityayadav71.vercel.app",
+      "https://code-cord-git-main-adityayadav71.vercel.app",
     ],
     credentials: true,
   })
