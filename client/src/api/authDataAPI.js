@@ -1,7 +1,8 @@
 import axios from "axios";
+import { BASE_URL } from "./apiConfig";
 
 export const checkLogInStatus = async () => {
-  const response = await axios.get("/api/v1/users/isLoggedIn", {
+  const response = await axios.get(`${BASE_URL}/api/v1/users/isLoggedIn`, {
     headers: {
       "Access-Control-Allow-Credentials": true,
     },
@@ -12,7 +13,7 @@ export const checkLogInStatus = async () => {
 
 export const signup = async (formData) => {
   const response = await axios.post(
-    `/api/v1/users/signup`,
+    `${BASE_URL}/api/v1/users/signup`,
     JSON.stringify(formData),
     {
       headers: {
@@ -25,7 +26,7 @@ export const signup = async (formData) => {
 
 export const login = async (formData) => {
   const response = await axios.post(
-    `/api/v1/users/login`,
+    `${BASE_URL}/api/v1/users/login`,
     JSON.stringify(formData),
     {
       headers: {
@@ -37,7 +38,7 @@ export const login = async (formData) => {
 };
 
 export const logout = async () => {
-  const response = await axios.post("/api/v1/users/logout", {
+  const response = await axios.post(`${BASE_URL}/api/v1/users/logout`, {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Credentials": true,
@@ -48,7 +49,7 @@ export const logout = async () => {
 
 export const forgotPassword = async (formData) => {
   const response = await axios.post(
-    `/api/v1/users/forgotPassword`,
+    `${BASE_URL}/api/v1/users/forgotPassword`,
     JSON.stringify(formData),
     {
       headers: {
@@ -61,7 +62,7 @@ export const forgotPassword = async (formData) => {
 
 export const resetPassword = async (formData, token) => {
   const response = await axios.patch(
-    `/api/v1/users/resetPassword/${token}`,
+    `${BASE_URL}/api/v1/users/resetPassword/${token}`,
     JSON.stringify(formData),
     {
       headers: {
