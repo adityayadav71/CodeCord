@@ -15,13 +15,14 @@ const signToken = (id) => {
 const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
-  res.cookie("jwt", token, {
+  const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
     secure: req.secure || req.headers["x-forwarded-proto"] === "https",
-  });
+  }
+  res.cookie("jwt", token, cookieOptions);
 
   user.password = undefined;
 
@@ -145,7 +146,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   // 3) Send password reset link to user email address
   try {
-    const resetURL = `http://127.0.0.1:5173/app/auth/reset/${resetToken}`;
+    const resetURL = `${req.protocol}://${req.get("host")}/app/auth/reset/${resetToken}`;
 
     await new Email(user, resetURL).sendPasswordReset();
 

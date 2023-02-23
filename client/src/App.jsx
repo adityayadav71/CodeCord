@@ -56,7 +56,7 @@ function App() {
             <Route path="/create">
               <Route index element={<CreateRoom />} />
             </Route>
-            <Route path="/app" element={<AppLayout />}>
+            <Route path="/app" element={<AppLayout handleLogout={handleLogout}/>}>
               <Route path="contest" element={<Contest />} />
               <Route path="problem">
                 <Route index element={<Problem />} />
