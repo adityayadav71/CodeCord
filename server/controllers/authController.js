@@ -192,7 +192,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
-  user.save();
+  await user.save();
 
   // 3) Update the passwordChangedAt property
   // 4) Log the user in by sending the JWT
