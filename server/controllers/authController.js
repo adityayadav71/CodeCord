@@ -148,9 +148,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   // 3) Send password reset link to user email address
   try {
-    const referer = req.get('Referer');
-    const frontendDomain = referer ? new URL(referer).hostname : 'codecord.vercel.app'; 
-    const resetURL = `${req.protocol}://${frontendDomain}/app/auth/reset/${resetToken}`;
+    const resetURL = `${req.headers.origin}/app/auth/reset/${resetToken}`;
 
     await new Email(user, resetURL).sendPasswordReset();
 
