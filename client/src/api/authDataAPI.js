@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { BASE_URL } from "./apiConfig";
 
 export const checkLogInStatus = async () => {
