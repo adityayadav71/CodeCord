@@ -12,6 +12,8 @@ import Difficulty from "./Difficulty";
 import Status from "./Status";
 import Tags from "./Tags";
 import CreateRoom from "../Rooms/CreateRoom";
+import { useContext } from "react";
+import { AuthContext } from "../../App";
 
 const ProblemFilter = ({ filterInsideModal }) => {
   useEffect(() => {
@@ -38,6 +40,7 @@ const ProblemFilter = ({ filterInsideModal }) => {
   const [activeStatus, setActiveStatus] = useState([]);
   const [activeTags, setActiveTags] = useState([]);
   const [selected, setSelected] = useState(0);
+  const { isLoggedIn } = useContext(AuthContext);
 
   const handleClick = (event) => {
     const target = event.target.closest(".dropdown").dataset.value;
@@ -174,13 +177,15 @@ const ProblemFilter = ({ filterInsideModal }) => {
               : "Select upto 4 problems"}
           </p>
         ) : (
-          <button
-            className="open-modal flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg"
-            onClick={openRoomModal}
-          >
-            <FaCheckCircle className="text-xl" />
-            Create Contest
-          </button>
+          isLoggedIn && (
+            <button
+              className="open-modal flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg"
+              onClick={openRoomModal}
+            >
+              <FaCheckCircle className="text-xl" />
+              Create Contest
+            </button>
+          )
         )}
 
         {modal}
