@@ -70,7 +70,7 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.logout = catchAsync(async (req, res, next) => {
   res.clearCookie("jwt", {
     httpOnly: true,
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "",
     secure: req.secure || req.headers["x-forwarded-proto"] === "https",
   });
   res.status(200).json({ status: "success" });
