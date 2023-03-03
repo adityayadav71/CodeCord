@@ -14,6 +14,7 @@ import Login from "./components/Authentication/Login";
 import SignUp from "./components/Authentication/SignUp";
 import { createContext, useState, useEffect } from "react";
 import { logout, checkLogInStatus } from "./api/authDataAPI";
+import Profile from "./components/HomePage/Profile";
 
 export const AuthContext = createContext(null);
 
@@ -63,6 +64,7 @@ function App() {
                 <Route path=":name" element={<Editor />} />
               </Route>
               <Route path="discussion" element={<Discussion />} />
+              <Route path="profile" element={<Profile />} />
               <Route path="auth">
                 <Route path="signup" element={<SignUp />} />
                 <Route path="login" element={<Login />} />
