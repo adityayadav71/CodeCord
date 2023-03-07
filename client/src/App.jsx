@@ -64,7 +64,7 @@ function App() {
                 <Route path=":name" element={<Editor />} />
               </Route>
               <Route path="discussion" element={<Discussion />} />
-              <Route path="profile" element={<Profile />} />
+              <Route path="user/:username" element={<Profile />} />
               <Route path="auth">
                 <Route path="signup" element={<SignUp />} />
                 <Route path="login" element={<Login />} />
