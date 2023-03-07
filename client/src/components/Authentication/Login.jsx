@@ -24,6 +24,7 @@ const Login = (props) => {
       await login(formData);
       const isLoggedIn = await checkLogInStatus();
       setIsLoggedIn(isLoggedIn);
+      await localStorage.setItem("username", formData.emailOrUsername)
       navigate("/", { replace: true });
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);

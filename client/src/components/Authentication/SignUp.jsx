@@ -20,7 +20,8 @@ const SignUp = (props) => {
   const onSubmit = async (formData) => {
     setStatus("waiting");
     try {
-      await signup(formData);
+      const res = await signup(formData);
+      await localStorage.setItem("username", res.data.user.username)
       navigate("/", { replace: true });
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);
