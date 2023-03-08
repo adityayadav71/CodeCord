@@ -24,3 +24,11 @@ export const createUserProfile = async (username) => {
     }
   );
 };
+
+export const updateUserProfile = async (data) => {
+  await axios.patch(`${BASE_URL}/api/v1/users/profile`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};

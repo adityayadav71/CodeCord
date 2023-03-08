@@ -21,11 +21,11 @@ const Login = (props) => {
   const onSubmit = async (formData) => {
     setStatus("waiting");
     try {
-      await login(formData);
+      const response = await login(formData);
       const isLoggedIn = await checkLogInStatus();
       setIsLoggedIn(isLoggedIn);
-      await localStorage.setItem("username", formData.emailOrUsername)
-      navigate("/", { replace: true });
+      await localStorage.setItem("username", response.data.user.username)
+      navigate("/");
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);
     }
