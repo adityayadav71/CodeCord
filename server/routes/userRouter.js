@@ -18,5 +18,6 @@ router.patch('/updateMyPassword', authController.protect, authController.updateP
 // User Profile
 router.get('/profile', userController.getUserData);
 router.post('/profile', userController.createUserProfile);
+router.patch('/profile', userController.upload.single("file"), userController.updateUserProfile);
 
 module.exports = router
