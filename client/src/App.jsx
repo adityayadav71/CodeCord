@@ -72,6 +72,7 @@ function App() {
                 <Route path="reset/:token" element={<PasswordReset />} />
               </Route>
             </Route>
+            <Route path="/notfound" element={<NotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </>
