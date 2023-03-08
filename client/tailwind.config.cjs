@@ -45,7 +45,7 @@ module.exports = {
       signUp: "0px 4px 23px 2px #0098FA",
       dropDown: "0px 4px 30px rgba(0, 0, 0, 0.25)",
       heading: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-      modal: "0px 0px 100px 364px rgba(0, 0, 0, 0.5);",
+      modal: "0px 0px 1400px 2560px rgba(0, 0, 0, 0.5);",
     },
     animation: {
       fadeIn: "fadeIn 2s ease-out forwards",
