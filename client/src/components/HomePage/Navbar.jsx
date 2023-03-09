@@ -19,12 +19,7 @@ const HomeNavbar = ({ handleLogout }) => {
   };
   useEffect(() => {
     const closeModal = (event) => {
-      if (
-        !event.target.closest(".modal") &&
-        !event.target.classList.contains("open-modal") &&
-        !event.target.closest(".profile") &&
-        !event.target.closest(".searchbar")
-      ) {
+      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal") && !event.target.closest(".profile") && !event.target.closest(".searchbar")) {
         setModal("");
         setProfileActive(false);
         setSearchbarActive(false);
@@ -39,22 +34,14 @@ const HomeNavbar = ({ handleLogout }) => {
   return (
     <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
       <Link to="/">
-        <img
-          className="p-3 hover:cursor-pointer"
-          src="../../../favicon.svg"
-          alt="logo"
-        />
+        <img className="p-3 hover:cursor-pointer" src="../../../favicon.svg" alt="logo" />
       </Link>
 
       <ul className="flex flex-row justify-center">
         <li className="flex">
           <NavLink
             to="/app/contest"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
-              isActive(pathname, "/app/contest")
-                ? "border-b-2 border-b-accent1"
-                : ""
-            }`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/contest") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Contest
           </NavLink>
@@ -62,11 +49,7 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/problem"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
-              isActive(pathname, "/app/problem")
-                ? "border-b-2 border-b-accent1"
-                : ""
-            }`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/problem") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Problems
           </NavLink>
@@ -74,11 +57,7 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/discussion"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
-              isActive(pathname, "/app/discussion")
-                ? "border-b-2 border-b-accent1"
-                : ""
-            }`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/discussion") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Discussions
           </NavLink>
@@ -87,22 +66,14 @@ const HomeNavbar = ({ handleLogout }) => {
       <div className="flex flex-row items-center gap-x-6 ml-auto mr-3">
         {isLoggedIn ? (
           <>
-            <div
-              className={
-                "searchbar relative flex flex-row items-center right-5"
-              }
-            >
+            <div className={"searchbar relative flex flex-row items-center right-5"}>
               <FaSearch
-                className={`absolute ${
-                  searchbarActive ? "" : "text-2xl translate-x-64"
-                } hover:cursor-pointer left-2 transition-all duration-300`}
+                className={`absolute ${searchbarActive ? "" : "text-2xl translate-x-64"} hover:cursor-pointer left-2 transition-all duration-300`}
                 onClick={() => setSearchbarActive((prev) => !prev)}
               />
               <input
                 className={`h-full ${
-                  searchbarActive
-                    ? "scale-x-1 opacity-1"
-                    : "scale-x-0 opacity-0"
+                  searchbarActive ? "scale-x-1 opacity-1" : "scale-x-0 opacity-0"
                 } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-full transition-all duration-300`}
                 type="text"
                 placeholder="Search problems, contests, users..."
@@ -116,43 +87,27 @@ const HomeNavbar = ({ handleLogout }) => {
             </button>
             <FaBell className="text-2xl hover:cursor-pointer" />
             <div className="relative profile">
-              <div
-                className="w-11 h-11 flex flex-row items-center justify-center rounded-full bg-grey2"
-                onClick={() => setProfileActive((prev) => !prev)}
-              >
+              <div className="w-11 h-11 flex flex-row items-center justify-center rounded-full bg-grey2" onClick={() => setProfileActive((prev) => !prev)}>
                 <FaUserAlt className="text-2xl hover:cursor-pointer" />
               </div>
               <div
-                className={`${
-                  profileActive
-                    ? "opacity-1 top-16 translate-y-0"
-                    : "opacity-0 -translate-y-2 top-20"
-                } 
+                className={`${profileActive ? "opacity-1 top-16 translate-y-0" : "opacity-0 -translate-y-2 top-20"} 
                 z-20 absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >
                 <ul className="flex flex-col gap-y-3">
                   <li>
-                    <Link
-                      to="/app/profile"
-                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
-                    >
+                    <Link to={`/app/user/${localStorage.getItem("username")}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaUserAlt />
                       Profile
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to="/app/settings"
-                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
-                    >
+                    <Link to="/app/settings" className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaCog />
                       Settings
                     </Link>
                   </li>
-                  <li
-                    className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
-                    onClick={handleLogout}
-                  >
+                  <li className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg" onClick={handleLogout}>
                     <RiLogoutCircleRLine />
                     Logout
                   </li>
@@ -162,22 +117,14 @@ const HomeNavbar = ({ handleLogout }) => {
           </>
         ) : (
           <>
-            <div
-              className={
-                "searchbar relative flex flex-row items-center right-5"
-              }
-            >
+            <div className={"searchbar relative flex flex-row items-center right-5"}>
               <FaSearch
-                className={`absolute ${
-                  searchbarActive ? "" : "text-2xl translate-x-64"
-                } hover:cursor-pointer left-2 transition-all duration-300`}
+                className={`absolute ${searchbarActive ? "" : "text-2xl translate-x-64"} hover:cursor-pointer left-2 transition-all duration-300`}
                 onClick={() => setSearchbarActive((prev) => !prev)}
               />
               <input
                 className={`h-full ${
-                  searchbarActive
-                    ? "scale-x-1 opacity-1"
-                    : "scale-x-0 opacity-0"
+                  searchbarActive ? "scale-x-1 opacity-1" : "scale-x-0 opacity-0"
                 } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-full transition-all duration-300`}
                 type="text"
                 placeholder="Search problems, contests, users..."
