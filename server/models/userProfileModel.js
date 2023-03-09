@@ -1,12 +1,20 @@
 const mongoose = require("mongoose");
 
 const userProfileSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: [true, "User ID is required"],
+    ref: "User",
+  },
   username: {
     type: String,
-    required: [true, "A username is required"],
+    required: [true, "Username is required"],
   },
   avatar: {
-    type: String,
+    type: {
+      contentType: String,
+      image: Object,
+    },
   },
   about: String,
   roomsCreated: {

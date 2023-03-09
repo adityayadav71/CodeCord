@@ -17,6 +17,7 @@ const Profile = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [imageURL, setImageURL] = useState(null);
   const [userData, setUserData] = useState({});
   const [tabActive, switchTab] = useState("Recent Submissions");
   const [isMyProfile, setIsMyProfile] = useState(false);
@@ -39,11 +40,16 @@ const Profile = () => {
   useEffect(() => {
     if (Object.keys(userData).length !== 0) {
       setPercentageSolved((prev) =>
-        prev.map((data, i) => {
+        prev.map((_, i) => {
           const total = i === 0 ? totalEasy : i === 1 ? totalMedium : totalHard;
           return <div className={`bg-hardRed bottom-0 w-14 h-[${(userData?.numberOfSubmissions[i] * 100) / total}%]`}></div>;
         })
       );
+      if (userData.avatar) {
+        const imgURL = `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`;
+        setPreview(imgURL);
+        setImageURL(imgURL);
+      }
     }
   }, [userData]);
 
@@ -67,10 +73,9 @@ const Profile = () => {
     fileInputRef.current.click();
   };
 
-  const imageMimeType = /image\/(png|jpg|jpeg)/i;
-
   const checkUploadedFile = (e) => {
     const file = e.target.files[0];
+    const imageMimeType = /image\/(png|jpg|jpeg)/i;
     if (!file.type.match(imageMimeType)) {
       alert("Image mime type is not valid");
       return;
@@ -97,11 +102,15 @@ const Profile = () => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("data", JSON.stringify({ username: username }));
-      const response = await updateUserProfile(formData);
-      if (response) {
-        setModalOpen(false);
-        alert("Avatar updated successfully");
-      }
+
+      await updateUserProfile(formData);
+
+      const response = await getUserData(username);
+      if (response.userData) setUserData(response.userData);
+      
+      setModalOpen(false);
+    } else {
+      alert("No files uploaded");
     }
   };
 
@@ -115,14 +124,14 @@ const Profile = () => {
     <div className="flex flex-col w-full px-6 py-4 gap-x-6 grow">
       <div
         className={`modal 
-        ${modalOpen ? "" : "hidden"} 
-        fixed z-[9999] h-[60%] w-[40%] overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col items-center justify-center gap-y-3 rounded-lg p-6`}
+        ${modalOpen ? "scale-100 opacity-1" : "scale-0 opacity-0"} 
+        fixed z-[9999] h-[60%] w-[40%] transition-all overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col items-center justify-center gap-y-3 rounded-lg p-6`}
       >
         <div className="rounded-lg w-64 h-64">
-          {userData?.avatar ? (
-            <img className="w-full h-full rounded-lg" src={atob(unescape(encodeURIComponent(userData.avatar)))} alt="user-avatar" />
-          ) : preview ? (
-            <img className="w-full h-full rounded-lg" src={preview} alt="user-avatar-preview" />
+          {preview ? (
+            <img className="w-full h-full object-cover rounded-lg" src={preview} alt="user-avatar-preview" />
+          ) : userData?.avatar ? (
+            <img className="w-full h-full object-cover rounded-lg" src={imageURL} alt="user-avatar" />
           ) : (
             <div className="w-full h-full bg-gray-300 rounded-lg flex items-center justify-center">
               <FaUserAlt className="text-8xl" />
@@ -131,13 +140,30 @@ const Profile = () => {
         </div>
         <form onSubmit={uploadFile} encType="multipart/form-data">
           <input type="file" accept="image/*" ref={fileInputRef} name="file" onChange={checkUploadedFile} className="w-64 hidden" />
-          <button onClick={updateAvatar} className="flex items-center gap-x-3 bg-accent1 hover:bg-lightAccent1 px-6 py-2 font-bold rounded-lg">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              updateAvatar();
+            }}
+            className="flex items-center justify-center w-full gap-x-3 bg-accent1 hover:cursor-pointer hover:bg-lightAccent1 px-6 py-2 font-bold rounded-lg"
+          >
             <FaCamera />
             Upload image
           </button>
-          <div className="flex flex-row items-center justify-end w-full gap-x-3 mt-3">
-            <input type="submit" name="" className="px-6 py-2 bg-grey1 rounded-lg text-primary font-bold"></input>
-            <button className="px-6 py-2 bg-grey1 rounded-lg text-primary font-bold" onClick={clearPreview}>
+          <div className="flex flex-row items-center justify-end w-full gap-x-3 mt-6">
+            <input
+              type="submit"
+              name="submit"
+              value="Save"
+              className="px-6 py-2 bg-grey1 hover:bg-easyGreen transition-all duration-300 rounded-lg text-primary hover:cursor-pointer font-bold"
+            ></input>
+            <button
+              className="px-6 py-2 bg-grey1 hover:bg-red-500 rounded-lg text-primary hover:cursor-pointer font-bold"
+              onClick={(e) => {
+                e.preventDefault();
+                clearPreview();
+              }}
+            >
               Cancel
             </button>
           </div>
@@ -150,8 +176,13 @@ const Profile = () => {
           }}
           className="modal group absolute flex items-center justify-center w-24 h-24 hover:cursor-pointer rounded-lg overflow-hidden bg-grey2 shadow shadow-heading -top-12 left-1/2 -translate-x-1/2"
         >
-          {userData?.avatar ? <img src={userData?.avatar} alt="profile-pic" /> : <FaUserAlt className="text-5xl" />}
-          {isMyProfile && <div className="absolute group-hover:opacity-50 -z-10 opacity-0 transition duration-300 bg-gray-400 w-full h-full"></div>}
+          {userData?.avatar ? <img className="w-full h-full object-cover" src={imageURL} alt="profile-pic" /> : <FaUserAlt className="text-5xl" />}
+          {isMyProfile && (
+            <>
+              <FaCamera className="absolute group-hover:opacity-100 z-10 opacity-0 transition duration-300 text-5xl" />
+              <div className="absolute group-hover:opacity-50 -z-10 opacity-0 transition duration-300 bg-gray-400 w-full h-full"></div>
+            </>
+          )}
         </div>
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold text-xl">{userData?.username}</div>
         <div className="mr-auto flex items-center">
