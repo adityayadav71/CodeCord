@@ -1,4 +1,4 @@
-import { FaCamera, FaGithub, FaLinkedin, FaUserAlt } from "react-icons/fa";
+import { FaCamera, FaRegTimesCircle, FaGithub, FaLinkedin, FaUserAlt } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserData } from "../../api/profileDataAPI";
 import { useEffect, useState, useRef } from "react";
@@ -21,6 +21,9 @@ const Profile = () => {
   const [userData, setUserData] = useState({});
   const [tabActive, switchTab] = useState("Recent Submissions");
   const [isMyProfile, setIsMyProfile] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [tags, setTags] = useState([]);
+
   const params = useParams();
   const username = params.username;
   const navigate = useNavigate();
@@ -107,17 +110,28 @@ const Profile = () => {
 
       const response = await getUserData(username);
       if (response.userData) setUserData(response.userData);
-      
+
       setModalOpen(false);
     } else {
       alert("No files uploaded");
     }
   };
 
+  const updateProfile = async () => {};
+
   const clearPreview = () => {
     setModalOpen(false);
     setFile(null);
     setPreview(null);
+  };
+
+  const addTag = async (e) => {
+    console.log(e.key);
+    if (e.key === "Enter") {
+      const newTag = (e.target.value)
+      setTags((prevTags) => [...prevTags, newTag]);
+      e.target.value = ""
+    }
   };
 
   return (
@@ -199,8 +213,18 @@ const Profile = () => {
           <div className="text-center px-6 mr-6 border-r border-accent3">
             <p>Location</p>
             <div className="flex items-center justify-center">
+              {editing ? (
+                <select className="focus:outline-none px-3 py-1 rounded-lg bg-primary" name="country">
+                  <option value="India">India</option>
+                  <option value="USA">USA</option>
+                  <option value="China">China</option>
+                  <option value="Japan">Japan</option>
+                  <option value="Canada">Canada</option>
+                </select>
+              ) : (
+                <p>{userData?.country ?? "Country"}</p>
+              )}
               {/* <img src="" alt="country-flag" /> */}
-              <p>{userData?.country ?? "Country"}</p>
             </div>
           </div>
           <div className="text-center flex items-center gap-x-3">
@@ -222,15 +246,64 @@ const Profile = () => {
         <div className="row-span-2 bg-secondary rounded-lg p-6">
           <section className="mb-6">
             <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">About</h2>
-            <p className="leading-6">{userData?.about || <span className="text-sm text-grey1">Not updated</span>} </p>
+            {editing ? (
+              <textarea value={userData?.about} maxLength="512" className="w-full h-40 leading-4 rounded-lg bg-accent3 focus:outline-none p-3"></textarea>
+            ) : (
+              <p className="leading-6">{userData?.about || <span className="text-sm text-grey1">Not updated</span>} </p>
+            )}
           </section>
-          {isMyProfile && <button className="bg-greenBackGround mb-6 w-full px-3 py-4 rounded-lg text-green font-bold text-xl">Edit Profile</button>}
+          {isMyProfile && (
+            <button
+              onClick={() => {
+                if (editing) updateProfile();
+                setEditing((prev) => !prev);
+              }}
+              className="bg-greenBackGround hover:bg-emerald-800 mb-6 w-full px-3 py-4 rounded-lg text-green font-bold text-xl"
+            >
+              {editing ? "Done" : "Edit Profile"}
+            </button>
+          )}
           <section className="mb-6">
             <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Skills</h2>
             <div className="flex flex-row gap-3 flex-wrap">
-              {userData?.skills?.map((skill) => <span className="px-3 rounded-lg bg-primary">{skill}</span>) || <p className="text-sm text-grey1">Not updated</p>}
+              {editing ? (
+                <div className="flex items-center flex-wrap gap-3 p-3 bg-accent3 rounded-lg">
+                  {tags?.map((tag, index) => {
+                    return (
+                      <div className="flex items-center px-3 py-1 bg-primary gap-x-3 rounded-lg">
+                        {tag}
+                        <FaRegTimesCircle />
+                      </div>
+                    );
+                  })}
+                  <input type="text" placeholder="Enter a skill..." onKeyDown={addTag} className="bg-transparent focus:outline-none" />
+                </div>
+              ) : (
+                userData?.skills?.map((skill) => <span className="px-3 rounded-lg bg-primary">{skill}</span>)
+              )}
             </div>
           </section>
+          {editing && (
+            <section className="mb-6">
+              <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Socials</h2>
+              <div className="z-[2] grow">
+                <form>
+                  <div className="flex items-center gap-x-3 mb-3">
+                    <label htmlFor="github-link">
+                      <FaGithub className="text-2xl" />
+                    </label>
+                    <input name="github-link" type="text" placeholder="Link to GitHub Profile" className="px-3 py-1 w-full rounded-lg bg-accent3 focus:outline-none" />
+                  </div>
+                  <div className="flex items-center gap-x-3">
+                    <label htmlFor="linkedin-link">
+                      <FaLinkedin className="text-2xl" />
+                    </label>
+                    <input name="linkedin-link" type="text" placeholder="Link to LinkedIn Profile" className="px-3 py-1 w-full rounded-lg bg-accent3 focus:outline-none" />
+                  </div>
+                </form>
+              </div>
+            </section>
+          )}
           {userData?.friends?.length !== 0 && (
             <section className="mb-6">
               <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Friends</h2>
