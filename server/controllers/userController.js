@@ -31,15 +31,13 @@ exports.createUserProfile = catchAsync(async (req, res, next) => {
 exports.updateUserProfile = catchAsync(async (req, res, next) => {
   const userId = JSON.parse(atob(req.cookies.jwt.split(".")[1])).id;
   const data = JSON.parse(req.body.data);
-
-  const encode_image = req.file.buffer.toString("base64");
-  const finalImg = {
-    contentType: req.file.mimetype,
-    image: Buffer.from(encode_image, "base64"),
-  };
-
-  // If a file was uploaded, stream it to GridFS
+  
   if (req.file) {
+    const encode_image = req.file.buffer.toString("base64");
+    const finalImg = {
+      contentType: req.file.mimetype,
+      image: Buffer.from(encode_image, "base64"),
+    };
     userProfile.findOneAndUpdate(
       { userId: userId },
       { ...data, avatar: finalImg },
