@@ -6,12 +6,13 @@ import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
 
 const HomeNavbar = ({ handleLogout }) => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userData } = useContext(AuthContext);
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
   };
   const { pathname } = useLocation();
   const [modal, setModal] = useState();
+  const [imageURL, setImageURL] = useState();
   const [profileActive, setProfileActive] = useState(false);
   const [searchbarActive, setSearchbarActive] = useState(false);
   const openRoomModal = () => {
@@ -30,6 +31,11 @@ const HomeNavbar = ({ handleLogout }) => {
       document.removeEventListener("click", closeModal);
     };
   }, []);
+
+  useEffect(() => {
+    const imgURL = `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`;
+    setImageURL(imgURL);
+  }, [userData]);
 
   return (
     <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
@@ -87,21 +93,21 @@ const HomeNavbar = ({ handleLogout }) => {
             </button>
             <FaBell className="text-2xl hover:cursor-pointer" />
             <div className="relative profile">
-              <div className="w-11 h-11 flex flex-row items-center justify-center rounded-full bg-grey2" onClick={() => setProfileActive((prev) => !prev)}>
-                <FaUserAlt className="text-2xl hover:cursor-pointer" />
+              <div className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2" onClick={() => setProfileActive((prev) => !prev)}>
+                {userData?.avatar ? <img src={imageURL} className="w-full h-full hover:cursor-pointer" alt="profile-pic" /> : <FaUserAlt className="text-2xl hover:cursor-pointer" />}
               </div>
               <div
-                className={`${profileActive ? "opacity-1 top-16 translate-y-0" : "opacity-0 -translate-y-2 top-20"} 
+                className={`${profileActive ? "opacity-1 top-16 translate-y-0" : "opacity-0 -z-50 -translate-y-2 top-20"} 
                 z-20 absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >
                 <ul className="flex flex-col gap-y-3">
-                  <li>
+                  <li onClick={() => setProfileActive((prev) => !prev)}>
                     <Link to={`/app/user/${localStorage.getItem("username")}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaUserAlt />
                       Profile
                     </Link>
                   </li>
-                  <li>
+                  <li onClick={() => setProfileActive((prev) => !prev)}>
                     <Link to="/app/settings" className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaCog />
                       Settings
