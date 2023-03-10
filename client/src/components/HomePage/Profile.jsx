@@ -1,11 +1,14 @@
 import { FaCamera, FaRegTimesCircle, FaGithub, FaLinkedin, FaUserAlt } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserData } from "../../api/profileDataAPI";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { updateUserProfile } from "../../api/profileDataAPI";
+import { AuthContext } from "../../App";
 import axios from "axios";
 
 const Profile = () => {
+  const { userData, setUserData } = useContext(AuthContext);
+
   const totalEasy = 230;
   const totalMedium = 230;
   const totalHard = 230;
@@ -15,7 +18,6 @@ const Profile = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [imageURL, setImageURL] = useState(null);
-  const [userData, setUserData] = useState({});
   const [tabActive, switchTab] = useState("Recent Submissions");
   const [isMyProfile, setIsMyProfile] = useState(false);
   const [editing, setEditing] = useState(false);
