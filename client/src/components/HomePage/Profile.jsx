@@ -3,17 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getUserData } from "../../api/profileDataAPI";
 import { useEffect, useState, useRef } from "react";
 import { updateUserProfile } from "../../api/profileDataAPI";
+import axios from "axios";
 
 const Profile = () => {
   const totalEasy = 230;
   const totalMedium = 230;
   const totalHard = 230;
-  const [percentageSolved, setPercentageSolved] = useState([
-    <div className="bg-green bottom-0 w-14 h-0"></div>,
-    <div className="bg-mediumYellow bottom-0 w-14 h-0"></div>,
-    <div className="bg-hardRed bottom-0 w-14 h-0"></div>,
-  ]);
   const fileInputRef = useRef(null);
+  const [percentageSolved, setPercentageSolved] = useState([0, 0, 0]);
   const [modalOpen, setModalOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -23,6 +20,7 @@ const Profile = () => {
   const [isMyProfile, setIsMyProfile] = useState(false);
   const [editing, setEditing] = useState(false);
   const [tags, setTags] = useState([]);
+  const [countries, setCountries] = useState([]);
 
   const params = useParams();
   const username = params.username;
@@ -33,6 +31,21 @@ const Profile = () => {
       setIsMyProfile(true);
     }
     const loadData = async () => {
+      const countryData = await axios.get("https://restcountries.com/v3.1/all");
+      setCountries(() => {
+        const names = countryData.data.map((country) => {
+          return { name: country.name.common, flag: country.flags.png };
+        });
+        return names.sort((a, b) => {
+          if (a.name < b.name) {
+            return -1;
+          } else if (a.name > b.name) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+      });
       const response = await getUserData(username);
       if (response.userData) setUserData(response.userData);
       else navigate("/notfound", { replace: true });
@@ -45,10 +58,10 @@ const Profile = () => {
       setPercentageSolved((prev) =>
         prev.map((_, i) => {
           const total = i === 0 ? totalEasy : i === 1 ? totalMedium : totalHard;
-          return <div className={`bg-hardRed bottom-0 w-14 h-[${(userData?.numberOfSubmissions[i] * 100) / total}%]`}></div>;
+          return `${(userData?.numberOfSubmissions[i] * 100) / total}`;
         })
       );
-      if (userData.avatar) {
+      if (userData?.avatar) {
         const imgURL = `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`;
         setPreview(imgURL);
         setImageURL(imgURL);
@@ -117,7 +130,25 @@ const Profile = () => {
     }
   };
 
-  const updateProfile = async () => {};
+  const updateProfile = async () => {
+    const arr = Array.from(document.getElementsByClassName("profile-data"));
+    const formData = new FormData();
+    let data;
+    arr.forEach((el) => (data = { ...data, [el.name]: el.value }));
+    const modData = {
+      about: data.about,
+      country: data.country,
+      skills: [...tags],
+      socials: [data.github_link, data.linkedin_link],
+    };
+
+    formData.append("data", JSON.stringify(modData));
+
+    await updateUserProfile(formData);
+
+    const response = await getUserData(username);
+    if (response.userData) setUserData(response.userData);
+  };
 
   const clearPreview = () => {
     setModalOpen(false);
@@ -125,13 +156,19 @@ const Profile = () => {
     setPreview(null);
   };
 
-  const addTag = async (e) => {
-    console.log(e.key);
-    if (e.key === "Enter") {
-      const newTag = (e.target.value)
-      setTags((prevTags) => [...prevTags, newTag]);
-      e.target.value = ""
+  const addTag = (e) => {
+    if (e.key === "Enter" && e.target.value !== "") {
+      const newTag = e.target.value.trim();
+      setTags((prevTags) => (!prevTags.includes(newTag) ? [...prevTags, newTag] : prevTags));
+      e.target.value = "";
+    } else if (e.key === "Backspace" && e.target.value === "") {
+      setTags((prevTags) => prevTags.slice(0, -1));
     }
+  };
+
+  const deleteTag = async (e) => {
+    const removeEl = e.currentTarget.dataset.tagname;
+    setTags((prevTags) => prevTags.filter((element) => element !== removeEl));
   };
 
   return (
@@ -194,7 +231,7 @@ const Profile = () => {
           {isMyProfile && (
             <>
               <FaCamera className="absolute group-hover:opacity-100 z-10 opacity-0 transition duration-300 text-5xl" />
-              <div className="absolute group-hover:opacity-50 -z-10 opacity-0 transition duration-300 bg-gray-400 w-full h-full"></div>
+              <div className="absolute group-hover:opacity-50 z-10 opacity-0 transition duration-300 bg-gray-400 w-full h-full"></div>
             </>
           )}
         </div>
@@ -211,80 +248,84 @@ const Profile = () => {
         </div>
         <div className="ml-auto flex items-center">
           <div className="text-center px-6 mr-6 border-r border-accent3">
-            <p>Location</p>
-            <div className="flex items-center justify-center">
+            <p>Country</p>
+            <div className="flex items-center justify-center gap-x-3">
+              {userData?.country && (
+                <img className="w-5 h-5 object-cover overflow-clip rounded-full" src={`${countries?.filter((country) => country.name === userData?.country)[0]?.flag}`} alt="country-flag" />
+              )}
               {editing ? (
-                <select className="focus:outline-none px-3 py-1 rounded-lg bg-primary" name="country">
-                  <option value="India">India</option>
-                  <option value="USA">USA</option>
-                  <option value="China">China</option>
-                  <option value="Japan">Japan</option>
-                  <option value="Canada">Canada</option>
+                <select className="profile-data focus:outline-none px-3 py-1 rounded-lg bg-primary" defaultValue={userData?.country} name="country">
+                  {countries.map((country, index) => (
+                    <option key={index} value={country.name}>
+                      {country.name}
+                    </option>
+                  ))}
                 </select>
               ) : (
-                <p>{userData?.country ?? "Country"}</p>
+                <p>{userData?.country ?? <span className="text-sm text-grey1">Country</span>}</p>
               )}
-              {/* <img src="" alt="country-flag" /> */}
             </div>
           </div>
           <div className="text-center flex items-center gap-x-3">
-            {userData?.socials?.forEach((social) => {
-              social.name === "GitHub" ? (
-                <a href={social.link}>
-                  <FaGithub className="text-4xl" />
-                </a>
-              ) : (
-                <a href={social.link}>
-                  <FaLinkedin className="text-4xl" />
-                </a>
-              );
-            }) || <p className="text-grey1 text-sm">No socials</p>}
+            {userData?.socials?.map((social, index) => {
+              if (social !== "")
+                return index === 0 ? (
+                  <a href={social} className="hover:text-accent1 transition duration-300">
+                    <FaGithub className="text-4xl" />
+                  </a>
+                ) : (
+                  <a href={social} className="hover:text-accent1 transition duration-300">
+                    <FaLinkedin className="text-4xl" />
+                  </a>
+                );
+              else if (index === 0) {
+                return <p className="text-grey1 text-sm">No socials</p>;
+              }
+            })}
           </div>
         </div>
       </div>
       <div className="grid grid-rows-2 grid-cols-3 gap-6 grow mt-6">
         <div className="row-span-2 bg-secondary rounded-lg p-6">
-          <section className="mb-6">
+          <section className="mb-8">
             <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">About</h2>
             {editing ? (
-              <textarea value={userData?.about} maxLength="512" className="w-full h-40 leading-4 rounded-lg bg-accent3 focus:outline-none p-3"></textarea>
+              <textarea maxLength="512" name="about" className="profile-data w-full h-40 leading-4 rounded-lg bg-lightSecondary focus:outline-none p-3">
+                {userData?.about}
+              </textarea>
             ) : (
               <p className="leading-6">{userData?.about || <span className="text-sm text-grey1">Not updated</span>} </p>
             )}
           </section>
-          {isMyProfile && (
-            <button
-              onClick={() => {
-                if (editing) updateProfile();
-                setEditing((prev) => !prev);
-              }}
-              className="bg-greenBackGround hover:bg-emerald-800 mb-6 w-full px-3 py-4 rounded-lg text-green font-bold text-xl"
-            >
-              {editing ? "Done" : "Edit Profile"}
-            </button>
-          )}
-          <section className="mb-6">
+          <section className="mb-8">
             <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Skills</h2>
             <div className="flex flex-row gap-3 flex-wrap">
               {editing ? (
-                <div className="flex items-center flex-wrap gap-3 p-3 bg-accent3 rounded-lg">
-                  {tags?.map((tag, index) => {
-                    return (
-                      <div className="flex items-center px-3 py-1 bg-primary gap-x-3 rounded-lg">
-                        {tag}
-                        <FaRegTimesCircle />
-                      </div>
-                    );
-                  })}
-                  <input type="text" placeholder="Enter a skill..." onKeyDown={addTag} className="bg-transparent focus:outline-none" />
+                <div className="flex items-center flex-wrap gap-3 p-3 w-full bg-lightSecondary rounded-lg">
+                  {tags &&
+                    tags?.map((tag, index) => {
+                      return (
+                        <div key={index} className="flex items-center px-3 py-1 bg-primary gap-x-3 rounded-lg">
+                          {tag}
+                          <button className="hover:text-accent1 hover:cursor-pointer" data-tagname={tag} onClick={deleteTag}>
+                            <FaRegTimesCircle />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  <input type="text" placeholder="Press enter to add skill..." onKeyDown={addTag} className="bg-transparent focus:outline-none" />
                 </div>
+              ) : userData?.skills?.length !== 0 ? (
+                userData.skills?.map((skill) => <span className="px-3 rounded-lg bg-primary">{skill}</span>)
               ) : (
-                userData?.skills?.map((skill) => <span className="px-3 rounded-lg bg-primary">{skill}</span>)
+                <p className="leading-6">
+                  <span className="text-sm text-grey1">Not updated</span>
+                </p>
               )}
             </div>
           </section>
           {editing && (
-            <section className="mb-6">
+            <section className="mb-8">
               <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Socials</h2>
               <div className="z-[2] grow">
                 <form>
@@ -292,21 +333,33 @@ const Profile = () => {
                     <label htmlFor="github-link">
                       <FaGithub className="text-2xl" />
                     </label>
-                    <input name="github-link" type="text" placeholder="Link to GitHub Profile" className="px-3 py-1 w-full rounded-lg bg-accent3 focus:outline-none" />
+                    <input
+                      name="github_link"
+                      value={userData?.socials[0]}
+                      type="text"
+                      placeholder="Link to GitHub Profile"
+                      className="profile-data px-3 py-1 w-full rounded-lg bg-lightSecondary focus:outline-none"
+                    />
                   </div>
                   <div className="flex items-center gap-x-3">
                     <label htmlFor="linkedin-link">
                       <FaLinkedin className="text-2xl" />
                     </label>
-                    <input name="linkedin-link" type="text" placeholder="Link to LinkedIn Profile" className="px-3 py-1 w-full rounded-lg bg-accent3 focus:outline-none" />
+                    <input
+                      name="linkedin_link"
+                      value={userData?.socials[1]}
+                      type="text"
+                      placeholder="Link to LinkedIn Profile"
+                      className="profile-data px-3 py-1 w-full rounded-lg bg-lightSecondary focus:outline-none"
+                    />
                   </div>
                 </form>
               </div>
             </section>
           )}
-          {userData?.friends?.length !== 0 && (
-            <section className="mb-6">
-              <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Friends</h2>
+          <section className="mb-8">
+            <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Friends</h2>
+            {userData?.friends?.length !== 0 ? (
               <div className="z-[2] grow">
                 {userData.friends?.map((friend) => (
                   <div className="flex flex-row rounded-xl w-full gap-x-3 items-center p-3 hover:bg-hover hover:cursor-pointer">
@@ -320,7 +373,20 @@ const Profile = () => {
                   </div>
                 ))}
               </div>
-            </section>
+            ) : (
+              <p className="text-sm text-grey1">No friends yet.</p>
+            )}
+          </section>
+          {isMyProfile && (
+            <button
+              onClick={() => {
+                if (editing) updateProfile();
+                setEditing((prev) => !prev);
+              }}
+              className="bg-greenBackGround hover:bg-emerald-800 mb-6 w-full px-3 py-4 rounded-lg text-green font-bold text-xl"
+            >
+              {editing ? "Done" : "Edit Profile"}
+            </button>
           )}
         </div>
         <div className="row-span-1 bg-secondary rounded-lg p-6 flex flex-col">
@@ -351,7 +417,7 @@ const Profile = () => {
               <div className="flex flex-col gap-y-1 items-center">
                 <p className="font-bold">{totalEasy}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-greenBackGround relative">
-                  <div className={`absolute bg-green bottom-0 w-14 h-[${userData.numberOfSubmissions && (userData?.numberOfSubmissions[0] * 100) / totalEasy}%]`}></div>
+                  <div className={`absolute bg-green bottom-0 w-14`} style={{ height: `${percentageSolved[0]}%` }}></div>
                   <p className="absolute bottom-3 text-center w-full font-bold text-base">{(userData.numberOfSubmissions && userData.numberOfSubmissions[0]) || 0}</p>
                 </div>
                 <p>E</p>
@@ -359,7 +425,7 @@ const Profile = () => {
               <div className="flex flex-col gap-y-1 items-center">
                 <p className="font-bold">{totalMedium}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-yellowBackGround relative">
-                  <div className={`absolute bg-mediumYellow bottom-0 w-14 h-[${userData.numberOfSubmissions && (userData.numberOfSubmissions[1] * 100) / totalMedium}%]`}></div>
+                  <div className={`absolute bg-yellow-500 bottom-0 w-14`} style={{ height: `${percentageSolved[1]}%` }}></div>
                   <p className="absolute bottom-3 text-center w-full font-bold text-base">{(userData.numberOfSubmissions && userData.numberOfSubmissions[1]) || 0}</p>
                 </div>
                 <p>M</p>
@@ -367,7 +433,7 @@ const Profile = () => {
               <div className="flex flex-col gap-y-1 items-center">
                 <p className="font-bold">{totalHard}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-redBackGround relative">
-                  <div className={`absolute bg-hardRed bottom-0 w-14 h-[${userData.numberOfSubmissions && (userData?.numberOfSubmissions[2] * 100) / totalHard}%]`}></div>
+                  <div className={`absolute bg-hardRed bottom-0 w-14`} style={{ height: `${percentageSolved[2]}%` }}></div>
                   <p className="absolute bottom-3 text-center w-full font-bold text-base">{(userData.numberOfSubmissions && userData.numberOfSubmissions[2]) || 0}</p>
                 </div>
                 <p>H</p>
