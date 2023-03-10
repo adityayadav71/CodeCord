@@ -15,17 +15,21 @@ import SignUp from "./components/Authentication/SignUp";
 import { createContext, useState, useEffect } from "react";
 import { logout, checkLogInStatus } from "./api/authDataAPI";
 import Profile from "./components/HomePage/Profile";
+import { getUserData } from "./api/profileDataAPI";
 
 export const AuthContext = createContext(null);
 
 function App() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
     const setLoggedIn = async () => {
       const status = await checkLogInStatus();
+      const response = await getUserData(localStorage.getItem("username"));
       setIsLoggedIn(status);
+      setUserData(response.userData);
     };
     setLoggedIn();
   }, []);
@@ -41,7 +45,7 @@ function App() {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userData, setUserData }}>
       <div className="mx-auto h-full w-full max-w-[2560px] overflow-x-hidden">
         <>
           <Routes>
