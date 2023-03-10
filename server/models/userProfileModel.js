@@ -30,7 +30,13 @@ const userProfileSchema = new mongoose.Schema({
   numberOfSubmissions: { type: [Number, Number, Number], default: [0, 0, 0] },
   country: String,
   skills: [String],
-  friends: [String],
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: [true, "User ID is required"],
+      ref: "User",
+    },
+  ],
   socials: Array,
 });
 
