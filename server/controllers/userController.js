@@ -16,7 +16,7 @@ exports.getUserData = catchAsync(async (req, res, next) => {
 });
 
 exports.createUserProfile = catchAsync(async (req, res, next) => {
-  const userId = JSON.parse(atob(req.cookies.jwt.split(".")[1])).id;
+  const userId = JSON.parse(Buffer.from(req.cookies.jwt.split(".")[1], 'base64').toString('ascii')).id;
   const userData = await userProfile.create({
     userId: userId,
     username: req.query.username,
@@ -29,7 +29,7 @@ exports.createUserProfile = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUserProfile = catchAsync(async (req, res, next) => {
-  const userId = JSON.parse(atob(req.cookies.jwt.split(".")[1])).id;
+  const userId = JSON.parse(Buffer.from(req.cookies.jwt.split(".")[1], 'base64').toString('ascii')).id;
   const data = JSON.parse(req.body.data);
   
   if (req.file) {
