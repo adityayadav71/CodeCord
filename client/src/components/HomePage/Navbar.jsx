@@ -97,8 +97,9 @@ const HomeNavbar = ({ handleLogout }) => {
                 {userData?.avatar ? <img src={imageURL} className="w-full h-full hover:cursor-pointer" alt="profile-pic" /> : <FaUserAlt className="text-2xl hover:cursor-pointer" />}
               </div>
               <div
-                className={`${profileActive ? "opacity-1 top-16 translate-y-0" : "opacity-0 -z-50 -translate-y-2 top-20"} 
-                z-20 absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
+                className={`${
+                  profileActive ? "opacity-1 z-20 top-16 translate-y-0" : "opacity-0 -z-50 -translate-y-2 top-20"
+                } absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >
                 <ul className="flex flex-col gap-y-3">
                   <li onClick={() => setProfileActive((prev) => !prev)}>
