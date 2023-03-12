@@ -15,7 +15,6 @@ import SignUp from "./components/Authentication/SignUp";
 import { createContext, useState, useEffect } from "react";
 import { logout, checkLogInStatus } from "./api/authDataAPI";
 import Profile from "./components/HomePage/Profile";
-import { getUserData } from "./api/profileDataAPI";
 
 export const AuthContext = createContext(null);
 
@@ -27,9 +26,8 @@ function App() {
   useEffect(() => {
     const setLoggedIn = async () => {
       const status = await checkLogInStatus();
-      const response = await getUserData(localStorage.getItem("username"));
-      setIsLoggedIn(status);
-      setUserData(response.userData);
+      setIsLoggedIn(status.isLoggedIn);
+      setUserData(status.userData)
     };
     setLoggedIn();
   }, []);
@@ -50,7 +48,7 @@ function App() {
         <>
           <Routes>
             {isLoggedIn ? (
-              <Route path="/" element={<AppLayout handleLogout={handleLogout}/>}>
+              <Route path="/" element={<AppLayout handleLogout={handleLogout} />}>
                 <Route index element={<Contest />} />
               </Route>
             ) : (
@@ -61,7 +59,7 @@ function App() {
             <Route path="/create">
               <Route index element={<CreateRoom />} />
             </Route>
-            <Route path="/app" element={<AppLayout handleLogout={handleLogout}/>}>
+            <Route path="/app" element={<AppLayout handleLogout={handleLogout} />}>
               <Route path="contest" element={<Contest />} />
               <Route path="problem">
                 <Route index element={<Problem />} />

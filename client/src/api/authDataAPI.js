@@ -10,7 +10,7 @@ export const checkLogInStatus = async () => {
     },
     credentials: "include",
   });
-  return response.data.isLoggedIn;
+  return response.data;
 };
 
 export const signup = async (formData) => {
