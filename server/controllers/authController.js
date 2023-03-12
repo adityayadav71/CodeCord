@@ -5,6 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const User = require("../models/userModel");
 const Email = require("../utils/email");
+const userProfile = require("../models/userProfileModel");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -22,7 +23,7 @@ const createSendToken = (user, statusCode, req, res) => {
     httpOnly: true,
     sameSite: process.env.NODE_ENV === "PROD" ? "none" : "",
     secure: req.secure || req.headers["x-forwarded-proto"] === "https",
-  }
+  };
   res.cookie("jwt", token, cookieOptions);
 
   user.password = undefined;
@@ -198,13 +199,11 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.isLoggedIn = async (req, res, next) => {
-  if (req.cookies.jwt) {
+  const token = req.cookies.jwt;
+  if (token) {
     try {
       // 1) verify token
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        process.env.JWT_SECRET
-      );
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
       // 2) Check if user still exists
       const currentUser = await User.findById(decoded.id);
@@ -223,11 +222,14 @@ exports.isLoggedIn = async (req, res, next) => {
         });
       }
 
+      // 4) Get user profile data if user is logged in
+      const currentUserData = await userProfile.findOne({ userId: decoded.id });
+
       // THERE IS A LOGGED IN USER
-      res.locals.user = currentUser;
       return res.json({
         status: "success",
         isLoggedIn: true,
+        userData: currentUserData
       });
     } catch (err) {
       return next(new AppError("Something went wrong!", 500));
@@ -241,11 +243,11 @@ exports.isLoggedIn = async (req, res, next) => {
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
   // 1) Get user from collection
-  const user = await User.findById(req.user.id).select('+password');
+  const user = await User.findById(req.user.id).select("+password");
 
   // 2) Check if POSTed current password is correct
   if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
-    return next(new AppError('Your current password is wrong.', 401));
+    return next(new AppError("Your current password is wrong.", 401));
   }
 
   // 3) If so, update password
