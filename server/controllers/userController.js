@@ -1,7 +1,8 @@
 const multer = require("multer");
-const fs = require("fs");
 const AppError = require("../utils/appError");
 const storage = multer.memoryStorage();
+const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 const catchAsync = require("../utils/catchAsync");
 const userProfile = require("../models/userProfileModel");
 
@@ -16,7 +17,10 @@ exports.getUserData = catchAsync(async (req, res, next) => {
 });
 
 exports.createUserProfile = catchAsync(async (req, res, next) => {
-  const userId = JSON.parse(Buffer.from(req.cookies.jwt.split(".")[1], 'base64').toString('ascii')).id;
+  const token = req.cookies.jwt;
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  
+  const userId = decoded.id;
   const userData = await userProfile.create({
     userId: userId,
     username: req.query.username,
@@ -29,9 +33,12 @@ exports.createUserProfile = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUserProfile = catchAsync(async (req, res, next) => {
-  const userId = JSON.parse(Buffer.from(req.cookies.jwt.split(".")[1], 'base64').toString('ascii')).id;
-  const data = JSON.parse(req.body.data);
+  const token = req.cookies.jwt;
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   
+  const userId = decoded.id;
+  const data = JSON.parse(req.body.data);
+
   if (req.file) {
     const encode_image = req.file.buffer.toString("base64");
     const finalImg = {
