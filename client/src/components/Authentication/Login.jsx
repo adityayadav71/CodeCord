@@ -16,16 +16,16 @@ const Login = (props) => {
   } = useForm();
   const [apiErrors, setAPIErrors] = useState();
   const [status, setStatus] = useState();
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, setUserData } = useContext(AuthContext);
 
   const onSubmit = async (formData) => {
     setStatus("waiting");
     try {
-      const response = await login(formData);
-      const isLoggedIn = await checkLogInStatus();
-      setIsLoggedIn(isLoggedIn);
-      await localStorage.setItem("username", response.data.user.username)
-      navigate("/");
+      await login(formData);
+      const status = await checkLogInStatus();
+      setIsLoggedIn(status.isLoggedIn);
+      setUserData(status.userData);
+      navigate("/", { replace: true });
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);
     }
@@ -34,10 +34,7 @@ const Login = (props) => {
 
   return (
     <div className="flex flex-row items-center grow w-full py-9 px-9">
-      <form
-        className="flex flex-col w-[400px] max-w-7xl mx-auto items-center justify-center px-5 py-10 gap-y-6 text-white bg-secondary rounded-xl"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form className="flex flex-col w-[400px] max-w-7xl mx-auto items-center justify-center px-5 py-10 gap-y-6 text-white bg-secondary rounded-xl" onSubmit={handleSubmit(onSubmit)}>
         <img className="mb-12" src={logo} alt="logo" />
         <div className="w-full">
           <input
@@ -51,11 +48,7 @@ const Login = (props) => {
               required: "Please provide a username or email.",
             })}
           ></input>
-          {errors.emailOrUsername && (
-            <span className="mt-2 text-red-600">
-              {errors.emailOrUsername.message}
-            </span>
-          )}
+          {errors.emailOrUsername && <span className="mt-2 text-red-600">{errors.emailOrUsername.message}</span>}
         </div>
         <div className="w-full">
           <input
@@ -69,15 +62,10 @@ const Login = (props) => {
               required: "Please provide a password.",
             })}
           ></input>
-          {errors.password && (
-            <span className="mt-2 text-red-600">{errors.password.message}</span>
-          )}
+          {errors.password && <span className="mt-2 text-red-600">{errors.password.message}</span>}
         </div>
         {apiErrors}
-        <button
-          disabled={status === "waiting"}
-          className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1"
-        >
+        <button disabled={status === "waiting"} className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1">
           {status === "waiting" && <div className="spinner-border"></div>}
           Login
         </button>

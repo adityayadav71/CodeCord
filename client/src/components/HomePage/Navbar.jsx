@@ -103,7 +103,7 @@ const HomeNavbar = ({ handleLogout }) => {
               >
                 <ul className="flex flex-col gap-y-3">
                   <li onClick={() => setProfileActive((prev) => !prev)}>
-                    <Link to={`/app/user/${localStorage.getItem("username")}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
+                    <Link to={`/app/user/${userData?.username}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaUserAlt />
                       Profile
                     </Link>

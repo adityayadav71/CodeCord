@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/svg/logo.svg";
 import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
-import { signup } from "../../api/authDataAPI";
+import { signup, checkLogInStatus } from "../../api/authDataAPI";
+import { AuthContext } from "../../App";
 
 const SignUp = (props) => {
   const navigate = useNavigate();
@@ -17,12 +18,16 @@ const SignUp = (props) => {
   const [apiErrors, setAPIErrors] = useState();
   const [status, setStatus] = useState();
 
+  const { setIsLoggedIn, setUserData } = useContext(AuthContext);
+
   const onSubmit = async (formData) => {
     setStatus("waiting");
     try {
-      const res = await signup(formData);
-      await localStorage.setItem("username", res.data.user.username)
-      navigate("/", { replace: true });
+      await signup(formData);
+      const status = await checkLogInStatus();
+      setIsLoggedIn(status.isLoggedIn);
+      setUserData(status.userData);
+      if (status.isLoggedIn) navigate("/", { replace: true });
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);
     }
@@ -31,10 +36,7 @@ const SignUp = (props) => {
 
   return (
     <div className="flex flex-row items-center grow w-full py-9 px-9">
-      <form
-        className="flex flex-col w-[400px] max-w-7xl mx-auto items-center justify-center px-5 py-10 gap-y-6 text-white bg-secondary rounded-xl"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form className="flex flex-col w-[400px] max-w-7xl mx-auto items-center justify-center px-5 py-10 gap-y-6 text-white bg-secondary rounded-xl" onSubmit={handleSubmit(onSubmit)}>
         <img className="mb-12" src={logo} alt="logo" />
         <div className="w-full relative group">
           <input
@@ -47,16 +49,12 @@ const SignUp = (props) => {
             {...register("username", {
               required: "Please provide a username.",
               pattern: {
-                value:
-                  /^(?=.{4,20}$)(?!.*\s)(?!.*[_]{2})[a-zA-Z0-9_]+(?<![_.])$/,
-                message:
-                  "Username should be 4 to 20 characters long, only digits, letters and underscores are allowed. Do not end with an underscore.",
+                value: /^(?=.{4,20}$)(?!.*\s)(?!.*[_]{2})[a-zA-Z0-9_]+(?<![_.])$/,
+                message: "Username should be 4 to 20 characters long, only digits, letters and underscores are allowed. Do not end with an underscore.",
               },
             })}
           ></input>
-          {errors.username && (
-            <span className="mt-2 text-red-600">{errors.username.message}</span>
-          )}
+          {errors.username && <span className="mt-2 text-red-600">{errors.username.message}</span>}
         </div>
         <div className="w-full relative group">
           <input
@@ -69,16 +67,12 @@ const SignUp = (props) => {
             {...register("password", {
               required: "Please provide a password.",
               pattern: {
-                value:
-                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-                message:
-                  "Must have 8 characters, at least one letter, one digit and one special character(@, $, !, %, *, #, ?, &)",
+                value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                message: "Must have 8 characters, at least one letter, one digit and one special character(@, $, !, %, *, #, ?, &)",
               },
             })}
           ></input>
-          {errors.password && (
-            <span className="mt-2 text-red-600">{errors.password.message}</span>
-          )}
+          {errors.password && <span className="mt-2 text-red-600">{errors.password.message}</span>}
         </div>
         <div className="w-full relative group">
           <input
@@ -97,11 +91,7 @@ const SignUp = (props) => {
               },
             })}
           ></input>
-          {errors.passwordConfirm && (
-            <span className="mt-2 text-red-600">
-              {errors.passwordConfirm.message}
-            </span>
-          )}
+          {errors.passwordConfirm && <span className="mt-2 text-red-600">{errors.passwordConfirm.message}</span>}
         </div>
         <div className="w-full relative group">
           <input
@@ -117,15 +107,10 @@ const SignUp = (props) => {
               },
             })}
           ></input>
-          {errors.email && (
-            <span className="mt-2 text-red-600">{errors.email.message}</span>
-          )}
+          {errors.email && <span className="mt-2 text-red-600">{errors.email.message}</span>}
         </div>
         {apiErrors}
-        <button
-          disabled={status === "waiting"}
-          className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1"
-        >
+        <button disabled={status === "waiting"} className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1">
           {status === "waiting" && <div className="spinner-border"></div>}
           Sign Up
         </button>
