@@ -20,6 +20,7 @@ const Profile = () => {
   const [imageURL, setImageURL] = useState(null);
   const [tabActive, switchTab] = useState("Recent Submissions");
   const [isMyProfile, setIsMyProfile] = useState(false);
+  const [profileData, setProfileData] = useState({});
   const [editing, setEditing] = useState(false);
   const [tags, setTags] = useState([]);
   const [countries, setCountries] = useState([]);
@@ -29,9 +30,6 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (username === localStorage.getItem("username")) {
-      setIsMyProfile(true);
-    }
     const loadData = async () => {
       const countryData = await axios.get("https://restcountries.com/v3.1/all");
       setCountries(() => {
@@ -48,28 +46,33 @@ const Profile = () => {
           }
         });
       });
-      const response = await getUserData(username);
-      if (response.userData) setUserData(response.userData);
-      else navigate("/notfound", { replace: true });
+      if (username === userData.username) {
+        setIsMyProfile(true);
+        setProfileData(userData);
+      } else {
+        const response = await getUserData(username);
+        if (response.userData) setProfileData(response.userData);
+        else navigate("/notfound", { replace: true });
+      }
     };
     loadData();
   }, []);
 
   useEffect(() => {
-    if (Object.keys(userData).length !== 0) {
+    if (Object.keys(profileData).length !== 0) {
       setPercentageSolved((prev) =>
         prev.map((_, i) => {
           const total = i === 0 ? totalEasy : i === 1 ? totalMedium : totalHard;
-          return `${(userData?.numberOfSubmissions[i] * 100) / total}`;
+          return `${(profileData?.numberOfSubmissions[i] * 100) / total}`;
         })
       );
-      if (userData?.avatar) {
-        const imgURL = `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`;
+      if (profileData?.avatar) {
+        const imgURL = `data:${profileData?.avatar?.contentType};base64,${profileData?.avatar?.image}`;
         setPreview(imgURL);
         setImageURL(imgURL);
       }
     }
-  }, [userData]);
+  }, [profileData]);
 
   useEffect(() => {
     const closeDropDown = (event) => {
@@ -124,7 +127,10 @@ const Profile = () => {
       await updateUserProfile(formData);
 
       const response = await getUserData(username);
-      if (response.userData) setUserData(response.userData);
+      if (response.userData) {
+        setUserData(response.userData);
+        setProfileData(response.userData);
+      }
 
       setModalOpen(false);
     } else {
@@ -149,7 +155,10 @@ const Profile = () => {
     await updateUserProfile(formData);
 
     const response = await getUserData(username);
-    if (response.userData) setUserData(response.userData);
+    if (response.userData) {
+      setUserData(response.userData);
+      setProfileData(response.userData);
+    }
   };
 
   const clearPreview = () => {
@@ -183,7 +192,7 @@ const Profile = () => {
         <div className="rounded-lg w-64 h-64">
           {preview ? (
             <img className="w-full h-full object-cover rounded-lg" src={preview} alt="user-avatar-preview" />
-          ) : userData?.avatar ? (
+          ) : profileData?.avatar ? (
             <img className="w-full h-full object-cover rounded-lg" src={imageURL} alt="user-avatar" />
           ) : (
             <div className="w-full h-full bg-gray-300 rounded-lg flex items-center justify-center">
@@ -229,7 +238,7 @@ const Profile = () => {
           }}
           className="modal group absolute flex items-center justify-center w-24 h-24 hover:cursor-pointer rounded-lg overflow-hidden bg-grey2 shadow shadow-heading -top-12 left-1/2 -translate-x-1/2"
         >
-          {userData?.avatar ? <img className="w-full h-full object-cover" src={imageURL} alt="profile-pic" /> : <FaUserAlt className="text-5xl" />}
+          {profileData?.avatar ? <img className="w-full h-full object-cover" src={imageURL} alt="profile-pic" /> : <FaUserAlt className="text-5xl" />}
           {isMyProfile && (
             <>
               <FaCamera className="absolute group-hover:opacity-100 z-10 opacity-0 transition duration-300 text-5xl" />
@@ -237,26 +246,26 @@ const Profile = () => {
             </>
           )}
         </div>
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold text-xl">{userData?.username}</div>
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold text-xl">{profileData?.username}</div>
         <div className="mr-auto flex items-center">
           <div className="text-center px-6 mr-6 border-r border-accent3">
             <p>Rooms Joined</p>
-            <p className="text-4xl font-bold">{userData?.roomsCreated?.length}</p>
+            <p className="text-4xl font-bold">{profileData?.roomsCreated?.length}</p>
           </div>
           <div className="text-center">
             <p>Problems Solved</p>
-            <p className="text-4xl font-bold">{userData?.totalSubmissions}</p>
+            <p className="text-4xl font-bold">{profileData?.totalSubmissions}</p>
           </div>
         </div>
         <div className="ml-auto flex items-center">
           <div className="text-center px-6 mr-6 border-r border-accent3">
             <p>Country</p>
             <div className="flex items-center justify-center gap-x-3">
-              {userData?.country && (
-                <img className="w-5 h-5 object-cover overflow-clip rounded-full" src={`${countries?.filter((country) => country.name === userData?.country)[0]?.flag}`} alt="country-flag" />
+              {profileData?.country && (
+                <img className="w-5 h-5 object-cover overflow-clip rounded-full" src={`${countries?.filter((country) => country.name === profileData?.country)[0]?.flag}`} alt="country-flag" />
               )}
               {editing ? (
-                <select className="profile-data focus:outline-none px-3 py-1 rounded-lg bg-primary" defaultValue={userData?.country} name="country">
+                <select className="profile-data focus:outline-none px-3 py-1 rounded-lg bg-primary" defaultValue={profileData?.country} name="country">
                   {countries.map((country, index) => (
                     <option key={index} value={country.name}>
                       {country.name}
@@ -264,12 +273,12 @@ const Profile = () => {
                   ))}
                 </select>
               ) : (
-                <p>{userData?.country ?? <span className="text-sm text-grey1">Country</span>}</p>
+                <p>{profileData?.country ?? <span className="text-sm text-grey1">Country</span>}</p>
               )}
             </div>
           </div>
           <div className="text-center flex items-center gap-x-3">
-            {userData?.socials?.map((social, index) => {
+            {profileData?.socials?.map((social, index) => {
               if (social !== "")
                 return index === 0 ? (
                   <a href={social} className="hover:text-accent1 transition duration-300">
@@ -293,10 +302,10 @@ const Profile = () => {
             <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">About</h2>
             {editing ? (
               <textarea maxLength="512" name="about" className="profile-data w-full h-40 leading-4 rounded-lg bg-lightSecondary focus:outline-none p-3">
-                {userData?.about}
+                {profileData?.about}
               </textarea>
             ) : (
-              <p className="leading-6">{userData?.about || <span className="text-sm text-grey1">Not updated</span>} </p>
+              <p className="leading-6">{profileData?.about || <span className="text-sm text-grey1">Not updated</span>} </p>
             )}
           </section>
           <section className="mb-8">
@@ -317,8 +326,8 @@ const Profile = () => {
                     })}
                   <input type="text" placeholder="Press enter to add skill..." onKeyDown={addTag} className="bg-transparent focus:outline-none" />
                 </div>
-              ) : userData?.skills?.length !== 0 ? (
-                userData.skills?.map((skill) => <span className="px-3 rounded-lg bg-primary">{skill}</span>)
+              ) : profileData?.skills?.length !== 0 ? (
+                profileData?.skills?.map((skill) => <span className="px-3 rounded-lg bg-primary">{skill}</span>)
               ) : (
                 <p className="leading-6">
                   <span className="text-sm text-grey1">Not updated</span>
@@ -337,7 +346,7 @@ const Profile = () => {
                     </label>
                     <input
                       name="github_link"
-                      value={userData?.socials[0]}
+                      value={profileData?.socials[0]}
                       type="text"
                       placeholder="Link to GitHub Profile"
                       className="profile-data px-3 py-1 w-full rounded-lg bg-lightSecondary focus:outline-none"
@@ -349,7 +358,7 @@ const Profile = () => {
                     </label>
                     <input
                       name="linkedin_link"
-                      value={userData?.socials[1]}
+                      value={profileData?.socials[1]}
                       type="text"
                       placeholder="Link to LinkedIn Profile"
                       className="profile-data px-3 py-1 w-full rounded-lg bg-lightSecondary focus:outline-none"
@@ -361,9 +370,9 @@ const Profile = () => {
           )}
           <section className="mb-8">
             <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Friends</h2>
-            {userData?.friends?.length !== 0 ? (
+            {profileData?.friends?.length !== 0 ? (
               <div className="z-[2] grow">
-                {userData.friends?.map((friend) => (
+                {profileData?.friends?.map((friend) => (
                   <div className="flex flex-row rounded-xl w-full gap-x-3 items-center p-3 hover:bg-hover hover:cursor-pointer">
                     <div className="flex flex-row items-center justify-center h-12 w-12 bg-grey2 rounded-full">
                       <FaUserAlt className="text-4xl hover:cursor-pointer" />
@@ -420,7 +429,7 @@ const Profile = () => {
                 <p className="font-bold">{totalEasy}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-greenBackGround relative">
                   <div className={`absolute bg-green bottom-0 w-14`} style={{ height: `${percentageSolved[0]}%` }}></div>
-                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(userData.numberOfSubmissions && userData.numberOfSubmissions[0]) || 0}</p>
+                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(profileData?.numberOfSubmissions && profileData.numberOfSubmissions[0]) || 0}</p>
                 </div>
                 <p>E</p>
               </div>
@@ -428,7 +437,7 @@ const Profile = () => {
                 <p className="font-bold">{totalMedium}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-yellowBackGround relative">
                   <div className={`absolute bg-yellow-500 bottom-0 w-14`} style={{ height: `${percentageSolved[1]}%` }}></div>
-                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(userData.numberOfSubmissions && userData.numberOfSubmissions[1]) || 0}</p>
+                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(profileData?.numberOfSubmissions && profileData.numberOfSubmissions[1]) || 0}</p>
                 </div>
                 <p>M</p>
               </div>
@@ -436,14 +445,14 @@ const Profile = () => {
                 <p className="font-bold">{totalHard}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-redBackGround relative">
                   <div className={`absolute bg-hardRed bottom-0 w-14`} style={{ height: `${percentageSolved[2]}%` }}></div>
-                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(userData.numberOfSubmissions && userData.numberOfSubmissions[2]) || 0}</p>
+                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(profileData?.numberOfSubmissions && profileData.numberOfSubmissions[2]) || 0}</p>
                 </div>
                 <p>H</p>
               </div>
             </div>
             <div className="grow">
               <div className="flex flex-col items-center justify-center h-52 w-52 rounded-full border-8 border-accent1 m-auto">
-                <p className="font-bold text-5xl">{userData?.totalSubmissions}</p>
+                <p className="font-bold text-5xl">{profileData?.totalSubmissions}</p>
                 <p>solved</p>
               </div>
             </div>
