@@ -41,6 +41,18 @@ const server = app.listen(port, () => {
     console.log(`App running on port ${port} ✅`);
 });
 
+const io = require("socket.io")(server, {
+  cors: {
+    origin: ["http://localhost:5173"]
+  }
+})
+
+io.on("connection", (socket) => {
+  socket.on("send-message", (message, username) => {
+    socket.broadcast.emit("receive-message", message, username)
+  })
+})
+
 process.on("unhandledRejection", (err) => {
   console.log("UNHANDLED REJECTION! 💥 Shutting down...");
   console.log(err.name, err.message);
