@@ -27,7 +27,7 @@ function App() {
     const setLoggedIn = async () => {
       const status = await checkLogInStatus();
       setIsLoggedIn(status.isLoggedIn);
-      setUserData(status.userData)
+      setUserData(status.userData);
     };
     setLoggedIn();
   }, []);
@@ -63,7 +63,11 @@ function App() {
               <Route path="contest" element={<Contest />} />
               <Route path="problem">
                 <Route index element={<Problem />} />
-                <Route path=":name" element={<Editor />} />
+                <Route path=":name" element={<Editor isRoom={false} />} />
+              </Route>
+              <Route path="room">
+                <Route index element={<Problem />} />
+                <Route path=":name" element={<Editor isRoom={true} />} />
               </Route>
               <Route path="discussion" element={<Discussion />} />
               <Route path="user/:username" element={<Profile />} />
