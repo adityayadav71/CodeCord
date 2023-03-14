@@ -1,10 +1,10 @@
 import { FaUserPlus, FaPhoneAlt, FaSmile, FaUserAlt, FaCog } from "react-icons/fa";
 import { BiAlarm } from "react-icons/bi";
 import { useForm } from "react-hook-form";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../App";
 
-const Chat = ({ socket }) => {
+const Chat = ({ socket, roomMessage, setRoomMessage }) => {
   const { userData } = useContext(AuthContext);
 
   const { register, handleSubmit, reset } = useForm();
@@ -64,6 +64,10 @@ const Chat = ({ socket }) => {
     ]);
   });
 
+  useEffect(() => {
+    if (roomMessage) setRoomMessage((message) => <div className="px-3 py-2 bg-primary rounded-lg">{message}</div>);
+  }, []);
+
   return (
     <div className="relative flex flex-col h-full">
       <div className="w-full p-3 border-b border-lightSecondary">
@@ -94,7 +98,10 @@ const Chat = ({ socket }) => {
         <span className="bg-accent1 rounded-lg px-3 font-bold">30:00</span>
       </h1>
       <div className="relative mx-3 py-3 overflow-y-hidden">
-        <div className="h-full overflow-y-scroll mb-12">{messages}</div>
+        <div className="h-full overflow-y-scroll mb-12">
+          {messages}
+          {roomMessage}
+        </div>
       </div>
       <div className="absolute bottom-0 w-full p-3 bg-secondary">
         <FaSmile className="absolute top-1/2 -translate-y-1/2 right-6" />

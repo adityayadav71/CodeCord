@@ -11,6 +11,7 @@ import { io } from "socket.io-client";
 const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
   const [connection, setConnection] = useState(null);
+  const [roomMessage, setRoomMessage] = useState("");
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
   const [language, setLanguage] = useState("Java");
@@ -37,8 +38,9 @@ const Editor = ({ isRoom }) => {
 
     if (isRoom) {
       const socket = io("http://localhost:5000");
-      socket.on("connect", () => {
-        setConnection(socket);
+      socket.on("user-joined", (message) => {
+        console.log(message);
+        setRoomMessage(message)
       });
     }
   }, []);
@@ -78,7 +80,7 @@ const Editor = ({ isRoom }) => {
       </div>
       {isRoom && (
         <div className="bg-lightAccent3">
-          <Chat socket={connection} />
+          <Chat socket={connection} roomMessage={roomMessage} setRoomMessage={setRoomMessage}/>
         </div>
       )}
     </Split>

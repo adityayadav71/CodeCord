@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import ProblemList from "../Problems/ProblemList";
 import Pagination from "../Problems/Pagination";
 import RoomTypeSelector from "./RoomTypeSelector";
@@ -7,15 +7,20 @@ import RoomDuration from "./RoomDuration";
 import RoomInviteLink from "./RoomInviteLink";
 import RoomVisibility from "./RoomVisibility";
 import ProblemFilter from "../Problems/ProblemFilter";
+import { io } from "socket.io-client";
+import { AuthContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 const CreateRoom = ({ isContest }) => {
+  const inviteRef = useRef(null);
+  const { userData } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const updateTimeLimit = () => {
     const slider = document.getElementById("slider");
     const timeLimit = slider.value;
     const percent = (timeLimit * 100) / 120;
-    slider.style.background = `linear-gradient(90deg, ${
-      "rgb(44 187 93)" + percent + "%"
-    } , ${"rgb(41 77 53)" + percent + "%"})`;
+    slider.style.background = `linear-gradient(90deg, ${"rgb(44 187 93)" + percent + "%"} , ${"rgb(41 77 53)" + percent + "%"})`;
     setTimeLimit(timeLimit);
   };
 
@@ -46,6 +51,20 @@ const CreateRoom = ({ isContest }) => {
     return { hours, minutes };
   };
 
+  const joinRoom = () => {
+    const socket = io("http://localhost:5000");
+    const inviteCode = inviteRef.current.value;
+    if (inviteCode !== "") {
+      socket.emit("join-room", inviteCode, userData?.username, () => {
+        navigate(`/app/room/${inviteCode}`, { replace: false });
+      });
+    } else {
+      socket.emit("create-room", (inviteCode) => {
+        navigate(`/app/room/${inviteCode}`, { replace: false });
+      })
+    }
+  };
+
   return (
     <div>
       <div className="absolute top-0 left-0 h-full w-full z-[9998]"></div>
@@ -54,43 +73,26 @@ const CreateRoom = ({ isContest }) => {
           <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
             <div className="flex flex-row gap-x-3 mb-3">
               <h1 className="text-xl font-bold">Create Room</h1>
-              <RoomVisibility
-                visibility={visibility}
-                setVisibility={setVisibility}
-              />
+              <RoomVisibility visibility={visibility} setVisibility={setVisibility} />
             </div>
             <div className="grid grid-cols-2 grid-rows-2 gap-5">
               <RoomTypeSelector roomType={roomType} setRoomType={setRoomType} />
-              <ParticipantLimit
-                participantLimit={participantLimit}
-                setParticipantLimit={setParticipantLimit}
-                isLimitActive={isLimitActive}
-                setLimitActive={setLimitActive}
-              />
-              <RoomDuration
-                roomType={roomType}
-                updateTimeLimit={updateTimeLimit}
-                hrs={hrs}
-                mins={mins}
-              />
+              <ParticipantLimit participantLimit={participantLimit} setParticipantLimit={setParticipantLimit} isLimitActive={isLimitActive} setLimitActive={setLimitActive} />
+              <RoomDuration roomType={roomType} updateTimeLimit={updateTimeLimit} hrs={hrs} mins={mins} />
               <RoomInviteLink />
             </div>
           </div>
           <div className="flex flex-col gap-y-3 pl-12 grow-0">
             <h1 className="text-xl font-bold mb-12">Join Room</h1>
-            <input
-              className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
-              type="text"
-              placeholder="Invite Code"
-            />
-            <button className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg">
+            <input ref={inviteRef} className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3" type="text" placeholder="Invite Code" />
+            <button onClick={joinRoom} className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg">
               START
             </button>
           </div>
         </div>
 
         <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
-          <ProblemFilter filterInsideModal={true}/>
+          <ProblemFilter filterInsideModal={true} />
           <div className="grow overflow-y-scroll mb-3">
             <ProblemList type="select" />
           </div>

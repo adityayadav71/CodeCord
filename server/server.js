@@ -43,15 +43,24 @@ const server = app.listen(port, () => {
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: ["http://localhost:5173"]
-  }
-})
+    origin: ["http://localhost:5173"],
+  },
+});
 
 io.on("connection", (socket) => {
-  socket.on("send-message", (message, username) => {
-    socket.broadcast.emit("receive-message", message, username)
+  socket.on("join-room", (inviteCode, username, cb) => {
+    socket.join(inviteCode);
+    cb();
+    socket.emit("user-joined", `${username} joined the room`);
+  });
+  socket.on("create-room", (cb) => {
+    socket.join(socket.id);
+    cb(socket.id);
   })
-})
+  socket.on("send-message", (message, username) => {
+    socket.broadcast.emit("receive-message", message, username);
+  });
+});
 
 process.on("unhandledRejection", (err) => {
   console.log("UNHANDLED REJECTION! 💥 Shutting down...");
