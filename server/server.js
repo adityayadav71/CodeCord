@@ -50,15 +50,20 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   socket.on("join-room", (inviteCode, username, cb) => {
     socket.join(inviteCode);
+
     cb();
-    socket.emit("user-joined", `${username} joined the room`);
+    const roomMessage = {
+      type: "roomMessage",
+      message: `${username} joined the room`,
+    }
+    socket.to(inviteCode).emit("receive-message", roomMessage);
   });
   socket.on("create-room", (cb) => {
     socket.join(socket.id);
     cb(socket.id);
   })
-  socket.on("send-message", (message, username) => {
-    socket.broadcast.emit("receive-message", message, username);
+  socket.on("send-message", (data) => {
+    socket.broadcast.emit("receive-message", data);
   });
 });
 

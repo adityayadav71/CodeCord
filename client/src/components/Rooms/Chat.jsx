@@ -3,70 +3,36 @@ import { BiAlarm } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../App";
+import { useParams } from "react-router-dom";
 
-const Chat = ({ socket, roomMessage, setRoomMessage }) => {
+const Chat = ({ socket }) => {
   const { userData } = useContext(AuthContext);
+  const params = useParams();
 
   const { register, handleSubmit, reset } = useForm();
-  const [messages, setMessages] = useState([]);
+  const [messageList, setMessageList] = useState([]);
 
-  const sendMessage = (formData) => {
-    reset();
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      <div className="flex flex-col gap-y-3 mb-3">
-        <div className="grid grid-cols-6">
-          <div className="col-span-1">
-            <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
-              <FaUserAlt className="text-xl hover:cursor-pointer" />
-            </div>
-          </div>
-          <div className="col-span-4">
-            <p>{userData.username}</p>
-          </div>
-          <div className="col-span-1 justify-self-end text-lightSecondary">
-            <p className="text-grey1">{new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}</p>
-          </div>
-        </div>
-        <div className="grow grid grid-cols-6">
-          <div className="row-start-2 col-start-2 col-span-5">
-            <p>{formData.message}</p>
-          </div>
-        </div>
-      </div>,
-    ]);
-    socket.emit("send-message", formData.message, userData?.username);
+  const sendMessage = async (formData) => {
+    if (formData.message !== "") {
+      reset(); // reset message input
+      const messageData = {
+        type: "chatMessage",
+        message: formData.message,
+        author: userData?.username,
+        avatar: userData?.avatar?.image && `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`,
+        timeStamp: new Date(Date.now()).getHours().toString().padStart(2, "0") + ":" + new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
+      };
+      await socket.emit("send-message", messageData);
+
+      setMessageList((prevList) => [...prevList, messageData]);
+    }
   };
 
-  socket?.on("receive-message", (message, username) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      <div className="flex flex-col gap-y-3 mb-3">
-        <div className="grid grid-cols-6">
-          <div className="col-span-1">
-            <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
-              <FaUserAlt className="text-xl hover:cursor-pointer" />
-            </div>
-          </div>
-          <div className="col-span-4">
-            <p>{username}</p>
-          </div>
-          <div className="col-span-1 justify-self-end text-lightSecondary">
-            <p className="text-grey1">{new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}</p>
-          </div>
-        </div>
-        <div className="grow grid grid-cols-6">
-          <div className="row-start-2 col-start-2 col-span-5">
-            <p>{message}</p>
-          </div>
-        </div>
-      </div>,
-    ]);
-  });
-
   useEffect(() => {
-    if (roomMessage) setRoomMessage((message) => <div className="px-3 py-2 bg-primary rounded-lg">{message}</div>);
-  }, []);
+    socket?.on("receive-message", (data) => {
+      setMessageList((prevList) => [...prevList, data]);
+    });
+  }, [socket]);
 
   return (
     <div className="relative flex flex-col h-full">
@@ -98,9 +64,37 @@ const Chat = ({ socket, roomMessage, setRoomMessage }) => {
         <span className="bg-accent1 rounded-lg px-3 font-bold">30:00</span>
       </h1>
       <div className="relative mx-3 py-3 overflow-y-hidden">
-        <div className="h-full overflow-y-scroll mb-12">
-          {messages}
-          {roomMessage}
+        <div className="h-full overflow-y-scroll mb-12" id="chat-window">
+          {messageList.map((messageContent) => {
+            return messageContent?.type === "roomMessage" ? (
+              <div className="px-3 py-2 mb-3 bg-primary rounded-lg">{messageContent.message}</div>
+            ) : (
+              <div className="flex flex-col gap-y-3 mb-3">
+                <div className="grid grid-cols-6">
+                  <div className="col-span-1">
+                    <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
+                      {messageContent.avatar ? (
+                        <img className="rounded-full overflow-clip object-cover h-full w-full" src={messageContent.avatar} alt="user-profile-picture" />
+                      ) : (
+                        <FaUserAlt className="text-xl hover:cursor-pointer" />
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-span-4">
+                    <p>{messageContent.author}</p>
+                  </div>
+                  <div className="col-span-1 justify-self-end text-lightSecondary">
+                    <p className="text-grey1">{messageContent.timeStamp}</p>
+                  </div>
+                </div>
+                <div className="grow grid grid-cols-6">
+                  <div className="row-start-2 col-start-2 col-span-5">
+                    <p>{messageContent.message}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="absolute bottom-0 w-full p-3 bg-secondary">

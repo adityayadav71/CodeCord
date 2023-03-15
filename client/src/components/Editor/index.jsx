@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Split from "react-split";
 import { FaAngleUp } from "react-icons/fa";
 import Description from "./Description";
@@ -6,12 +6,12 @@ import CodeEditor from "./CodeEditor";
 import Console from "./Console";
 import Chat from "../Rooms/Chat";
 import LanguageSelector from "./LanguageSelector";
-import { io } from "socket.io-client";
+import { RoomContext } from "../../layouts/AppLayout";
 
 const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
-  const [connection, setConnection] = useState(null);
-  const [roomMessage, setRoomMessage] = useState("");
+  const { connection } = useContext(RoomContext);
+
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
   const [language, setLanguage] = useState("Java");
@@ -19,10 +19,7 @@ const Editor = ({ isRoom }) => {
 
   useEffect(() => {
     const closeDropdown = (event) => {
-      if (
-        !event.target.closest(".dropdown") ||
-        event.target.closest(".language")
-      ) {
+      if (!event.target.closest(".dropdown") || event.target.closest(".language")) {
         setLanguageOpen(false);
       }
     };
@@ -35,14 +32,6 @@ const Editor = ({ isRoom }) => {
   useEffect(() => {
     const sizes = JSON.parse(localStorage.getItem("sizes"));
     if ((isRoom && sizes?.length === 3) || (!isRoom && sizes?.length === 2)) setSizes(sizes);
-
-    if (isRoom) {
-      const socket = io("http://localhost:5000");
-      socket.on("user-joined", (message) => {
-        console.log(message);
-        setRoomMessage(message)
-      });
-    }
   }, []);
 
   const updateSize = (sizes) => {
@@ -80,7 +69,7 @@ const Editor = ({ isRoom }) => {
       </div>
       {isRoom && (
         <div className="bg-lightAccent3">
-          <Chat socket={connection} roomMessage={roomMessage} setRoomMessage={setRoomMessage}/>
+          <Chat socket={connection} />
         </div>
       )}
     </Split>

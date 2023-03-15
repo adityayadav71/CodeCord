@@ -7,13 +7,14 @@ import RoomDuration from "./RoomDuration";
 import RoomInviteLink from "./RoomInviteLink";
 import RoomVisibility from "./RoomVisibility";
 import ProblemFilter from "../Problems/ProblemFilter";
-import { io } from "socket.io-client";
 import { AuthContext } from "../../App";
+import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 
 const CreateRoom = ({ isContest }) => {
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
+  const { connection } = useContext(RoomContext);
   const navigate = useNavigate();
 
   const updateTimeLimit = () => {
@@ -36,7 +37,7 @@ const CreateRoom = ({ isContest }) => {
       else if (mins > 1) return `${mins} mins`;
     });
   });
-
+  
   const [isLimitActive, setLimitActive] = useState(false);
   const [participantLimit, setParticipantLimit] = useState(10);
   const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
@@ -52,14 +53,13 @@ const CreateRoom = ({ isContest }) => {
   };
 
   const joinRoom = () => {
-    const socket = io("http://localhost:5000");
     const inviteCode = inviteRef.current.value;
     if (inviteCode !== "") {
-      socket.emit("join-room", inviteCode, userData?.username, () => {
+      connection?.emit("join-room", inviteCode, userData?.username, () => {
         navigate(`/app/room/${inviteCode}`, { replace: false });
       });
     } else {
-      socket.emit("create-room", (inviteCode) => {
+      connection?.emit("create-room", (inviteCode) => {
         navigate(`/app/room/${inviteCode}`, { replace: false });
       })
     }
