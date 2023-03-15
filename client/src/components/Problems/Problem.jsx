@@ -31,7 +31,7 @@ const Problem = ({
     return submissions;
   };
   return (
-    <div className="odd:bg-hover">
+    <div className="odd:bg-hover" key={number}>
       <div className="flex flex-row items-center p-3 text-lg">
         <div className="w-20">
           {status === "solved" ? (
