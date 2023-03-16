@@ -7,7 +7,29 @@ A coding platform with enhanced collaboration and competition features. Create r
 CodeCord is inspired by **<span>binarysearch.com</span>** (which has been shut down for some reason). It is a web application where users can **solve data structures & algorithm problems, give contests every week, maintain contest rating** and streak of solving problems daily similar to leetcode.
 Apart from the usual leetcode features, it provides the feature to create a live room where you can invite your friends to code together. While creating a room, a user can **either create a contest** to solve specific set of problems within a time limit and compete with their friends **or create a normal room** with a shared editor where both users can code simultaneously.
 
-#### Room features:
+## Installation
+
+**Prerequisites:**
+
+1. Git ([Download from here](https://git-scm.com/downloads))
+2. Node.js ([Download from here](https://nodejs.org/en/download/))
+
+Step 1: **Fork** the repository
+Step 2: **Clone** it to your desktop using the following command
+
+    git clone https://github.com/YOUR-USERNAME/CodeCord.git
+
+Step 3: In the **root** directory run the following **script**:
+
+    npm run setup
+
+Step 4: **Create a file named "config.env" in the server directory** using the example file given. The server will not start without this file.
+
+Step 5: After installation, start **two terminals** each for **client** and **server** subdirectories and run the following script in both.
+
+    npm run dev
+
+## Room features
 
 1. Three panes: problem description, code editor and console, room details and chat.
 2. Users can join a voice call anytime(in case of contest, after end) and discuss.
@@ -16,14 +38,10 @@ Apart from the usual leetcode features, it provides the feature to create a live
 
 ![Room Design Prototype](room.png)
 
-#### Potential future features:
+## Links and Resources:
 
-- Ability to make **friends** with other users.
-- **Interview rooms** with additional video calling feature.
-
-### Links and Resources:
 1. [Vercel-Deployment](https://www.codeack.tk/)
-2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1) 
+2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1)
 
 ## Tech Stack
 
@@ -34,9 +52,7 @@ Apart from the usual leetcode features, it provides the feature to create a live
 ![Node JS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express JS](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Socket.IO](https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white)
-![Chart JS](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
-![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white)
 
 ## Development Tools
 
