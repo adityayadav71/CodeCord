@@ -38,14 +38,12 @@ Step 5: After installation, start **two terminals** each for **client** and **se
 
 ![Room Design Prototype](room.png)
 
-#### Potential future features:
-
-- Ability to make **friends** with other users.
-- **Interview rooms** with additional video calling feature.
+## Links and Resources:
 
 ### Links and Resources:
 
 1. [Vercel-Deployment](https://www.codeack.tk/)
+2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1)
 2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1)
 
 ## Tech Stack
@@ -57,9 +55,7 @@ Step 5: After installation, start **two terminals** each for **client** and **se
 ![Node JS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express JS](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Socket.IO](https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white)
-![Chart JS](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
-![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white)
 
 ## Development Tools
 
