@@ -1,22 +1,32 @@
-import { FaCog, FaExpand, FaPlus, FaUndo } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaCog, FaCompress, FaExpand, FaPlus, FaUndo } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
-const Console = (props) => {
+const Console = ({ handleSettings }) => {
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const handleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+  useEffect(() => {
+    isFullScreen ? document.querySelector(".editor").requestFullscreen() : document.exitFullscreen();
+  }, [isFullScreen]);
+
   return (
-    <div className="flex flex-col justify-content-end h-full p-3 overflow-hidden">
+    <div className="relative flex flex-col justify-content-end h-full p-3 overflow-hidden">
       <div className="flex flex-row justify-between items-center border-b border-lightSecondary">
         <div>
-          <button className="w-28 p-3 border-b-2 border-accent1">
-            Testcase
-          </button>
-          <button className="w-28 p-3 text-grey1 hover:text-white">
-            Result
-          </button>
+          <button className="w-28 p-3 border-b-2 border-accent1">Testcase</button>
+          <button className="w-28 p-3 text-grey1 hover:text-white">Result</button>
         </div>
         <div className="flex flex-row items-center gap-x-3">
           <FaUndo className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" />
-          <FaCog className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" />
-          <FaExpand className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" />
+          <FaCog className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
+          {isFullScreen ? (
+            <FaCompress className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+          ) : (
+            <FaExpand className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+          )}
         </div>
       </div>
       <div className="grow flex flex-col py-3 px-4 overflow-y-scroll">
@@ -43,17 +53,11 @@ const Console = (props) => {
         </div>
         <div className="w-full mb-3">
           <p className="mb-2">Input 1 = </p>
-          <input
-            type="text"
-            className="w-full px-3 py-2 bg-lightPrimary focus:ring-1 focus:ring-accent1 rounded-lg focus:outline-none border-none"
-          />
+          <input type="text" className="w-full px-3 py-2 bg-lightPrimary focus:ring-1 focus:ring-accent1 rounded-lg focus:outline-none border-none" />
         </div>
         <div className="w-full">
           <p className="mb-2">Input 2 = </p>
-          <input
-            type="text"
-            className="w-full px-3 py-2 bg-lightPrimary focus:ring-1 focus:ring-accent1 rounded-lg focus:outline-none border-none"
-          />
+          <input type="text" className="w-full px-3 py-2 bg-lightPrimary focus:ring-1 focus:ring-accent1 rounded-lg focus:outline-none border-none" />
         </div>
       </div>
     </div>
