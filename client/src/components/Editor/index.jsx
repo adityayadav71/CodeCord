@@ -11,6 +11,9 @@ import { AuthContext } from "../../App";
 import { Link } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
 import ThemeSelector from "./ThemeSelector";
+import FontSelector from "./FontSelector";
+import KeyBindSelector from "./KeyBindSelector";
+import TabSelector from "./TabSelector";
 
 const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
@@ -19,23 +22,7 @@ const Editor = ({ isRoom }) => {
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
-  const [language, setLanguage] = useState("Java");
-  const [languageOpen, setLanguageOpen] = useState(false);
-  const [fontSizeOpen, setFontSizeOpen] = useState(false);
-  const [editorTheme, setEditorTheme] = useState(themes.dracula);
-  const [editorFontSize, setEditorFontSize] = useState(themes.dracula);
-
-  useEffect(() => {
-    const closeDropdown = (event) => {
-      if (!event.target.closest(".dropdown") || event.target.closest(".language")) {
-        setLanguageOpen(false);
-      }
-    };
-    document.addEventListener("click", closeDropdown);
-    return () => {
-      document.removeEventListener("click", closeDropdown);
-    };
-  }, []);
+  const [editorSettings, setEditorSettings] = useState({ theme: themes.dracula, themeName: "default", language: "Java", fontSize: 12, keyBinding: "Vim", tabSize: 4 });
 
   useEffect(() => {
     const sizes = JSON.parse(localStorage.getItem("sizes"));
@@ -61,7 +48,7 @@ const Editor = ({ isRoom }) => {
         <div>
           <Split style={{ height: "calc(100% - 56px)" }} direction="vertical" sizes={consoleOpen ? [70, 30] : [100, 0]} minSize={[260, 0]} snapOffset={[0, 100]}>
             <div ref={editorRef} className="z-[-1] h-full bg-primary">
-              <CodeEditor language={language} isRoom={isRoom} editorTheme={editorTheme} editorFontSize={editorFontSize} />
+              <CodeEditor isRoom={isRoom} editorSettings={editorSettings} />
             </div>
             <div className="bg-lightAccent3 z-10">
               <Console handleSettings={handleSettings} />
@@ -73,7 +60,7 @@ const Editor = ({ isRoom }) => {
                 <p>Console</p>
                 <FaAngleUp className={`${consoleOpen ? "rotate-180" : ""}`} />
               </button>
-              <LanguageSelector language={language} setLanguage={setLanguage} languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
+              <LanguageSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
             </div>
             <div className="flex flex-row items-center gap-x-3">
               {!isLoggedIn && (
@@ -108,86 +95,19 @@ const Editor = ({ isRoom }) => {
           </div>
           <div className="flex items-center justify-between p-3">
             <h1 className="text-lg">Editor Theme</h1>
-            <ThemeSelector setEditorTheme={setEditorTheme} />
+            <ThemeSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
           </div>
           <div className="flex items-center justify-between p-3">
             <h1 className="text-lg">Font Size</h1>
-            <div className="relative dropdown">
-              <button className="flex flex-row w-40 items-center justify-between gap-x-3 px-3 py-1 bg-accent3 hover:bg-lightPrimary rounded-lg" onClick={() => setFontSizeOpen((prev) => !prev)}>
-                <p>Font Size</p>
-                <FaAngleUp className={`${fontSizeOpen ? "rotate-180" : ""}`} />
-              </button>
-              <div className={`absolute ${fontSizeOpen ? "block" : "hidden"} top-12 left-0 w-fit rounded-lg bg-accent3 hideScrollbar overflow-scroll h-40`}>
-                <button
-                  className="w-full text-left px-3 hover:bg-lightPrimary"
-                  onClick={() => {
-                    setFontSizeOpen(false);
-                    setEditorFontSize(12);
-                  }}
-                >
-                  12px
-                </button>
-                <button
-                  className="w-full text-left px-3 hover:bg-lightPrimary"
-                  onClick={() => {
-                    setFontSizeOpen(false);
-                    setEditorFontSize(13);
-                  }}
-                >
-                  13px
-                </button>
-                <button
-                  className="w-full text-left px-3 hover:bg-lightPrimary"
-                  onClick={() => {
-                    setFontSizeOpen(false);
-                    setEditorFontSize(14);
-                  }}
-                >
-                  14px
-                </button>
-                <button
-                  className="w-full text-left px-3 hover:bg-lightPrimary"
-                  onClick={() => {
-                    setFontSizeOpen(false);
-                    setEditorFontSize(15);
-                  }}
-                >
-                  15px
-                </button>
-                <button
-                  className="w-full text-left px-3 hover:bg-lightPrimary"
-                  onClick={() => {
-                    setFontSizeOpen(false);
-                    setEditorFontSize(16);
-                  }}
-                >
-                  16px
-                </button>
-                <button
-                  className="w-full text-left px-3 hover:bg-lightPrimary"
-                  onClick={() => {
-                    setFontSizeOpen(false);
-                    setEditorFontSize(17);
-                  }}
-                >
-                  17px
-                </button>
-              </div>
-            </div>
+            <FontSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
           </div>
           <div className="flex items-center justify-between p-3">
             <h1 className="text-lg">Key Bindings</h1>
-            <select className="w-40 p-3 hover:cursor-pointer focus:outline-none bg-accent3 rounded-lg">
-              <option value="Vim">Vim</option>
-              <option value="Emacs">Emacs</option>
-            </select>
+            <KeyBindSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings}/>
           </div>
           <div className="flex items-center justify-between p-3">
             <h1 className="text-lg">Tab Size</h1>
-            <select className="w-40 p-3 hover:cursor-pointer focus:outline-none bg-accent3 rounded-lg">
-              <option value="4">4 spaces</option>
-              <option value="2">2 spaces</option>
-            </select>
+            <TabSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings}/>
           </div>
         </div>
       )}

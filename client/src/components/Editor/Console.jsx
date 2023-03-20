@@ -9,7 +9,11 @@ const Console = ({ handleSettings }) => {
     setIsFullScreen(!isFullScreen);
   };
   useEffect(() => {
-    isFullScreen ? document.querySelector(".editor").requestFullscreen() : document.exitFullscreen();
+    if (isFullScreen) {
+      document.querySelector(".editor").requestFullscreen();
+    } else if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
   }, [isFullScreen]);
 
   return (

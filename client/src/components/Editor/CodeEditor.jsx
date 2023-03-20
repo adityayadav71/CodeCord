@@ -5,7 +5,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { historyField } from "@codemirror/commands";
 import { java } from "@codemirror/lang-java";
 
-const CodeEditor = ({ language, isRoom, editorTheme, editorFontSize }) => {
+const CodeEditor = ({ isRoom, editorSettings }) => {
   const stateFields = { history: historyField };
 
   const serializedState = localStorage.getItem("myEditorState");
@@ -52,7 +52,7 @@ const CodeEditor = ({ language, isRoom, editorTheme, editorFontSize }) => {
       <CodeMirror
         className="grow w-full overflow-scroll hideScrollbar"
         value={value}
-        theme={editorTheme}
+        theme={editorSettings.theme}
         height="100%"
         initialState={
           serializedState

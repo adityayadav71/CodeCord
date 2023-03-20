@@ -1,29 +1,36 @@
-import { FaAngleUp } from "react-icons/fa";
+import { FaAngleDown } from "react-icons/fa";
+import { useState, useEffect } from "react";
 
-const LanguageSelector = ({
-  language,
-  setLanguage,
-  languageOpen,
-  setLanguageOpen,
-}) => {
+const LanguageSelector = ({ editorSettings, setEditorSettings }) => {
+  useEffect(() => {
+    const closeDropdown = (event) => {
+      if (!event.target.closest(".dropdown") || event.target.closest(".language")) {
+        setLanguageOpen(false);
+      }
+    };
+    document.addEventListener("click", closeDropdown);
+    return () => {
+      document.removeEventListener("click", closeDropdown);
+    };
+  }, []);
+
+  const [languageOpen, setLanguageOpen] = useState(false);
   return (
     <div className="relative dropdown">
-      <button
-        className="flex flex-row items-center justify-between gap-x-3 px-3 py-1 bg-primary hover:bg-lightPrimary rounded-lg"
-        onClick={() => setLanguageOpen((prev) => !prev)}
-      >
-        <p>{language}</p>
-        <FaAngleUp className={`${languageOpen ? "rotate-180" : ""}`} />
+      <button className="flex flex-row items-center justify-between gap-x-3 px-3 py-1 bg-primary hover:bg-lightPrimary rounded-lg" onClick={() => setLanguageOpen((prev) => !prev)}>
+        <p>{editorSettings.language}</p>
+        <FaAngleDown className={`${languageOpen ? "rotate-180" : ""}`} />
       </button>
       <div
         className={`language absolute 
-                ${languageOpen ? "block" : "hidden"} 
-                bottom-12 left-0 w-fit rounded-lg bg-primary hideScrollbar overflow-scroll h-40`}
+        ${languageOpen ? "block" : "hidden"} 
+        bottom-12 left-0 w-fit rounded-lg bg-primary hideScrollbar overflow-scroll h-40`}
       >
         <button
           className="w-full text-left px-3 hover:bg-lightPrimary"
           onClick={() => {
-            setLanguage("Java");
+            setLanguageOpen(false);
+            setEditorSettings({ ...editorSettings, language: "Java" });
           }}
         >
           Java
@@ -31,7 +38,8 @@ const LanguageSelector = ({
         <button
           className="w-full text-left px-3 hover:bg-lightPrimary"
           onClick={() => {
-            setLanguage("C++");
+            setLanguageOpen(false);
+            setEditorSettings({ ...editorSettings, language: "C++" });
           }}
         >
           C++
@@ -39,7 +47,8 @@ const LanguageSelector = ({
         <button
           className="w-full text-left px-3 hover:bg-lightPrimary"
           onClick={() => {
-            setLanguage("JavaScript");
+            setLanguageOpen(false);
+            setEditorSettings({ ...editorSettings, language: "JavaScript" });
           }}
         >
           JavaScript
@@ -47,7 +56,8 @@ const LanguageSelector = ({
         <button
           className="w-full text-left px-3 hover:bg-lightPrimary"
           onClick={() => {
-            setLanguage("Python");
+            setLanguageOpen(false);
+            setEditorSettings({ ...editorSettings, language: "Python" });
           }}
         >
           Python
@@ -55,7 +65,8 @@ const LanguageSelector = ({
         <button
           className="w-full text-left px-3 hover:bg-lightPrimary"
           onClick={() => {
-            setLanguage("Rust");
+            setLanguageOpen(false);
+            setEditorSettings({ ...editorSettings, language: "Rust" });
           }}
         >
           Rust
