@@ -44,6 +44,7 @@ module.exports = {
       feature3: "0px 0px 54px 45px #E2BC1E",
       signUp: "0px 4px 23px 2px #0098FA",
       dropDown: "0px 4px 30px rgba(0, 0, 0, 0.25)",
+      heavyDropDown: "0px 5px 5px rgba(0, 0, 0, 0.5)",
       heading: "0px 4px 4px rgba(0, 0, 0, 0.25)",
       modal: "0px 0px 1400px 2560px rgba(0, 0, 0, 0.5);",
     },
