@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaCog, FaCompress, FaExpand, FaPlus, FaUndo } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
-const Console = ({ handleSettings }) => {
+const Console = ({ handleSettings, clearEditor }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const handleFullScreen = () => {
@@ -24,13 +24,27 @@ const Console = ({ handleSettings }) => {
           <button className="w-28 p-3 text-grey1 hover:text-white">Result</button>
         </div>
         <div className="flex flex-row items-center gap-x-3">
-          <FaUndo className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" />
-          <FaCog className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
-          {isFullScreen ? (
-            <FaCompress className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
-          ) : (
-            <FaExpand className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
-          )}
+          <div className="relative group">
+            <FaUndo className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={clearEditor} />
+            <div className="absolute group-hover:block hidden top-8 -left-6 px-3 py-1 bg-grey1 text-primary rounded-lg">Reset</div>
+          </div>
+          <div className="relative group">
+            <FaCog className="settings text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
+            <div className="absolute group-hover:block hidden top-8 -left-8 px-3 py-1 bg-grey1 text-primary rounded-lg">Settings</div>
+          </div>
+          <div className="relative group">
+            {isFullScreen ? (
+              <>
+                <FaCompress className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                <div className="absolute group-hover:block hidden top-8 right-0 px-3 py-1 bg-grey1 text-primary rounded-lg">Minimize</div>
+              </>
+            ) : (
+              <>
+                <FaExpand className="text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                <div className="absolute group-hover:block hidden top-8 right-0 px-3 py-1 bg-grey1 text-primary rounded-lg">FullScreen</div>
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className="grow flex flex-col py-3 px-4 overflow-y-scroll">
