@@ -9,7 +9,6 @@ const CodeEditor = ({ isRoom, editorSettings }) => {
   const stateFields = { history: historyField };
 
   const serializedState = localStorage.getItem("myEditorState");
-  const value = localStorage.getItem("editorValue") || "";
 
   return (
     <div className="flex flex-col h-full">
@@ -51,9 +50,12 @@ const CodeEditor = ({ isRoom, editorSettings }) => {
       )}
       <CodeMirror
         className="grow w-full overflow-scroll hideScrollbar"
-        value={value}
+        value={editorSettings.value}
         theme={editorSettings.theme}
         height="100%"
+        basicSetup={{
+          tabSize: editorSettings.tabSize,
+        }}
         initialState={
           serializedState
             ? {

@@ -22,11 +22,31 @@ const Editor = ({ isRoom }) => {
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
-  const [editorSettings, setEditorSettings] = useState({ theme: themes.dracula, themeName: "default", language: "Java", fontSize: 12, keyBinding: "Vim", tabSize: 4 });
+  const [editorSettings, setEditorSettings] = useState({
+    theme: themes.dracula,
+    themeName: "default",
+    language: "Java",
+    fontSize: 12,
+    keyBinding: "Vim",
+    tabSize: 2,
+    value: localStorage.getItem("editorValue") || "",
+  });
 
   useEffect(() => {
     const sizes = JSON.parse(localStorage.getItem("sizes"));
     if ((isRoom && sizes?.length === 3) || (!isRoom && sizes?.length === 2)) setSizes(sizes);
+  }, []);
+
+  useEffect(() => {
+    const closeDropdown = (event) => {
+      if (!event.target.closest(".settings")) {
+        setSettingsOpen(false);
+      }
+    };
+    document.addEventListener("click", closeDropdown);
+    return () => {
+      document.removeEventListener("click", closeDropdown);
+    };
   }, []);
 
   const updateSize = (sizes) => {
@@ -37,6 +57,11 @@ const Editor = ({ isRoom }) => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const handleSettings = () => {
     setSettingsOpen(!settingsOpen);
+  };
+
+  const handleClearEditor = () => {
+    localStorage.clear("editorValue");
+    setEditorSettings({ ...editorSettings, value: "" });
   };
 
   return (
@@ -51,7 +76,7 @@ const Editor = ({ isRoom }) => {
               <CodeEditor isRoom={isRoom} editorSettings={editorSettings} />
             </div>
             <div className="bg-lightAccent3 z-10">
-              <Console handleSettings={handleSettings} />
+              <Console handleSettings={handleSettings} clearEditor={handleClearEditor} />
             </div>
           </Split>
           <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
@@ -63,7 +88,7 @@ const Editor = ({ isRoom }) => {
               <LanguageSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
             </div>
             <div className="flex flex-row items-center gap-x-3">
-              {!isLoggedIn && (
+              {!isLoggedIn ? (
                 <p>
                   Please{" "}
                   <Link to="/app/auth/login" className="text-blue-500 font-bold hover:underline">
@@ -71,13 +96,12 @@ const Editor = ({ isRoom }) => {
                   </Link>{" "}
                   to run or submit your code
                 </p>
+              ) : (
+                <>
+                  <button className={`px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}>Run</button>
+                  <button className={`px-4 py-1 bg-green hover:bg-easyGreen rounded-lg`}>Submit</button>
+                </>
               )}
-              <button className={`px-4 py-1 bg-primary ${isLoggedIn && "hover:bg-lightPrimary opacity-100"} opacity-50 rounded-lg`} disabled={isLoggedIn}>
-                Run
-              </button>
-              <button className={`px-4 py-1 bg-green ${isLoggedIn && "hover:bg-easyGreen opacity-100"} opacity-50 rounded-lg`} disabled={isLoggedIn}>
-                Submit
-              </button>
             </div>
           </div>
         </div>
@@ -103,11 +127,11 @@ const Editor = ({ isRoom }) => {
           </div>
           <div className="flex items-center justify-between p-3">
             <h1 className="text-lg">Key Bindings</h1>
-            <KeyBindSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings}/>
+            <KeyBindSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
           </div>
           <div className="flex items-center justify-between p-3">
             <h1 className="text-lg">Tab Size</h1>
-            <TabSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings}/>
+            <TabSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
           </div>
         </div>
       )}
