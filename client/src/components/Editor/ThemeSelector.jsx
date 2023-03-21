@@ -5,7 +5,7 @@ import * as themes from "@uiw/codemirror-themes-all";
 const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
   useEffect(() => {
     const closeDropdown = (event) => {
-      if (!event.target.closest(".dropdown")) {
+      if (!event.target.closest(".theme-dropdown")) {
         setThemesOpen(false);
       }
     };
@@ -18,12 +18,12 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
   const [themesOpen, setThemesOpen] = useState(false);
 
   return (
-    <div className="relative dropdown">
+    <div className="relative theme-dropdown">
       <button className="flex flex-row w-40 items-center justify-between gap-x-3 px-3 py-1 bg-accent3 hover:bg-lightPrimary rounded-lg" onClick={() => setThemesOpen((prev) => !prev)}>
         <p>{editorSettings.themeName}</p>
         <FaAngleDown className={`${themesOpen ? "rotate-180" : ""}`} />
       </button>
-      <div className={`absolute z-50 shadow shadow-dropDown ${themesOpen ? "block" : "hidden"} top-12 left-0 w-fit rounded-lg bg-accent3 hideScrollbar overflow-scroll h-40`}>
+      <div className={`absolute z-50 shadow shadow-heavyDropDown ${themesOpen ? "block" : "hidden"} top-12 left-0 w-fit rounded-lg bg-accent3 hideScrollbar overflow-scroll h-40`}>
         <button
           className="w-full text-left px-3 hover:bg-lightPrimary"
           onClick={() => {

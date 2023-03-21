@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 const KeyBindSelector = ({ editorSettings, setEditorSettings }) => {
   useEffect(() => {
     const closeDropdown = (event) => {
-      if (!event.target.closest(".dropdown") || event.target.closest(".bind")) {
-        setLanguageOpen(false);
+      if (!event.target.closest(".keyBind-dropdown")) {
+        setBindOpen(false);
       }
     };
     document.addEventListener("click", closeDropdown);
@@ -16,12 +16,12 @@ const KeyBindSelector = ({ editorSettings, setEditorSettings }) => {
 
   const [bindOpen, setBindOpen] = useState(false);
   return (
-    <div className="relative dropdown">
+    <div className="relative keyBind-dropdown">
       <button className="flex flex-row w-40 items-center justify-between gap-x-3 px-3 py-1 bg-accent3 hover:bg-lightPrimary rounded-lg" onClick={() => setBindOpen((prev) => !prev)}>
         <p>{editorSettings.keyBinding}</p>
         <FaAngleDown className={`${bindOpen ? "rotate-180" : ""}`} />
       </button>
-      <div className={`absolute z-50 shadow shadow-dropDown ${bindOpen ? "block" : "hidden"} top-12 left-0 w-fit rounded-lg bg-accent3 hideScrollbar overflow-scroll h-fit`}>
+      <div className={`absolute z-50 shadow shadow-heavyDropDown ${bindOpen ? "block" : "hidden"} top-12 left-0 w-full rounded-lg bg-accent3 hideScrollbar overflow-scroll h-fit`}>
         <button
           className="w-full text-left px-3 hover:bg-lightPrimary"
           onClick={() => {
