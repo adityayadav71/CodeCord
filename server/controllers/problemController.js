@@ -6,7 +6,7 @@ exports.getAllProblems = catchAsync(async (req, res, next) => {
   // '-example -testcases -constraints -stats'
   const problems = await Problem.find({}).populate({
     path: 'stats',
-    select: 'acceptance',
+    select: 'acceptance submissions',
     populate:'-example -testcases -constraints -stats'
   });
   res.status(200).json({
