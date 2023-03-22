@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const problemSchema = new mongoose.Schema({
   number: {
     type: Number,
-    unique: [true, "This problem number already exists."],
+    unique: [true, 'This problem number already exists.'],
   },
   statement: String,
   difficulty: String,
@@ -21,13 +21,13 @@ const problemSchema = new mongoose.Schema({
         output: String,
       },
     ],
-    required: [true, "At least one test case is required."],
+    required: [true, 'At least one test case is required.'],
   },
   constraints: [String],
   solutions: [
     {
       type: [mongoose.Schema.Types.ObjectId],
-      ref: "Solution",
+      ref: 'Solution',
     },
   ],
   stats: {
@@ -56,6 +56,6 @@ const problemSchema = new mongoose.Schema({
   },
 });
 
-const Problem = mongoose.model("Problem", problemSchema);
+const Problem = mongoose.model('Problem', problemSchema);
 
 module.exports = Problem;
