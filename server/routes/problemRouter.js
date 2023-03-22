@@ -14,7 +14,7 @@ router
   );
 
 router
-  .route('/:problemId')
+  .route('/:slug')
   .get(problemController.getProblem)
   .patch(
     authController.protect,

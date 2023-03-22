@@ -6,9 +6,8 @@ export const getAllProblems = async () => {
   return response.data;
 };
 
-export const getProblem = async (problemId) => {
-  console.log(problemId);
-  const response = await axios.get(`${BASE_URL}/api/v1/problems/${problemId}`);
+export const getProblem = async (slug) => {
+  const response = await axios.get(`${BASE_URL}/api/v1/problems/${slug}`);
   return response.data;
 };
 
