@@ -33,7 +33,7 @@ const HomeNavbar = ({ handleLogout }) => {
   }, []);
 
   useEffect(() => {
-    const imgURL = `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`;
+    const imgURL = userData?.avatar && `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`;
     setImageURL(imgURL);
   }, [userData]);
 
