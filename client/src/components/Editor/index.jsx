@@ -40,7 +40,6 @@ const Editor = ({ isRoom }) => {
   useEffect(() => {
     const loadProblems = async () => {
       const response = await getProblem(params.name);
-      console.log(response);
       setProblems(response.problem);
     };
     loadProblems();
@@ -104,10 +103,13 @@ const Editor = ({ isRoom }) => {
               <CodeEditor isRoom={isRoom} editorSettings={editorSettings} />
             </div>
             <div className="bg-lightAccent3 z-10">
-              <Console
-                handleSettings={handleSettings}
-                clearEditor={handleClearEditor}
-              />
+              {Object.keys(problems).length > 0 && (
+                <Console
+                  handleSettings={handleSettings}
+                  problems={problems}
+                  clearEditor={handleClearEditor}
+                />
+              )}
             </div>
           </Split>
           <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
@@ -153,11 +155,11 @@ const Editor = ({ isRoom }) => {
             </div>
           </div>
         </div>
-        {isRoom && (
+        {isRoom ? (
           <div className="bg-lightAccent3">
             <Chat socket={connection} />
           </div>
-        )}
+        ) : null}
       </Split>
       {settingsOpen && (
         <div className="settings absolute z-[9999] p-6 shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 bg-secondary rounded-lg">
