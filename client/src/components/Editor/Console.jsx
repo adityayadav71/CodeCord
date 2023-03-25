@@ -1,53 +1,75 @@
 import { useState, useEffect, Fragment } from "react";
 import { FaCog, FaCompress, FaExpand, FaPlus, FaUndo } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
+import { nanoid } from "nanoid";
 
 const Console = ({ handleSettings, problems, clearEditor }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [inputs, setInputs] = useState([]);
   const [testcases, setTestcases] = useState([]);
+  const [currentTestCase, setCurrentTestCase] = useState({});
 
   const handleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
-  const handleActiveCase = (e) => {
+
+  const handleActiveTestCase = (e) => {
     const active = parseInt(e.target.dataset.key);
-    setTestcases((prevCases) =>
-      prevCases.map((testcase, id) => {
-        return id === active
-          ? { ...testcase, active: true }
-          : { ...testcase, active: false };
-      })
-    );
+    setCurrentTestCase(testcases[active]);
   };
-  const addTestCase = () => {
-    if (testcases.length < 6) {
+
+  const handleAddTestCase = () => {
+    const length = testcases.length;
+    if (length < 6) {
       setTestcases((prevCases) => {
-        const inactiveCases = prevCases.map((testcase, id) => {
-          return { ...testcase, active: false };
-        });
-        return [
-          ...inactiveCases,
-          {
-            input: new Array(prevCases[0].input.length).fill(""),
-            output: [""],
-            active: true,
-          },
-        ];
+        const newCase = {
+          id: nanoid(),
+          input: new Array(prevCases[0].input.length).fill(""),
+          output: "",
+        };
+        setCurrentTestCase(newCase);
+        return [...prevCases, newCase];
       });
     }
   };
-  const removeTestCase = (e) => {
+
+  const handleRemoveTestCase = (e) => {
+    e.stopPropagation();
     const toBeDeleted = parseInt(e.target.closest(".cross").dataset.key);
     setTestcases((prevCases) => {
-      const newCases = prevCases.map((testcase, id) =>
-        id === 0
-          ? { ...testcase, active: true }
-          : { ...testcase, active: false }
-      );
-      return newCases.filter((testcase, i) => i !== toBeDeleted);
+      const filteredCases = prevCases.filter((_, i) => i !== toBeDeleted);
+      const activeIndex = prevCases.findIndex(tc => tc.id === currentTestCase.id);
+      let active = (toBeDeleted <= activeIndex && activeIndex > 0) ? activeIndex - 1 : activeIndex;
+      if (activeIndex >= filteredCases.length) {
+        active = filteredCases.length - 1;
+      }
+      setCurrentTestCase(filteredCases[active]);
+      return filteredCases;
     });
   };
+
+  const handleTestCaseChange = (e) => {
+    const inputNo = parseInt(e.target.dataset.key);
+    const updatedInputValue = e.target.value;
+    setTestcases((prevTestcases) =>
+      prevTestcases.map((testcase) =>
+        testcase.id === currentTestCase.id
+          ? {
+              ...testcase,
+              input: testcase.input.map((input, id) =>
+                id === inputNo ? updatedInputValue : input
+              ),
+            }
+          : testcase
+      )
+    );
+    setCurrentTestCase((prevTestCase) => ({
+      ...prevTestCase,
+      input: prevTestCase.input.map((input, id) =>
+        id === inputNo ? updatedInputValue : input
+      ),
+    }));
+  };
+
   useEffect(() => {
     if (isFullScreen) {
       document.querySelector(".editor").requestFullscreen();
@@ -59,37 +81,21 @@ const Console = ({ handleSettings, problems, clearEditor }) => {
   useEffect(() => {
     setTestcases(() =>
       problems.testcases.map((testcase, i) => {
+        const id = nanoid();
+        if (i === 0)
+          setCurrentTestCase({
+            id: id,
+            input: testcase.input,
+            output: testcase.output,
+          });
         return {
+          id: id,
           input: testcase.input,
           output: testcase.output,
-          active: i === 0,
         };
       })
     );
   }, []);
-
-  useEffect(() => {
-    const inputs = testcases.map((test, id) => {
-      return (
-        <div
-          className={`w-full mb-3 ${testcases[id].active ? "block" : "hidden"}`}
-          key={id}
-        >
-          {test.input.map((input, i) => (
-            <Fragment key={i}>
-              <p className="mb-2">Input {i + 1} = </p>
-              <input
-                type="text"
-                defaultValue={input}
-                className="w-full px-3 py-2 bg-lightPrimary focus:ring-1 focus:ring-accent1 rounded-lg focus:outline-none border-none"
-              />
-            </Fragment>
-          ))}
-        </div>
-      );
-    });
-    setInputs(inputs);
-  }, [testcases]);
 
   return (
     <div className="relative flex flex-col justify-content-end h-full p-3 overflow-hidden">
@@ -151,11 +157,11 @@ const Console = ({ handleSettings, problems, clearEditor }) => {
           {testcases.map((testcase, id) => (
             <div
               className={`group relative ${
-                testcases[id].active ? "bg-primary" : ""
+                testcase.id === currentTestCase.id ? "bg-primary" : ""
               } transition-all duration-300 px-3 rounded-lg hover:bg-lightPrimary hover:cursor-pointer w-fit`}
               data-key={id}
               key={id}
-              onClick={handleActiveCase}
+              onClick={handleActiveTestCase}
             >
               <div
                 className={`cross ${
@@ -163,7 +169,7 @@ const Console = ({ handleSettings, problems, clearEditor }) => {
                 }  flex-row items-center justify-center hidden absolute -top-1.5 -right-1.5 rounded-full bg-primary shadow w-5 h-5`}
                 data-key={id}
                 key={id}
-                onClick={removeTestCase}
+                onClick={handleRemoveTestCase}
               >
                 <ImCross className="text-[0.5rem]" />
               </div>
@@ -174,7 +180,7 @@ const Console = ({ handleSettings, problems, clearEditor }) => {
             {testcases.length < 6 && (
               <FaPlus
                 className="peer text-grey1 hover:cursor-pointer hover:text-grey2"
-                onClick={addTestCase}
+                onClick={handleAddTestCase}
               />
             )}
             <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-8 left-1/2 -translate-x-1/2 px-3 py-1 whitespace-nowrap bg-white text-primary rounded-lg">
@@ -182,7 +188,21 @@ const Console = ({ handleSettings, problems, clearEditor }) => {
             </div>
           </div>
         </div>
-        {inputs}
+        <div className="w-full mb-3">
+          {currentTestCase?.input?.map((input, i) => (
+            <Fragment key={i}>
+              <p className="mb-2">Input {i + 1} = </p>
+              <input
+                type="text"
+                data-key={i}
+                value={input}
+                onChange={handleTestCaseChange}
+                className="w-full px-3 py-2 bg-lightPrimary focus:ring-1 focus:ring-accent1 rounded-lg focus:outline-none border-none"
+                key={`input-${i}`}
+              />
+            </Fragment>
+          ))}
+        </div>
       </div>
     </div>
   );
