@@ -14,13 +14,11 @@ router
   );
 
 router
-  .route('/:slug')
+  .route('/selected')
   .get(problemController.getProblem)
   .patch(
     authController.protect,
     authController.restrictTo('admin'),
-    // problemController.uploadProblemImages,
-    // problemController.resizeProblemImages,
     problemController.updateProblem
   )
   .delete(

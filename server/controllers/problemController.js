@@ -10,7 +10,7 @@ exports.getAllProblems = catchAsync(async (req, res, next) => {
     populate: "-example -testcases -constraints -stats",
   });
   res.status(200).json({
-    result: "success",
+    status: "success",
     problems,
   });
 });
@@ -33,13 +33,19 @@ exports.createProblem = catchAsync(async (req, res, next) => {
 });
 
 exports.getProblem = catchAsync(async (req, res, next) => {
-  const problem = await Problem.findOne({ slug: req.params.slug })
-  if (!problem) {
-    return next(new AppError("No such problem found with that ID", 404));
+  const problemsStr = req.query.problems;
+  const problemsArr = problemsStr.split(",");
+  const problems = await Problem.find({ slug: { $in: problemsArr } }).sort({
+    number: 1,
+  });
+  if (!problems || problems.length === 0) {
+    return next(
+      new AppError("No such problems found with the given slugs", 404)
+    );
   }
   res.status(200).json({
     status: "success",
-    problem,
+    problems,
   });
 });
 
