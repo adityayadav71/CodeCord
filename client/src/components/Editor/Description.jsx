@@ -7,9 +7,10 @@ import {
 } from "react-icons/ai";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { ProblemContext } from "./index";
+import he from "he";
 
-const Description = ({ isRoom }) => {
-  const { problems } = useContext(ProblemContext);
+const Description = ({ isRoom, handleProblemChange }) => {
+  const { activeProblem } = useContext(ProblemContext);
   const [activeTab, setActiveTab] = useState("Description");
   return (
     <div className="flex flex-col h-full">
@@ -43,21 +44,40 @@ const Description = ({ isRoom }) => {
       )}
       <div className="overflow-y-scroll px-3 pt-6">
         <div className="flex flex-row justify-between items-center">
-          <h1 className="text-2xl mb-2">{problems?.number}. {problems?.title}</h1>
+          <h1 className="text-2xl mb-2">
+            {activeProblem?.number}. {activeProblem?.title}
+          </h1>
           {isRoom && (
             <div className="flex item-center gap-x-3">
-              <button className="p-2 rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300">
+              <button
+                className="switch p-2 rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
+                data-position="prev"
+                onClick={handleProblemChange}
+              >
                 <FaAngleLeft />
               </button>
-              <button className="p-2 rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300">
+              <button
+                className="switch p-2 rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
+                data-position="next"
+                onClick={handleProblemChange}
+              >
                 <FaAngleRight />
               </button>
             </div>
           )}
         </div>
         <div className="flex flex-row items-center gap-x-5 mb-6">
-          <div className="px-3 bg-tagYellowBg text-mediumYellow font-bold rounded-full">
-            {problems?.difficulty}
+          <div
+            className={`px-3 ${
+              activeProblem?.difficulty === "easy"
+                ? "bg-greenBackGround text-easyGreen"
+                : activeProblem?.difficulty === "medium"
+                ? "bg-tagYellowBg text-mediumYellow"
+                : "bg-redBackGround text-hardRed"
+            }  font-bold rounded-full`}
+          >
+            {activeProblem?.difficulty?.charAt(0).toUpperCase() +
+              activeProblem?.difficulty?.slice(1)}
           </div>
           <div className="flex flex-row gap-x-1 items-center">
             <AiOutlineLike className="text-xl" />
@@ -68,11 +88,13 @@ const Description = ({ isRoom }) => {
             <p className="text-grey1 font-bold">2K</p>
           </div>
         </div>
-        <div className="mb-6">{problems?.statement}</div>
-        {problems?.example?.map((example, i) => (
-          <div className="mb-6" key={i}>
-            <h1 className="mb-6 font-bold">Example {i + 1}:</h1>
-            <div className="px-3 py-2 rounded-lg bg-lightAccent3">
+        <div className="mb-6">
+          {activeProblem?.statement && he.decode(activeProblem?.statement)}
+        </div>
+        {activeProblem?.example?.map((example, i) => (
+          <code className="mb-6" key={i}>
+            <h1 className="mb-4 font-bold">Example {i + 1}:</h1>
+            <div className="mb-4 px-3 py-2 rounded-lg bg-lightAccent3">
               <span className="font-bold">Input:</span> {example.input} <br />
               <span className="font-bold">Output:</span> {example.output} <br />
               {example?.explanation && (
@@ -82,14 +104,14 @@ const Description = ({ isRoom }) => {
                 </>
               )}
             </div>
-          </div>
+          </code>
         ))}
         <div className="mb-6">
           <h1 className="mb-3 font-bold">Constraints:</h1>
           <div className="px-3 py-2">
             <ul className="list-disc list-inside">
-              {problems?.constraints?.map((constraint, i) => (
-                <li key={i}>{constraint}</li>
+              {activeProblem?.constraints?.map((constraint, i) => (
+                <li key={i}>{he.decode(constraint)}</li>
               ))}
             </ul>
           </div>

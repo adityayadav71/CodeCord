@@ -18,7 +18,15 @@ import { getProblem } from "../../api/problemDataAPI";
 
 export const ProblemContext = createContext(null);
 
-const Editor = ({ isRoom }) => {
+const Editor = ({
+  isRoom,
+  selectedProblems = [
+    "two-sum",
+    "three-sum",
+    "four-sum",
+    "merge-k-sorted-lists",
+  ],
+}) => {
   const editorRef = useRef(null);
   const { connection } = useContext(RoomContext);
   const { isLoggedIn } = useContext(AuthContext);
@@ -35,12 +43,19 @@ const Editor = ({ isRoom }) => {
     value: localStorage.getItem("editorValue") || "",
   });
   const [problems, setProblems] = useState({});
+  const [activeProblem, setActiveProblem] = useState({});
   const params = useParams();
 
   useEffect(() => {
     const loadProblems = async () => {
-      const response = await getProblem(params.name);
-      setProblems(response.problem);
+      let response;
+      if (isRoom) {
+        response = await getProblem(selectedProblems);
+      } else {
+        response = await getProblem([params.name]);
+      }
+      setProblems(response.problems);
+      setActiveProblem(response.problems[0]);
     };
     loadProblems();
   }, []);
@@ -78,8 +93,28 @@ const Editor = ({ isRoom }) => {
     setEditorSettings({ ...editorSettings, value: "" });
   };
 
+  const handleActiveProblemChange = (e) => {
+    const direction = e.target.closest(".switch").dataset.position;
+    if (direction === "prev") {
+      problems.forEach((problem, i) => {
+        if (problem._id === activeProblem._id && i - 1 >= 0) {
+          setActiveProblem(problems[i - 1]);
+        }
+      });
+    } else if (direction === "next") {
+      problems.forEach((problem, i) => {
+        if (problem._id === activeProblem._id && i + 1 < problems.length) {
+          setActiveProblem(problems[i + 1]);
+        }
+      });
+    }
+  };
+
+  const handleRunCode = () => {}
+  const handleSubmitCode = () => {}
+
   return (
-    <ProblemContext.Provider value={{ problems }}>
+    <ProblemContext.Provider value={{ problems, activeProblem }}>
       <Split
         className="editor flex flex-row grow overflow-hidden h-full"
         onDrag={updateSize}
@@ -89,7 +124,10 @@ const Editor = ({ isRoom }) => {
         snapOffset={[300, 0, 200]}
       >
         <div className="bg-transparentSecondary overflow-x-hidden">
-          <Description isRoom={isRoom} />
+          <Description
+            isRoom={isRoom}
+            handleProblemChange={handleActiveProblemChange}
+          />
         </div>
         <div>
           <Split
@@ -100,13 +138,18 @@ const Editor = ({ isRoom }) => {
             snapOffset={[0, 100]}
           >
             <div ref={editorRef} className="z-[-1] h-full bg-primary">
-              <CodeEditor isRoom={isRoom} editorSettings={editorSettings} />
+              <CodeEditor
+                isRoom={isRoom}
+                editorSettings={editorSettings}
+                setEditorSettings={setEditorSettings}
+              />
             </div>
             <div className="bg-lightAccent3 z-10">
               {Object.keys(problems).length > 0 && (
                 <Console
                   handleSettings={handleSettings}
-                  problems={problems}
+                  editorSettings={editorSettings}
+                  problems={activeProblem}
                   clearEditor={handleClearEditor}
                 />
               )}
@@ -142,11 +185,13 @@ const Editor = ({ isRoom }) => {
                 <>
                   <button
                     className={`px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}
+                    onClick={handleRunCode}
                   >
                     Run
                   </button>
                   <button
                     className={`px-4 py-1 bg-green hover:bg-easyGreen rounded-lg`}
+                    onClick={handleSubmitCode}
                   >
                     Submit
                   </button>

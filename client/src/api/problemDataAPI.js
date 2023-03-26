@@ -6,8 +6,9 @@ export const getAllProblems = async () => {
   return response.data;
 };
 
-export const getProblem = async (slug) => {
-  const response = await axios.get(`${BASE_URL}/api/v1/problems/${slug}`);
+export const getProblem = async (slugs) => {
+  const slugString = slugs.join(",");
+  const response = await axios.get(`${BASE_URL}/api/v1/problems/selected?problems=${slugString}`);
   return response.data;
 };
 

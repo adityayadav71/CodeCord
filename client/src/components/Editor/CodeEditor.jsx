@@ -5,7 +5,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { historyField } from "@codemirror/commands";
 import { java } from "@codemirror/lang-java";
 
-const CodeEditor = ({ isRoom, editorSettings }) => {
+const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
   const stateFields = { history: historyField };
 
   const serializedState = localStorage.getItem("myEditorState");
@@ -13,7 +13,10 @@ const CodeEditor = ({ isRoom, editorSettings }) => {
   return (
     <div className="flex flex-col h-full">
       {isRoom && (
-        <Swiper className="flex flex-row items-center shrink-0 w-full gap-x-5 border-b border-lightAccent3 relative" slidesPerView={4}>
+        <Swiper
+          className="flex flex-row items-center shrink-0 w-full gap-x-5 border-b border-lightAccent3 relative"
+          slidesPerView={4}
+        >
           <SwiperSlide className="py-3 border-b-2 border-accent1">
             <button className="flex flex-row items-center justify-center gap-x-3 px-6 py-2 w-full rounded-lg">
               <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
@@ -65,6 +68,9 @@ const CodeEditor = ({ isRoom, editorSettings }) => {
             : undefined
         }
         onChange={(value, viewUpdate) => {
+          setEditorSettings((prevSettings) => {
+            return { ...prevSettings, value: value };
+          });
           localStorage.setItem("editorValue", value);
 
           const state = viewUpdate.state.toJSON(stateFields);
