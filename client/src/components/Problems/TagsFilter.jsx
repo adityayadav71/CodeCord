@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import TagButton from "./TagButton";
 
-const TagsFilter = ({ isTagsActive, activeTags, setActiveTags, disableEvents }) => {
+const TagsFilter = ({ isTagsActive, setActiveFilters, activeTags, setActiveTags, disableEvents }) => {
   const [topicsExpanded, setTopicsExpanded] = useState(false);
   const [companiesExpanded, setCompaniesExpanded] = useState(false);
 
@@ -48,12 +48,12 @@ const TagsFilter = ({ isTagsActive, activeTags, setActiveTags, disableEvents }) 
           </div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${topicsExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <TagButton tagName="Arrays" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="HashTable" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Strings" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Dynamic Programming" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Math" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Recursion" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Arrays" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="HashTable" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Strings" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Dynamic Programming" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Math" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Recursion" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
         </div>
       </div>
       <button className="ml-1 mb-3 text-accent1" onClick={toggleTopics}>
@@ -64,14 +64,14 @@ const TagsFilter = ({ isTagsActive, activeTags, setActiveTags, disableEvents }) 
           <div className="bg-accent4 shadow shadow-heading rounded-2xl px-4">Companies</div>
         </div>
         <div className={`flex flex-row flex-wrap content-start justify-start w-full gap-3 mb-3 ${companiesExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"}`}>
-          <TagButton tagName="Amazon" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Microsoft" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Google" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Facebook" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Netflix" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Flipkart" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Bloomberg" activeTags={activeTags} setActiveTags={setActiveTags} />
-          <TagButton tagName="Paypal" activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Amazon" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Microsoft" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Google" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Facebook" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Netflix" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Flipkart" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Bloomberg" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
+          <TagButton tagName="Paypal" setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} />
         </div>
       </div>
       <button className="ml-1 text-accent1" onClick={toggleCompanies}>

@@ -1,20 +1,42 @@
-import { useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight, FaAngleDown, FaCheck } from "react-icons/fa";
+import { useState, useEffect, useContext } from "react";
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaAngleDown,
+  FaCheck,
+} from "react-icons/fa";
+import { FilterContext } from "./index";
 
 const pagination = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPageLimit, setPerPageLimit] = useState(20);
   const [isLimitChangerActive, setLimitChangerActive] = useState();
+  const { setFilterObj } = useContext(FilterContext);
+
   const setLimit = (e) => {
     setLimitChangerActive(false);
     setPerPageLimit(e.currentTarget.dataset.value);
   };
+  
+  useEffect(() => {
+    setFilterObj((prevObj) => {
+      return {
+        ...prevObj,
+        page: currentPage,
+        limit: perPageLimit,
+      };
+    });
+  }, [currentPage, perPageLimit]);
+
   const pageButtons = [];
   const setPageButtons = () => {
     for (let i = 1; i < 11; i++) {
       pageButtons.push(
         <button
-          className={`flex flex-row items-center justify-center ${currentPage === i ? "bg-accent1" : "bg-accent2"} p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1`}
+          key={i}
+          className={`flex flex-row items-center justify-center ${
+            currentPage === i ? "bg-accent1" : "bg-accent2"
+          } p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1`}
           onClick={() => setCurrentPage(i)}
         >
           {i}
@@ -47,11 +69,17 @@ const pagination = (props) => {
   }, []);
   return (
     <div className="flex flex-row p-3 gap-x-3 pl-20 bg-secondary w-full rounded-xl select-none">
-      <div className="flex flex-row items-center justify-center bg-accent2 p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1 mr-6" onClick={prevPage}>
+      <div
+        className="flex flex-row items-center justify-center bg-accent2 p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1 mr-6"
+        onClick={prevPage}
+      >
         <FaArrowLeft />
       </div>
       {pageButtons}
-      <div className="flex flex-row items-center justify-center bg-accent2 p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1 ml-6" onClick={nextPage}>
+      <div
+        className="flex flex-row items-center justify-center bg-accent2 p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1 ml-6"
+        onClick={nextPage}
+      >
         <FaArrowRight />
       </div>
       <div className="limit relative ml-auto">
@@ -63,16 +91,30 @@ const pagination = (props) => {
         </div>
         <div
           className={`absolute transition-all duration-100 ${
-            isLimitChangerActive ? "z-20  opacity-1 scale-100" : "opacity-0 scale-0"
+            isLimitChangerActive
+              ? "z-20  opacity-1 scale-100"
+              : "opacity-0 scale-0"
           } bottom-12 shadow shadow-dropDown right-0 p-3 w-40 hover:cursor-pointer bg-secondary rounded-xl`}
         >
-          <div className="flex flex-row items-center justify-between hover:bg-accent3 mb-3 rounded-lg px-3 py-1" data-value="20" onClick={setLimit}>
+          <div
+            className="flex flex-row items-center justify-between hover:bg-accent3 mb-3 rounded-lg px-3 py-1"
+            data-value="20"
+            onClick={setLimit}
+          >
             20 / Page
           </div>
-          <div className="flex flex-row items-center justify-between hover:bg-accent3 mb-3 rounded-lg px-3 py-1" data-value="50" onClick={setLimit}>
+          <div
+            className="flex flex-row items-center justify-between hover:bg-accent3 mb-3 rounded-lg px-3 py-1"
+            data-value="50"
+            onClick={setLimit}
+          >
             50 / Page
           </div>
-          <div className="flex flex-row items-center justify-between hover:bg-accent3 rounded-lg px-3 py-1" data-value="100" onClick={setLimit}>
+          <div
+            className="flex flex-row items-center justify-between hover:bg-accent3 rounded-lg px-3 py-1"
+            data-value="100"
+            onClick={setLimit}
+          >
             100 / Page
           </div>
         </div>

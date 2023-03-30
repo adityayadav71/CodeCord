@@ -14,6 +14,7 @@ import Tags from "./Tags";
 import CreateRoom from "../Rooms/CreateRoom";
 import { useContext } from "react";
 import { AuthContext } from "../../App";
+import { FilterContext } from "./index";
 
 const ProblemFilter = ({ filterInsideModal }) => {
   useEffect(() => {
@@ -39,8 +40,23 @@ const ProblemFilter = ({ filterInsideModal }) => {
   const [activeDifficulty, setActiveDifficulty] = useState([]);
   const [activeStatus, setActiveStatus] = useState([]);
   const [activeTags, setActiveTags] = useState([]);
+  const [activeFilters, setActiveFilters] = useState({
+    difficulty: "",
+    topics: [],
+  });
   const [selected, setSelected] = useState(0);
   const { isLoggedIn } = useContext(AuthContext);
+  const { setFilterObj } = useContext(FilterContext);
+
+  useEffect(() => {
+    setFilterObj((prevObj) => {
+      return {
+        ...prevObj,
+        tags: activeFilters.topics,
+        difficulty: activeFilters.difficulty,
+      };
+    });
+  }, [activeFilters]);
 
   const handleClick = (event) => {
     const target = event.target.closest(".dropdown").dataset.value;
@@ -78,6 +94,13 @@ const ProblemFilter = ({ filterInsideModal }) => {
 
   const addTag = (event) => {
     const target = event.currentTarget.textContent;
+    const isDifficulty = !!event.target.closest(".difficulty-dropdown");
+    setActiveFilters((prevFilter) => {
+      return {
+        ...prevFilter,
+        [isDifficulty ? "difficulty" : "status"]: [target.toLowerCase()],
+      };
+    });
     const tagName = target.toLowerCase().replace(/\s/g, "-");
     const tag = (
       <div
@@ -108,14 +131,14 @@ const ProblemFilter = ({ filterInsideModal }) => {
     );
     setStatusActive(false);
     setDifficultyActive(false);
-    if (event.target.closest(".difficulty-dropdown")) {
-      setActiveDifficulty([tag]);
-    } else if (event.target.closest(".status-dropdown")) {
-      setActiveStatus([tag]);
-    }
+    isDifficulty ? setActiveDifficulty([tag]) : setActiveStatus([tag]);
   };
 
   const resetFilters = () => {
+    setActiveFilters({
+      difficulty: "",
+      topics: [],
+    });
     setActiveDifficulty(() => []);
     setActiveStatus(() => []);
     setActiveTags(() => []);
@@ -157,6 +180,7 @@ const ProblemFilter = ({ filterInsideModal }) => {
         <Tags
           isTagsActive={isTagsActive}
           handleClick={handleClick}
+          setActiveFilters={setActiveFilters}
           activeTags={activeTags}
           setActiveTags={setActiveTags}
         />
