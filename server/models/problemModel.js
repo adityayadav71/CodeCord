@@ -14,8 +14,15 @@ const problemSchema = new mongoose.Schema({
     unique: [true, "Problem title should be unique"],
     required: [true, "Problem should contain problem title"],
   },
-  statement: String,
-  difficulty: String,
+  statement: {
+    type: String,
+    required: [true, "Problem Statement cannot be empty."],
+  },
+  difficulty: { type: String, required: [true, "Difficulty is required."] },
+  tags: {
+    type: [String],
+    required: [true, "At least one tag is required."],
+  },
   example: [
     {
       input: String,
@@ -41,26 +48,18 @@ const problemSchema = new mongoose.Schema({
   ],
   stats: {
     type: {
-      likes: {
-        type: Number,
-        default: 0,
-      },
-      dislikes: {
-        type: Number,
-        default: 0,
-      },
-      submissions: {
-        type: Number,
-        default: 0,
-      },
-      accepted: {
-        type: Number,
-        default: 0,
-      },
-      acceptance: {
-        type: Number,
-        default: 0,
-      },
+      likes: Number,
+      dislikes: Number,
+      submissions: Number,
+      accepted: Number,
+      acceptance: Number,
+    },
+    default: {
+      likes: 0,
+      dislikes: 0,
+      submissions: 0,
+      accepted: 0,
+      acceptance: 0,
     },
   },
   slug: {

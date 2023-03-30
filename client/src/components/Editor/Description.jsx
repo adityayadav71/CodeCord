@@ -8,6 +8,7 @@ import {
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { ProblemContext } from "./index";
 import he from "he";
+import formatStats from "../../utilities/formatStats";
 
 const Description = ({ isRoom, handleProblemChange }) => {
   const { activeProblem } = useContext(ProblemContext);
@@ -81,11 +82,11 @@ const Description = ({ isRoom, handleProblemChange }) => {
           </div>
           <div className="flex flex-row gap-x-1 items-center">
             <AiOutlineLike className="text-xl" />
-            <p className="text-grey1 font-bold">25.6K</p>
+            <p className="text-grey1 font-bold">{formatStats(activeProblem?.stats?.likes) || 0}</p>
           </div>
           <div className="flex flex-row gap-x-1 items-center">
             <AiOutlineDislike className="text-xl" />
-            <p className="text-grey1 font-bold">2K</p>
+            <p className="text-grey1 font-bold">{formatStats(activeProblem?.stats?.dislikes) || 0}</p>
           </div>
         </div>
         <div className="mb-6">
@@ -120,15 +121,21 @@ const Description = ({ isRoom, handleProblemChange }) => {
         <div className="flex flex-row flex-wrap items-center gap-x-5 mt-12 mb-12">
           <div className="flex flex-row items-center gap-x-3">
             <p className="text-grey1 text-base">Accepted</p>
-            <p className="text-xl font-bold">5M</p>
+            <p className="text-xl font-bold">
+              {formatStats(activeProblem?.stats?.accepted) || 0}
+            </p>
           </div>
           <div className="flex flex-row items-center gap-x-3">
             <p className="text-grey1 text-base">Submissions</p>
-            <p className="text-xl font-bold">15M</p>
+            <p className="text-xl font-bold">
+              {formatStats(activeProblem?.stats?.submissions) || 0}
+            </p>
           </div>
           <div className="flex flex-row items-center gap-x-3">
             <p className="text-grey1 text-base">Acceptance</p>
-            <p className="text-xl font-bold"> 50.0%</p>
+            <p className="text-xl font-bold">
+              {activeProblem?.stats?.acceptance || 0}%
+            </p>
           </div>
         </div>
       </div>
