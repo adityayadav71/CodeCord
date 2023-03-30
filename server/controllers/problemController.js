@@ -1,14 +1,16 @@
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const Problem = require("../models/problemModel");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.getAllProblems = catchAsync(async (req, res, next) => {
-  // '-example -testcases -constraints -stats'
-  const problems = await Problem.find({}).populate({
-    path: "stats",
-    select: "acceptance submissions",
-    populate: "-example -testcases -constraints -stats",
-  });
+  const features = new APIFeatures(Problem, req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const problems = await features.query;
   res.status(200).json({
     status: "success",
     problems,
