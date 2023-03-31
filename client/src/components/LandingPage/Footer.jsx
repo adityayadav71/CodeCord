@@ -12,32 +12,56 @@ const Footer = (props) => {
       <div className="w-80">
         <h3 className="text-lg mb-6 font-bold text-white">About</h3>
         <ul>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li>How it works</li>
-          </a>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li>Contact</li>
-          </a>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li>Contribute</li>
-          </a>
+          <li>
+            <a
+              className="hover:text-accent1 transition-all duration-300"
+              href="#"
+            >
+              How it works
+            </a>
+          </li>
+          <li>
+            <a
+              className="hover:text-accent1 transition-all duration-300"
+              href="#"
+            >
+              Contact
+            </a>
+          </li>
+          <li>
+            <a
+              className="hover:text-accent1 transition-all duration-300"
+              href="#"
+            >
+              Contribute
+            </a>
+          </li>
         </ul>
       </div>
       <div className="w-80">
         <h3 className="text-lg mb-6 font-bold text-white">Features</h3>
         <ul>
           <li>
-            <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
+            <Link
+              to="/app/problem"
+              className="hover:text-accent1 transition-all duration-300"
+            >
               Problems
             </Link>
           </li>
           <li>
-            <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
+            <Link
+              to="/app/problem"
+              className="hover:text-accent1 transition-all duration-300"
+            >
               Contests
             </Link>
           </li>
           <li>
-            <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
+            <Link
+              to="/app/problem"
+              className="hover:text-accent1 transition-all duration-300"
+            >
               Create a Room
             </Link>
           </li>
@@ -46,30 +70,46 @@ const Footer = (props) => {
       <div className="w-80">
         <h3 className="text-lg mb-6 font-bold text-white">Socials</h3>
         <ul>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li className="flex flex-row gap-x-2 items-center">
-              <FaGithub />
+          <li className="flex flex-row gap-x-2 items-center">
+            <FaGithub />
+            <a
+              target="_blank"
+              className="hover:text-accent1 transition-all duration-300"
+              href="#"
+            >
               GitHub
-            </li>
-          </a>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li className="flex flex-row gap-x-2 items-center">
-              <FaLinkedin />
+            </a>
+          </li>
+          <li className="flex flex-row gap-x-2 items-center">
+            <FaLinkedin />
+            <a
+              target="_blank"
+              className="hover:text-accent1 transition-all duration-300"
+              href="#"
+            >
               LinkedIn
-            </li>
-          </a>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li className="flex flex-row gap-x-2 items-center">
-              <FaTwitter />
+            </a>
+          </li>
+          <li className="flex flex-row gap-x-2 items-center">
+            <FaTwitter />
+            <a
+              target="_blank"
+              className="hover:text-accent1 transition-all duration-300"
+              href="#"
+            >
               Twitter
-            </li>
-          </a>
-          <a className="hover:text-accent1 transition-all duration-300" href="#">
-            <li className="flex flex-row gap-x-2 items-center">
-              <FaInstagram />
+            </a>
+          </li>
+          <li className="flex flex-row gap-x-2 items-center">
+            <FaInstagram />
+            <a
+              target="_blank"
+              className="hover:text-accent1 transition-all duration-300"
+              href="#"
+            >
               Instagram
-            </li>
-          </a>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
