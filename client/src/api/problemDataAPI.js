@@ -2,12 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 
 export const getAllProblems = async (filter) => {
-  const queryString = `${filter.tags.length !== 0 ? `tags=${filter.tags}` : ""}${
-    filter.difficulty ? `&difficulty=${filter.difficulty}` : ""
-  }&fields=number,title,difficulty,stats.acceptance,stats.submissions&page=${
-    filter.page
-  }&limit=${filter.limit}`;
-
+  const queryString = `fields=number,title,difficulty,tags,stats.acceptance,stats.submissions&sort=${filter.sort}`;
   const response = await axios.get(
     `${BASE_URL}/api/v1/problems?${queryString}`
   );

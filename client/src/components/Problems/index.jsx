@@ -14,6 +14,7 @@ const Problems = (props) => {
     limit: 20,
     totalPages: 1,
     difficulty: "",
+    sort: ""
   });
   return (
     <FilterContext.Provider value={{ filterObj, setFilterObj }}>
