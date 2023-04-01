@@ -21,7 +21,7 @@ const Problem = ({
     let submissions = [];
     for (let i = userSubmissions; i > 0; i--) {
       submissions.push(
-        <SwiperSlide>
+        <SwiperSlide key={i}>
           <a href="#" className="hover:text-accent1">
             <FaRegFileCode />
           </a>

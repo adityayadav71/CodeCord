@@ -81,14 +81,26 @@ const ProblemFilter = ({ filterInsideModal }) => {
       target.contains("easy") ||
       target.contains("medium") ||
       target.contains("hard")
-    ) {
-      setActiveDifficulty([]);
+      ) {
+        setActiveDifficulty([]);
+        setActiveFilters((prevFilter) => {
+          return {
+            ...prevFilter,
+            difficulty: "",
+          };
+        });
     } else if (
       target.contains("to-do") ||
       target.contains("solved") ||
       target.contains("attempted")
     ) {
       setActiveStatus([]);
+      setActiveFilters((prevFilter) => {
+        return {
+          ...prevFilter,
+          status: "",
+        };
+      });
     }
   };
 
@@ -98,7 +110,7 @@ const ProblemFilter = ({ filterInsideModal }) => {
     setActiveFilters((prevFilter) => {
       return {
         ...prevFilter,
-        [isDifficulty ? "difficulty" : "status"]: [target.toLowerCase()],
+        [isDifficulty ? "difficulty" : "status"]: target.toLowerCase(),
       };
     });
     const tagName = target.toLowerCase().replace(/\s/g, "-");

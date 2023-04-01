@@ -12,7 +12,9 @@ const Problems = (props) => {
     tags: [],
     page: 1,
     limit: 20,
+    totalPages: 1,
     difficulty: "",
+    sort: ""
   });
   return (
     <FilterContext.Provider value={{ filterObj, setFilterObj }}>
