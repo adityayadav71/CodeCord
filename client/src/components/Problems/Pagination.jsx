@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import {
-  FaArrowLeft,
-  FaArrowRight,
+  FaChevronLeft,
+  FaChevronRight,
   FaAngleDown,
   FaCheck,
 } from "react-icons/fa";
@@ -11,7 +11,7 @@ const pagination = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPageLimit, setPerPageLimit] = useState(20);
   const [isLimitChangerActive, setLimitChangerActive] = useState();
-  const { setFilterObj } = useContext(FilterContext);
+  const { filterObj, setFilterObj } = useContext(FilterContext);
 
   const setLimit = (e) => {
     setLimitChangerActive(false);
@@ -30,7 +30,7 @@ const pagination = (props) => {
 
   const pageButtons = [];
   const setPageButtons = () => {
-    for (let i = 1; i < 11; i++) {
+    for (let i = 1; i <= filterObj.totalPages; i++) {
       pageButtons.push(
         <button
           key={i}
@@ -45,9 +45,8 @@ const pagination = (props) => {
     }
   };
   setPageButtons();
-  const totalPages = 10;
   const nextPage = () => {
-    if (currentPage + 1 <= totalPages) {
+    if (currentPage + 1 <= filterObj.totalPages) {
       setCurrentPage((prev) => prev + 1);
     }
   };
@@ -73,14 +72,14 @@ const pagination = (props) => {
         className="flex flex-row items-center justify-center bg-accent2 p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1 mr-6"
         onClick={prevPage}
       >
-        <FaArrowLeft />
+        <FaChevronLeft />
       </div>
       {pageButtons}
       <div
         className="flex flex-row items-center justify-center bg-accent2 p-3 text-white rounded-xl w-10 h-10 hover:cursor-pointer hover:bg-accent1 ml-6"
         onClick={nextPage}
       >
-        <FaArrowRight />
+        <FaChevronRight />
       </div>
       <div className="limit relative ml-auto">
         <div
