@@ -2,8 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import {
   FaChevronLeft,
   FaChevronRight,
-  FaAngleDown,
-  FaCheck,
+  FaAngleDown
 } from "react-icons/fa";
 import { FilterContext } from "./index";
 

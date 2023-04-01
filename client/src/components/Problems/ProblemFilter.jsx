@@ -110,7 +110,7 @@ const ProblemFilter = ({ filterInsideModal }) => {
     setActiveFilters((prevFilter) => {
       return {
         ...prevFilter,
-        [isDifficulty ? "difficulty" : "status"]: [target.toLowerCase()],
+        [isDifficulty ? "difficulty" : "status"]: target.toLowerCase(),
       };
     });
     const tagName = target.toLowerCase().replace(/\s/g, "-");
