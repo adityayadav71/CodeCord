@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 
 export const getAllProblems = async (filter) => {
-  const queryString = `fields=number,title,difficulty,tags,stats.acceptance,stats.submissions&sort=${filter.sort}`;
+  const queryString = `fields=number,title,difficulty,tags,stats.acceptance,stats.submissions`;
   const response = await axios.get(
     `${BASE_URL}/api/v1/problems?${queryString}`
   );
