@@ -4,7 +4,7 @@ import Problem from "./Problem";
 import { getAllProblems } from "../../api/problemDataAPI";
 import formatStats from "../../utilities/formatStats";
 import { FilterContext } from "./index";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { FaSort, FaCaretDown, FaCaretUp } from "react-icons/fa";
 
 const ProblemList = ({ type }) => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -36,9 +36,22 @@ const ProblemList = ({ type }) => {
   };
 
   const handleHeaderClick = async (e) => {
-    const sortField = e.target.dataset.header;
-    const sortOrder = order[sortField];
+    const sortField = e.target.closest(".header").dataset.header;
 
+    // 1. Determine current sortOrder of the selected sortField
+    let sortOrder =
+      order[sortField] === "default"
+        ? "desc"
+        : order[sortField] === "desc"
+        ? "asc"
+        : "default";
+
+    // 2. Update sortOrder state accordingly 
+    setOrder((prevOrder) => {
+      return { ...prevOrder, [sortField]: sortOrder };
+    });
+
+    // 3. Declare appropriate sortFunctions for different problem fields
     const sortFunctions = {
       number: (a, b) => {
         return sortOrder === "asc" ? a.number - b.number : b.number - a.number;
@@ -67,21 +80,15 @@ const ProblemList = ({ type }) => {
       },
     };
 
+    // 4. Update problems by sorting them using the sortFunctions object, sortField and sortOrder
     setProblems((prevProblems) => {
       let sortedProblems;
-      setOrder((prevOrder) => {
-        const currentOrder = prevOrder[sortField];
-
-        if (currentOrder === "default" || currentOrder === "desc") {
-          return { ...prevOrder, [sortField]: "asc" };
-        } else {
-          return { ...prevOrder, [sortField]: "desc" };
-        }
-      });
-
-      sortedProblems = [...prevProblems].sort(sortFunctions[sortField]);
-      console.log(sortFunctions[sortField]);
-      return sortedProblems;
+      if (sortOrder !== "default") {
+        sortedProblems = [...prevProblems].sort(sortFunctions[sortField]);
+        return sortedProblems;
+      }
+      // Default: Sorted by number in ascending order
+      return [...prevProblems].sort((a, b) => a.number - b.number);
     });
   };
 
@@ -90,13 +97,17 @@ const ProblemList = ({ type }) => {
       <div className="flex flex-row items-center p-3 text-md border-b-[1px] border-hover">
         <p className="w-20">Status</p>
         <div
-          className="title group flex flex-row grow items-center justify-between hover:cursor-pointer"
-          data-order="default"
+          className="header group flex flex-row grow items-center justify-between hover:cursor-pointer"
           data-header="number"
           onClick={handleHeaderClick}
         >
           <p>Title</p>
           <div className="flex flex-col items-center justify-center mr-2">
+            <FaSort
+              className={`text-grey1 group-hover:text-white ${
+                order.number === "default" ? "block" : "hidden"
+              }`}
+            />
             <FaCaretUp
               className={`text-sm text-grey1 group-hover:text-white ${
                 order.number === "asc" ? "block" : "hidden"
@@ -110,13 +121,17 @@ const ProblemList = ({ type }) => {
           </div>
         </div>
         <div
-          className="acceptance group flex flex-row items-center justify-between w-40 hover:cursor-pointer"
-          data-order="default"
+          className="header group flex flex-row items-center justify-between w-40 hover:cursor-pointer"
           data-header="acceptance"
           onClick={handleHeaderClick}
         >
           <p>Acceptance</p>
           <div className="flex flex-col items-center justify-center mr-2">
+            <FaSort
+              className={`text-grey1 group-hover:text-white ${
+                order.acceptance === "default" ? "block" : "hidden"
+              }`}
+            />
             <FaCaretUp
               className={`text-sm text-grey1 group-hover:text-white ${
                 order.acceptance === "asc" ? "block" : "hidden"
@@ -130,13 +145,17 @@ const ProblemList = ({ type }) => {
           </div>
         </div>
         <div
-          className="difficulty group flex flex-row items-center justify-between w-40 hover:cursor-pointer"
-          data-order="default"
+          className="header group flex flex-row items-center justify-between w-40 hover:cursor-pointer"
           data-header="difficulty"
           onClick={handleHeaderClick}
         >
           <p>Difficulty</p>
           <div className="flex flex-col items-center justify-center mr-2">
+            <FaSort
+              className={`text-grey1 group-hover:text-white ${
+                order.difficulty === "default" ? "block" : "hidden"
+              }`}
+            />
             <FaCaretUp
               className={`text-sm text-grey1 group-hover:text-white ${
                 order.difficulty === "asc" ? "block" : "hidden"
@@ -150,13 +169,17 @@ const ProblemList = ({ type }) => {
           </div>
         </div>
         <div
-          className="submissions group flex flex-row items-center justify-between w-40 hover:cursor-pointer"
-          data-order="default"
+          className="header group flex flex-row items-center justify-between w-40 hover:cursor-pointer"
           data-header="submissions"
           onClick={handleHeaderClick}
         >
           <p>Submissions</p>
           <div className="flex flex-col items-center justify-center mr-2">
+            <FaSort
+              className={`text-grey1 group-hover:text-white ${
+                order.submissions === "default" ? "block" : "hidden"
+              }`}
+            />
             <FaCaretUp
               className={`text-sm text-grey1 group-hover:text-white ${
                 order.submissions === "asc" ? "block" : "hidden"
