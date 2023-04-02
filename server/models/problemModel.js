@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const slug = require("mongoose-slug-generator");
+const ProblemTag = require("./problemTagsModel");
+const AppError = require("../utils/appError");
 
 mongoose.plugin(slug);
 
@@ -19,10 +21,40 @@ const problemSchema = new mongoose.Schema({
     required: [true, "Problem Statement cannot be empty."],
   },
   difficulty: { type: String, required: [true, "Difficulty is required."] },
-  tags: {
-    type: [String],
-    required: [true, "At least one tag is required."],
-  },
+  tags: [
+    {
+      type: String,
+      enum: [
+        "Arrays",
+        "Strings",
+        "Dynamic Programming",
+        "Math",
+        "Sorting",
+        "Greedy",
+        "Depth-First Search",
+        "Database",
+        "Breadth-First Search",
+        "Binary Search",
+        "Tree",
+        "Matrix",
+        "Two Pointers",
+        "Binary Tree",
+        "Heap (Priority Queue)",
+        "Stack",
+        "Graph",
+        "Queue",
+        "Trie",
+        "Sliding Window",
+        "Linked List",
+        "Backtracking",
+        "Recursion",
+        "Divide And Conquer",
+        "Binary Search Tree",
+        "Union Find",
+      ],
+      required: [true, "Problem should contains atleast 1 tag"],
+    },
+  ],
   example: [
     {
       input: String,
