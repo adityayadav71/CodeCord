@@ -7,6 +7,8 @@ import { AuthContext } from "../../App";
 import { Link } from "react-router-dom";
 
 const Problem = ({
+  selected,
+  setSelected,
   number,
   name,
   acceptance,
@@ -30,6 +32,37 @@ const Problem = ({
     }
     return submissions;
   };
+
+  const handleSelectProblem = (e) => {
+    if (selected.length < 4 && e.target.checked) {
+      setSelected((prevSelected) =>
+        !prevSelected.includes(number)
+          ? [...prevSelected, number]
+          : prevSelected
+      );
+    } else if (!e.target.checked) {
+      setSelected((prevSelected) =>
+        prevSelected.filter((problem) => problem !== number)
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (selected?.length < 4) {
+      const inputs = document.querySelectorAll(".problem-selected");
+      Array.from(inputs).forEach((input) => {
+        input.disabled = false;
+      });
+    } else {
+      const inputs = document.querySelectorAll(".problem-selected");
+      Array.from(inputs).forEach((input) => {
+        if (!input.checked) {
+          input.disabled = true;
+        }
+      });
+    }
+  }, [selected]);
+
   return (
     <div className="odd:bg-hover" key={number}>
       <div className="flex flex-row items-center p-3 text-lg">
@@ -77,6 +110,7 @@ const Problem = ({
         {type === "select" && (
           <input
             type="checkbox"
+            onClick={handleSelectProblem}
             className="problem-selected w-20 flex flex-row gap-x-3"
           />
         )}

@@ -23,7 +23,7 @@ const Problems = (props) => {
           <TopicFilter />
           <ProblemFilter filterInsideModal={false} />
           <ProblemList type="" />
-          <Pagination />
+          <Pagination type="" />
         </div>
         <LiveRooms />
       </div>

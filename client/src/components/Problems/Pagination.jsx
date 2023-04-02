@@ -1,22 +1,21 @@
 import { useState, useEffect, useContext } from "react";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaAngleDown
-} from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaAngleDown } from "react-icons/fa";
 import { FilterContext } from "./index";
+import { RoomFilterContext } from "../Rooms/CreateRoom";
 
-const pagination = (props) => {
+const pagination = ({ type }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPageLimit, setPerPageLimit] = useState(20);
   const [isLimitChangerActive, setLimitChangerActive] = useState();
-  const { filterObj, setFilterObj } = useContext(FilterContext);
+  const { filterObj, setFilterObj } = useContext(
+    type === "select" ? RoomFilterContext : FilterContext
+  );
 
   const setLimit = (e) => {
     setLimitChangerActive(false);
     setPerPageLimit(e.currentTarget.dataset.value);
   };
-  
+
   useEffect(() => {
     setFilterObj((prevObj) => {
       return {

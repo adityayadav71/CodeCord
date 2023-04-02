@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, createContext } from "react";
 import ProblemList from "../Problems/ProblemList";
 import Pagination from "../Problems/Pagination";
 import RoomTypeSelector from "./RoomTypeSelector";
@@ -11,20 +11,65 @@ import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 
+export const RoomFilterContext = createContext(null);
+
 const CreateRoom = ({ isContest }) => {
+  // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
   const { connection } = useContext(RoomContext);
   const navigate = useNavigate();
+  
+  // Declaring States
+  const [isLimitActive, setLimitActive] = useState(false);
+  const [participantLimit, setParticipantLimit] = useState(10);
+  const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
+  const [visibility, setVisibility] = useState("private");
+  const [timeLimit, setTimeLimit] = useState(10);
+  const [hrs, sethrs] = useState("");
+  const [mins, setmins] = useState("10 mins");
+  const [selected, setSelected] = useState([]);
+  const [filterObj, setFilterObj] = useState({
+    tags: [],
+    page: 1,
+    limit: 20,
+    totalPages: 1,
+    difficulty: "",
+    sort: "",
+  });
 
+  // State Change/Event handler functions
   const updateTimeLimit = () => {
     const slider = document.getElementById("slider");
     const timeLimit = slider.value;
     const percent = (timeLimit * 100) / 120;
-    slider.style.background = `linear-gradient(90deg, ${"rgb(44 187 93)" + percent + "%"} , ${"rgb(41 77 53)" + percent + "%"})`;
+    slider.style.background = `linear-gradient(90deg, ${
+      "rgb(44 187 93)" + percent + "%"
+    } , ${"rgb(41 77 53)" + percent + "%"})`;
     setTimeLimit(timeLimit);
   };
 
+  const handleStartRoom = () => {
+    const inviteCode = inviteRef.current.value;
+    if (inviteCode !== "") {
+      connection?.emit("join-room", inviteCode, userData?.username, () => {
+        navigate(`/app/room/${inviteCode}`, { replace: false });
+      });
+    } else {
+      connection?.emit("create-room", (inviteCode) => {
+        navigate(`/app/room/${inviteCode}`, { replace: false });
+      });
+    }
+  };
+  
+  // Utility functions for this component
+  const toHoursAndMinutes = (totalMinutes) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return { hours, minutes };
+  };
+
+  // useEffect hook to initialize hrs and minutes from timeLimit 
   useEffect(() => {
     sethrs(() => {
       const hours = toHoursAndMinutes(timeLimit).hours;
@@ -36,34 +81,7 @@ const CreateRoom = ({ isContest }) => {
       if (mins === 1) return `${mins} min`;
       else if (mins > 1) return `${mins} mins`;
     });
-  });
-  
-  const [isLimitActive, setLimitActive] = useState(false);
-  const [participantLimit, setParticipantLimit] = useState(10);
-  const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
-  const [visibility, setVisibility] = useState("private");
-  const [timeLimit, setTimeLimit] = useState(10);
-  const [hrs, sethrs] = useState("");
-  const [mins, setmins] = useState("10 mins");
-
-  const toHoursAndMinutes = (totalMinutes) => {
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return { hours, minutes };
-  };
-
-  const joinRoom = () => {
-    const inviteCode = inviteRef.current.value;
-    if (inviteCode !== "") {
-      connection?.emit("join-room", inviteCode, userData?.username, () => {
-        navigate(`/app/room/${inviteCode}`, { replace: false });
-      });
-    } else {
-      connection?.emit("create-room", (inviteCode) => {
-        navigate(`/app/room/${inviteCode}`, { replace: false });
-      })
-    }
-  };
+  }, []);
 
   return (
     <div>
@@ -73,31 +91,53 @@ const CreateRoom = ({ isContest }) => {
           <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
             <div className="flex flex-row gap-x-3 mb-3">
               <h1 className="text-xl font-bold">Create Room</h1>
-              <RoomVisibility visibility={visibility} setVisibility={setVisibility} />
+              <RoomVisibility
+                visibility={visibility}
+                setVisibility={setVisibility}
+              />
             </div>
             <div className="grid grid-cols-2 grid-rows-2 gap-5">
               <RoomTypeSelector roomType={roomType} setRoomType={setRoomType} />
-              <ParticipantLimit participantLimit={participantLimit} setParticipantLimit={setParticipantLimit} isLimitActive={isLimitActive} setLimitActive={setLimitActive} />
-              <RoomDuration roomType={roomType} updateTimeLimit={updateTimeLimit} hrs={hrs} mins={mins} />
+              <ParticipantLimit
+                participantLimit={participantLimit}
+                setParticipantLimit={setParticipantLimit}
+                isLimitActive={isLimitActive}
+                setLimitActive={setLimitActive}
+              />
+              <RoomDuration
+                roomType={roomType}
+                updateTimeLimit={updateTimeLimit}
+                hrs={hrs}
+                mins={mins}
+              />
               <RoomInviteLink />
             </div>
           </div>
           <div className="flex flex-col gap-y-3 pl-12 grow-0">
             <h1 className="text-xl font-bold mb-12">Join Room</h1>
-            <input ref={inviteRef} className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3" type="text" placeholder="Invite Code" />
-            <button onClick={joinRoom} className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg">
+            <input
+              ref={inviteRef}
+              className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
+              type="text"
+              placeholder="Invite Code"
+            />
+            <button
+              onClick={handleStartRoom}
+              className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
+            >
               START
             </button>
           </div>
         </div>
-
-        <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
-          <ProblemFilter filterInsideModal={true} />
-          <div className="grow overflow-y-scroll mb-3">
-            <ProblemList type="select" />
+        <RoomFilterContext.Provider value={{ filterObj, setFilterObj }}>
+          <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
+            <ProblemFilter selected={selected} setSelected={setSelected} filterInsideModal={true} />
+            <div className="grow overflow-y-scroll mb-3">
+              <ProblemList selected={selected} setSelected={setSelected} type="select" />
+            </div>
+            <Pagination type="select" />
           </div>
-          <Pagination />
-        </div>
+        </RoomFilterContext.Provider>
       </div>
     </div>
   );

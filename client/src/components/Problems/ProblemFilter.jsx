@@ -6,6 +6,7 @@ import {
   FaUndo,
   FaMinus,
   FaCheck,
+  FaRandom,
 } from "react-icons/fa";
 import { RiPulseLine } from "react-icons/ri";
 import Difficulty from "./Difficulty";
@@ -15,8 +16,9 @@ import CreateRoom from "../Rooms/CreateRoom";
 import { useContext } from "react";
 import { AuthContext } from "../../App";
 import { FilterContext } from "./index";
+import { RoomFilterContext } from "../Rooms/CreateRoom";
 
-const ProblemFilter = ({ filterInsideModal }) => {
+const ProblemFilter = ({ selected, filterInsideModal }) => {
   useEffect(() => {
     const closeDropdown = (event) => {
       if (
@@ -44,9 +46,11 @@ const ProblemFilter = ({ filterInsideModal }) => {
     difficulty: "",
     topics: [],
   });
-  const [selected, setSelected] = useState(0);
+
   const { isLoggedIn } = useContext(AuthContext);
-  const { setFilterObj } = useContext(FilterContext);
+  const { setFilterObj } = useContext(
+    filterInsideModal ? RoomFilterContext : FilterContext
+  );
 
   useEffect(() => {
     setFilterObj((prevObj) => {
@@ -81,14 +85,14 @@ const ProblemFilter = ({ filterInsideModal }) => {
       target.contains("easy") ||
       target.contains("medium") ||
       target.contains("hard")
-      ) {
-        setActiveDifficulty([]);
-        setActiveFilters((prevFilter) => {
-          return {
-            ...prevFilter,
-            difficulty: "",
-          };
-        });
+    ) {
+      setActiveDifficulty([]);
+      setActiveFilters((prevFilter) => {
+        return {
+          ...prevFilter,
+          difficulty: "",
+        };
+      });
     } else if (
       target.contains("to-do") ||
       target.contains("solved") ||
@@ -207,11 +211,26 @@ const ProblemFilter = ({ filterInsideModal }) => {
           />
         </div>
         {filterInsideModal ? (
-          <p className="ml-auto text-lg text-green font-bold">
-            {selected
-              ? `${selected}/4 problems selected`
-              : "Select upto 4 problems"}
-          </p>
+          <>
+            <button className="flex flex-row gap-x-3 items-center bg-accent1 px-3 rounded-lg">
+              <FaRandom />
+              Randomize
+            </button>
+            <div className="flex flex-col ml-auto items-end justify-center">
+              <p className="ml-auto text-lg text-green font-bold">
+                {selected.length !== 0
+                  ? `${selected.length}/4 problems selected`
+                  : "Select upto 4 problems"}
+              </p>
+              <div className="flex flex-row gap-x-3">
+                {selected.map((problem) => (
+                  <p className="text-white px-3 rounded-lg bg-accent1">
+                    {problem}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </>
         ) : (
           isLoggedIn && (
             <button

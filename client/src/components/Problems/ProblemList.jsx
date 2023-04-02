@@ -4,11 +4,14 @@ import Problem from "./Problem";
 import { getAllProblems } from "../../api/problemDataAPI";
 import formatStats from "../../utilities/formatStats";
 import { FilterContext } from "./index";
+import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { FaSort, FaCaretDown, FaCaretUp } from "react-icons/fa";
 
-const ProblemList = ({ type }) => {
+const ProblemList = ({ selected, setSelected, type }) => {
   const { isLoggedIn } = useContext(AuthContext);
-  const { filterObj } = useContext(FilterContext);
+  const { filterObj } = useContext(
+    type === "select" ? RoomFilterContext : FilterContext
+  );
   const [problems, setProblems] = useState([]);
   const [order, setOrder] = useState({
     number: "default",
@@ -46,7 +49,7 @@ const ProblemList = ({ type }) => {
         ? "asc"
         : "default";
 
-    // 2. Update sortOrder state accordingly 
+    // 2. Update sortOrder state accordingly
     setOrder((prevOrder) => {
       return { ...prevOrder, [sortField]: sortOrder };
     });
@@ -216,6 +219,8 @@ const ProblemList = ({ type }) => {
         .map((problem) => (
           <Problem
             key={problem.number}
+            selected={selected}
+            setSelected={setSelected}
             number={problem.number}
             type={type}
             name={problem.title}
