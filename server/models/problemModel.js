@@ -103,4 +103,20 @@ const problemSchema = new mongoose.Schema({
 
 const Problem = mongoose.model("Problem", problemSchema);
 
+problemSchema.post("save", async function (doc, next) {
+  try {
+    for (const tagName of doc.tags) {
+      const problemTag = await ProblemTag.findOneAndUpdate(
+        { name: tagName },
+        { $inc: { count: 1 }, $push: { problems: doc._id } }
+      );
+      await problemTag.save();
+    }
+    next();
+  } catch (error) {
+    await Problem.findOneAndDelete({ _id: doc._id });
+    return next(new AppError(error, 500));
+  }
+});
+
 module.exports = Problem;
