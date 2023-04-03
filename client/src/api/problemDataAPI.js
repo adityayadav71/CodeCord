@@ -17,6 +17,13 @@ export const getProblem = async (slugs) => {
   return response.data;
 };
 
+export const getRandomProblems = async () => {
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/problems/set/four-problems`
+  );
+  return response.data;
+};
+
 export const updateProblem = async (problemId) => {
   const response = await axios.patch(
     `${BASE_URL}/api/v1/problems/${problemId}`
