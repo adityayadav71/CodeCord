@@ -16,7 +16,9 @@ const HomeNavbar = ({ handleLogout }) => {
   const [profileActive, setProfileActive] = useState(false);
   const [searchbarActive, setSearchbarActive] = useState(false);
   const openRoomModal = () => {
-    setModal(<CreateRoom isContest={false} />);
+    // 1. Create Room in Database - Return RoomID
+    const roomID = "jnsdo8hf"
+    setModal(<CreateRoom isContest={false} inviteLink={roomID}/>);
   };
   useEffect(() => {
     const closeModal = (event) => {

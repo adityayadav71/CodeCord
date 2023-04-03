@@ -17,8 +17,9 @@ import { useContext } from "react";
 import { AuthContext } from "../../App";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
+import { getRandomProblems } from "../../api/problemDataAPI";
 
-const ProblemFilter = ({ selected, filterInsideModal }) => {
+const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
   useEffect(() => {
     const closeDropdown = (event) => {
       if (
@@ -61,6 +62,12 @@ const ProblemFilter = ({ selected, filterInsideModal }) => {
       };
     });
   }, [activeFilters]);
+
+  const handleRandomize = async () => {
+    const problems = await getRandomProblems();
+    problems.map((problem) => problem.number);
+    setSelected(problems);
+  };
 
   const handleClick = (event) => {
     const target = event.target.closest(".dropdown").dataset.value;
@@ -212,7 +219,10 @@ const ProblemFilter = ({ selected, filterInsideModal }) => {
         </div>
         {filterInsideModal ? (
           <>
-            <button className="flex flex-row gap-x-3 items-center bg-accent1 px-3 rounded-lg">
+            <button
+              className="flex flex-row gap-x-3 items-center bg-accent1 px-3 rounded-lg"
+              onClick={handleRandomize}
+            >
               <FaRandom />
               Randomize
             </button>
