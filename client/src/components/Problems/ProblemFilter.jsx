@@ -64,9 +64,9 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
   }, [activeFilters]);
 
   const handleRandomize = async () => {
-    const problems = await getRandomProblems();
-    problems.map((problem) => problem.number);
-    setSelected(problems);
+    const data = await getRandomProblems();
+    data.problems = data.problems.map((problem) => problem.number);
+    setSelected(data.problems);
   };
 
   const handleClick = (event) => {
@@ -233,8 +233,8 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
                   : "Select upto 4 problems"}
               </p>
               <div className="flex flex-row gap-x-3">
-                {selected.map((problem) => (
-                  <p className="text-white px-3 rounded-lg bg-accent1">
+                {selected.map((problem, i) => (
+                  <p key={i} className="text-white px-3 rounded-lg bg-accent1">
                     {problem}
                   </p>
                 ))}
