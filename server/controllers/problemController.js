@@ -28,11 +28,11 @@ exports.createProblem = catchAsync(async (req, res, next) => {
   if (!counter) {
     counter = await Counter.create({ name: "counter", seq: 0 });
   }
-  await Counter.findOneAndUpdate({ name: "counter" }, { $inc: { seq: 1 } });
+
   const newProblem = await Problem.create({
     number: counter.seq + 1,
     title: req.body.title,
-    tags:req.body.tags,
+    tags: req.body.tags,
     statement: req.body.statement,
     difficulty: req.body.difficulty,
     example: req.body.example,
@@ -132,35 +132,28 @@ exports.getProblemsWithTag = catchAsync(async (req, res, next) => {
 });
 
 exports.get4Problem = catchAsync(async (req, res, next) => {
-  const easy = await Problem.aggregate([{ $sample: { size: 4 } }]);
-    // .select("title number difficulty")
-    // .populate({
-    //   path: "stats",
-    //   select: "acceptance submissions",
-    //   populate: "-example -testcases -constraints -stats",
-    // });
-  // easy.splice(0, 2);
+  const easy = await Problem.aggregate([
+    { $match: { difficulty: "easy" } },
+    { $project: { title: 1, number: 1, difficulty: 1 } },
+    { $sample: { size: 1 } },
+  ]);
 
-  const medium = await Problem.findOne({ difficulty: "medium" })
-    .select("title number difficulty")
-    .populate({
-      path: "stats",
-      select: "acceptance submissions",
-      populate: "-example -testcases -constraints -stats",
-    });
+  const medium = await Problem.aggregate([
+    { $match: { difficulty: "medium" } },
+    { $project: { title: 1, number: 1, difficulty: 1 } },
+    { $sample: { size: 2 } },
+  ]);
 
-  const hard = await Problem.findOne({ difficulty: "hard" })
-    .select("title number difficulty")
-    .populate({
-      path: "stats",
-      select: "acceptance submissions",
-      populate: "-example -testcases -constraints -stats",
-    });
+  const hard = await Problem.aggregate([
+    { $match: { difficulty: "hard" } },
+    { $project: { title: 1, number: 1, difficulty: 1 } },
+    { $sample: { size: 1 } },
+  ]);
 
   const problems = easy.concat(medium, hard);
 
   res.status(200).json({
     status: "success",
-    easy,
+    problems,
   });
 });
