@@ -32,6 +32,7 @@ exports.createProblem = catchAsync(async (req, res, next) => {
   const newProblem = await Problem.create({
     number: counter.seq + 1,
     title: req.body.title,
+    tags:req.body.tags,
     statement: req.body.statement,
     difficulty: req.body.difficulty,
     example: req.body.example,
@@ -131,14 +132,14 @@ exports.getProblemsWithTag = catchAsync(async (req, res, next) => {
 });
 
 exports.get4Problem = catchAsync(async (req, res, next) => {
-  const easy = await Problem.find({ difficulty: "easy" })
-    .select("title number difficulty")
-    .populate({
-      path: "stats",
-      select: "acceptance submissions",
-      populate: "-example -testcases -constraints -stats",
-    });
-  easy.splice(0, 2);
+  const easy = await Problem.aggregate([{ $sample: { size: 4 } }]);
+    // .select("title number difficulty")
+    // .populate({
+    //   path: "stats",
+    //   select: "acceptance submissions",
+    //   populate: "-example -testcases -constraints -stats",
+    // });
+  // easy.splice(0, 2);
 
   const medium = await Problem.findOne({ difficulty: "medium" })
     .select("title number difficulty")
@@ -160,6 +161,6 @@ exports.get4Problem = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    problems,
+    easy,
   });
 });
