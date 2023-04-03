@@ -13,14 +13,15 @@ import { useNavigate } from "react-router-dom";
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest }) => {
+const CreateRoom = ({ isContest, inviteLink }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
   const { connection } = useContext(RoomContext);
   const navigate = useNavigate();
-  
+
   // Declaring States
+  const [isUserJoining, setIsUserJoining] = useState(false);
   const [isLimitActive, setLimitActive] = useState(false);
   const [participantLimit, setParticipantLimit] = useState(10);
   const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
@@ -49,19 +50,44 @@ const CreateRoom = ({ isContest }) => {
     setTimeLimit(timeLimit);
   };
 
-  const handleStartRoom = () => {
-    const inviteCode = inviteRef.current.value;
-    if (inviteCode !== "") {
-      connection?.emit("join-room", inviteCode, userData?.username, () => {
-        navigate(`/app/room/${inviteCode}`, { replace: false });
-      });
-    } else {
-      connection?.emit("create-room", (inviteCode) => {
-        navigate(`/app/room/${inviteCode}`, { replace: false });
-      });
+  const handleJoinInviteChange = (e) => {
+    e.target.value === ""
+      ? setIsUserJoining(false)
+      : !isUserJoining
+      ? setIsUserJoining(true)
+      : null;
+  };
+
+  const handleJoinRoom = async () => {
+    // 1. Find Room In Database
+    if (await findRoom()) {
+      // 2. Create Socket Connection
+      const inviteCode = inviteRef.current.value;
+      if (inviteCode !== "") {
+        connection?.emit("join-room", inviteCode, userData?.username, () => {
+          navigate(`/app/room/${inviteCode}`, { replace: false });
+        });
+      }
     }
   };
-  
+
+  const handleUpdateRoom = async () => {
+    const settings = {
+      visibility,
+      roomType,
+      participantLimit,
+      timeLimit: roomType === "Default" ? 40 : timeLimit,
+      selected,
+    };
+    // 1. Create Room with these settings
+    await createRoom(settings);
+
+    // 2. Create Socket Connection
+    connection?.emit("create-room", (inviteCode) => {
+      navigate(`/app/room/${inviteCode}`, { replace: false });
+    });
+  };
+
   // Utility functions for this component
   const toHoursAndMinutes = (totalMinutes) => {
     const hours = Math.floor(totalMinutes / 60);
@@ -69,7 +95,7 @@ const CreateRoom = ({ isContest }) => {
     return { hours, minutes };
   };
 
-  // useEffect hook to initialize hrs and minutes from timeLimit 
+  // useEffect hook to initialize hrs and minutes from timeLimit
   useEffect(() => {
     sethrs(() => {
       const hours = toHoursAndMinutes(timeLimit).hours;
@@ -81,7 +107,7 @@ const CreateRoom = ({ isContest }) => {
       if (mins === 1) return `${mins} min`;
       else if (mins > 1) return `${mins} mins`;
     });
-  }, []);
+  }, [timeLimit]);
 
   return (
     <div>
@@ -110,30 +136,48 @@ const CreateRoom = ({ isContest }) => {
                 hrs={hrs}
                 mins={mins}
               />
-              <RoomInviteLink />
+              <RoomInviteLink inviteLink={inviteLink} />
             </div>
           </div>
           <div className="flex flex-col gap-y-3 pl-12 grow-0">
             <h1 className="text-xl font-bold mb-12">Join Room</h1>
             <input
               ref={inviteRef}
+              onChange={handleJoinInviteChange}
               className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
               type="text"
               placeholder="Invite Code"
-            />
-            <button
-              onClick={handleStartRoom}
-              className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
-            >
-              START
-            </button>
+            />{" "}
+            {isUserJoining ? (
+              <button
+                onClick={handleJoinRoom}
+                className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
+              >
+                JOIN
+              </button>
+            ) : (
+              <button
+                onClick={handleUpdateRoom}
+                className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
+              >
+                CREATE
+              </button>
+            )}
           </div>
         </div>
         <RoomFilterContext.Provider value={{ filterObj, setFilterObj }}>
           <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
-            <ProblemFilter selected={selected} setSelected={setSelected} filterInsideModal={true} />
+            <ProblemFilter
+              selected={selected}
+              setSelected={setSelected}
+              filterInsideModal={true}
+            />
             <div className="grow overflow-y-scroll mb-3">
-              <ProblemList selected={selected} setSelected={setSelected} type="select" />
+              <ProblemList
+                selected={selected}
+                setSelected={setSelected}
+                type="select"
+              />
             </div>
             <Pagination type="select" />
           </div>
