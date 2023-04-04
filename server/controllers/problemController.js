@@ -76,14 +76,10 @@ exports.getProblem = catchAsync(async (req, res, next) => {
 });
 
 exports.updateProblem = catchAsync(async (req, res, next) => {
-  const problem = await Model.findByIdAndUpdate(
-    req.params.problemId,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const problem = await Problem.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
   if (!problem) {
     return next(new AppError("No such problem found with that ID", 404));
   }
@@ -94,7 +90,7 @@ exports.updateProblem = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteProblem = catchAsync(async (req, res, next) => {
-  const problem = await Problem.findByIdAndDelete(req.params.problemId);
+  const problem = await Problem.findByIdAndDelete(req.params.id);
   if (!problem) {
     return next(new AppError("No such problem with that ID", 404));
   }

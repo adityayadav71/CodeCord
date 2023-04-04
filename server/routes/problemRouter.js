@@ -13,9 +13,10 @@ router
     problemController.createProblem
   );
 
+router.get("/selected", problemController.getProblem);
+
 router
-  .route("/selected")
-  .get(problemController.getProblem)
+  .route("/selected/:id")
   .patch(
     authController.protect,
     authController.restrictTo("admin"),

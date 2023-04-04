@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const slug = require("mongoose-slug-generator");
 const ProblemTag = require("./problemTagsModel");
+const Counter = require("./counterModel");
 const AppError = require("../utils/appError");
 
 mongoose.plugin(slug);
@@ -101,8 +102,6 @@ const problemSchema = new mongoose.Schema({
   },
 });
 
-const Problem = mongoose.model("Problem", problemSchema);
-
 problemSchema.post("save", async function (doc, next) {
   try {
     for (const tagName of doc.tags) {
@@ -112,11 +111,14 @@ problemSchema.post("save", async function (doc, next) {
       );
       await problemTag.save();
     }
+    await Counter.findOneAndUpdate({ name: "Counter", $inc: { seq: 1 } });
     next();
   } catch (error) {
     await Problem.findOneAndDelete({ _id: doc._id });
     return next(new AppError(error, 500));
   }
 });
+
+const Problem = mongoose.model("Problem", problemSchema);
 
 module.exports = Problem;
