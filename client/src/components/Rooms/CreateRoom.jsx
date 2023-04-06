@@ -8,7 +8,6 @@ import RoomInviteLink from "./RoomInviteLink";
 import RoomVisibility from "./RoomVisibility";
 import ProblemFilter from "../Problems/ProblemFilter";
 import { AuthContext } from "../../App";
-import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 
 export const RoomFilterContext = createContext(null);
@@ -17,7 +16,6 @@ const CreateRoom = ({ isContest, inviteLink }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
-  const { connection } = useContext(RoomContext);
   const navigate = useNavigate();
 
   // Declaring States
@@ -38,6 +36,7 @@ const CreateRoom = ({ isContest, inviteLink }) => {
     difficulty: "",
     sort: "",
   });
+  const [connection, setConnection] = useState(null);
 
   // State Change/Event handler functions
   const updateTimeLimit = () => {
@@ -80,12 +79,12 @@ const CreateRoom = ({ isContest, inviteLink }) => {
       selected,
     };
     // 1. Create Room with these settings
-    await createRoom(settings);
+    await updateRoomSettings(inviteLink, settings);
 
     // 2. Create Socket Connection
-    connection?.emit("create-room", (inviteCode) => {
-      navigate(`/app/room/${inviteCode}`, { replace: false });
-    });
+    // connection?.emit("create-room", (inviteCode) => {
+    //   navigate(`/app/room/${inviteCode}`, { replace: false });
+    // }); 
   };
 
   // Utility functions for this component
