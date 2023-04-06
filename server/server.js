@@ -41,11 +41,30 @@ const server = app.listen(port, () => {
     console.log(`App running on port ${port} ✅`);
 });
 
-// const io = require("socket.io")(server, {
-//   cors: {
-//     origin: ["http://localhost:5173"],
-//   },
-// });
+const io = require("socket.io")(server, {
+  path: "/api/v1/socket.io",
+  cors: {
+    origin: ["http://localhost:5173"],
+  },
+});
+
+io.on("connection", (socket) => {
+  socket.on("disconnect", function () {
+    console.log("disconnect: ", socket.id);
+  });
+  socket.on("reconnect", function () {
+    socket.join(user?.roomId, () => {
+      console.log("The user has joined the existing room.");
+    });
+  });
+  // Handle Create-room event
+  socket.on("create-room", () => {
+    socket.join(user?.roomId, () => {
+      console.log("The user has joined the existing room.");
+    });
+    socket.emit("room-created", user?.roomId);
+  });
+});
 
 process.on("unhandledRejection", (err) => {
   console.log("UNHANDLED REJECTION! 💥 Shutting down...");

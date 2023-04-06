@@ -1,9 +1,10 @@
 const express = require("express");
-const authController = require("../controllers/authController");
 const roomController = require("../controllers/roomController");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post("/", authController.protect, roomController.createSocket);
+router.post("/", authController.protect, roomController.createRoom);
 
 module.exports = router;
+
