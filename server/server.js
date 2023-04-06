@@ -41,31 +41,11 @@ const server = app.listen(port, () => {
     console.log(`App running on port ${port} ✅`);
 });
 
-const io = require("socket.io")(server, {
-  cors: {
-    origin: ["http://localhost:5173"],
-  },
-});
-
-io.on("connection", (socket) => {
-  socket.on("join-room", (inviteCode, username, cb) => {
-    socket.join(inviteCode);
-
-    cb();
-    const roomMessage = {
-      type: "roomMessage",
-      message: `${username} joined the room`,
-    }
-    socket.to(inviteCode).emit("receive-message", roomMessage);
-  });
-  socket.on("create-room", (cb) => {
-    socket.join(socket.id);
-    cb(socket.id);
-  })
-  socket.on("send-message", (data) => {
-    socket.broadcast.emit("receive-message", data);
-  });
-});
+// const io = require("socket.io")(server, {
+//   cors: {
+//     origin: ["http://localhost:5173"],
+//   },
+// });
 
 process.on("unhandledRejection", (err) => {
   console.log("UNHANDLED REJECTION! 💥 Shutting down...");
@@ -81,3 +61,5 @@ process.on("SIGTERM", () => {
     console.log("💥 Process terminated!");
   });
 });
+
+// module.exports = io;

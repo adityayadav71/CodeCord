@@ -10,10 +10,11 @@ import ProblemFilter from "../Problems/ProblemFilter";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
+import {createSocket} from "../../api/roomAPI"
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest, inviteLink }) => {
+const CreateRoom = ({ isContest }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
@@ -27,6 +28,7 @@ const CreateRoom = ({ isContest, inviteLink }) => {
   const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
   const [visibility, setVisibility] = useState("private");
   const [timeLimit, setTimeLimit] = useState(10);
+  const [inviteLink, setInviteLink] = useState();
   const [hrs, sethrs] = useState("");
   const [mins, setmins] = useState("10 mins");
   const [selected, setSelected] = useState([]);
@@ -108,6 +110,24 @@ const CreateRoom = ({ isContest, inviteLink }) => {
       else if (mins > 1) return `${mins} mins`;
     });
   }, [timeLimit]);
+
+  useEffect(() => {  
+    const createRoom = async() => {
+      const settings = {
+        visibility,
+        roomType,
+        participantLimit,
+        timeLimit: roomType === "Default" ? 40 : timeLimit,
+        selected,
+      };
+      const owner = userData.id;
+      // 1. Create Room in Database - Return RoomID
+      const roomID = await createSocket(owner, settings)
+      setInviteLink(roomID);
+    }
+    createRoom();
+  }, [])
+
 
   return (
     <div>
