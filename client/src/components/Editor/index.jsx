@@ -6,7 +6,6 @@ import CodeEditor from "./CodeEditor";
 import Console from "./Console";
 import Chat from "../Rooms/Chat";
 import LanguageSelector from "./LanguageSelector";
-import { RoomContext } from "../../layouts/AppLayout";
 import { AuthContext } from "../../App";
 import { Link, useParams } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
@@ -28,7 +27,6 @@ const Editor = ({
   ],
 }) => {
   const editorRef = useRef(null);
-  const { connection } = useContext(RoomContext);
   const { isLoggedIn } = useContext(AuthContext);
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
@@ -110,8 +108,8 @@ const Editor = ({
     }
   };
 
-  const handleRunCode = () => {}
-  const handleSubmitCode = () => {}
+  const handleRunCode = () => {};
+  const handleSubmitCode = () => {};
 
   return (
     <ProblemContext.Provider value={{ problems, activeProblem }}>
