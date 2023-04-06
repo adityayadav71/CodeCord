@@ -42,28 +42,27 @@ const server = app.listen(port, () => {
 });
 
 const io = require("socket.io")(server, {
+  path: "/api/v1/socket.io",
   cors: {
     origin: ["http://localhost:5173"],
   },
 });
 
 io.on("connection", (socket) => {
-  socket.on("join-room", (inviteCode, username, cb) => {
-    socket.join(inviteCode);
-
-    cb();
-    const roomMessage = {
-      type: "roomMessage",
-      message: `${username} joined the room`,
-    }
-    socket.to(inviteCode).emit("receive-message", roomMessage);
+  socket.on("disconnect", function () {
+    console.log("disconnect: ", socket.id);
   });
-  socket.on("create-room", (cb) => {
-    socket.join(socket.id);
-    cb(socket.id);
-  })
-  socket.on("send-message", (data) => {
-    socket.broadcast.emit("receive-message", data);
+  socket.on("reconnect", function () {
+    socket.join(user?.roomId, () => {
+      console.log("The user has joined the existing room.");
+    });
+  });
+  // Handle Create-room event
+  socket.on("create-room", () => {
+    socket.join(user?.roomId, () => {
+      console.log("The user has joined the existing room.");
+    });
+    socket.emit("room-created", user?.roomId);
   });
 });
 
