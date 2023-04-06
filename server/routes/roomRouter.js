@@ -7,3 +7,4 @@ const router = express.Router();
 router.post("/", authController.protect, roomController.createRoom);
 
 module.exports = router;
+

@@ -14,6 +14,7 @@ const roomRouter = require("./routes/roomRouter");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const cookieParser = require("cookie-parser");
+const io = require("./server");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(
   cors({
     origin: [
       "http://127.0.0.1:5173",
+      "http://localhost:5173",
       "https://www.codeack.tk",
       "https://codecord.vercel.app",
       "https://code-cord-adityayadav71.vercel.app",
@@ -74,6 +76,7 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  req.io = io;
   next();
 });
 
