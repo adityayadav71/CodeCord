@@ -5,9 +5,9 @@ A coding platform with enhanced collaboration and competition features. Create r
 ## Project Description
 
 CodeCord is inspired by **<span>binarysearch.com</span>** (which has been shut down for some reason). It is a web application where users can **solve data structures & algorithm problems, give contests every week, maintain contest rating** and streak of solving problems daily similar to leetcode.
-Apart from the usual leetcode features, it provides the feature to create a live room where you can invite your friends to code together. While creating a room, a user can **either create a contest** to solve specific set of problems within a time limit and compete with their friends **or create a normal room** with a shared editor where both users can code simultaneously.
+Apart from the usual leetcode features, it provides the feature to **create a live room where you can invite your friends to code together**. While creating a room, a user can **either create a contest** to solve specific set of problems within a time limit and compete with their friends **or create a normal room** with a shared editor where both users can code simultaneously.
 
-#### Installation:
+## Installation:
 
 **Prerequisites:**
 
@@ -25,25 +25,28 @@ Step 3: In the **root** directory run the following **script**:
 
 Step 4: **Create a .env file in the server directory** using the example file given. The server would not start without this file.
 
-Step 5: After installation, start **two terminals** each for **client** and **server** subdirectories and run the following script in both.
+Step 5: Install MongoDB Compass, connect to localhost:27017, **Create a database named codecord** and add two collections problems and problemtags. Import the problems.json and problemtags.json files from the cloned repository into these collections.
+
+Step 6: After the setup, start **two terminals** each for **client** and **server** subdirectories (in VSCode preferably) and run the following script in both.
 
     npm run dev
+    
+## How to use the project:
 
-#### Room features:
+1. To navigate through the pages of the project make sure you have the .env file setup properly with database collections on MongoDB Compass.
+2. The landing page provides a footer with links to three main components of the project, Contests, Problems and Discussion. You can even click the login/signup button to navigate to the main page.
+3. Currently, you can only use features such as, filtering problems, Creating an Account and Updating your user profile. We are currently working on creating rooms feature.
 
-1. Three panes: problem description, code editor and console, room details and chat.
-2. Users can join a voice call anytime(in case of contest, after end) and discuss.
-3. In a contest, a live scoreboard to maintain user ranks depending on time taken and number of attempts.
-4. Every user in the room can view each others code live by clicking user tabs on top of code editor(hidden until end in case of contest).
+## ScreenShots:
 
-![Room Design Prototype](room.png)
+![Room Design Prototype](/room.png)
+![Problems Page](/problems.jpg)
+![Contests Page](/contests.jpg)
+![User Profile Page](/problems.jpg)
 
 ## Links and Resources:
 
-### Links and Resources:
-
-1. [Vercel-Deployment](https://www.codeack.tk/)
-2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1)
+1. [Vercel-Deployment](https://www.codecord.vercel.app/)
 2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1)
 
 ## Tech Stack

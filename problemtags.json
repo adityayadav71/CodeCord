@@ -1,0 +1,256 @@
+[{
+  "_id": {
+    "$oid": "642b94a131d88191d2035659"
+  },
+  "name": "Arrays",
+  "count": 1,
+  "problems": [
+    {
+      "$oid": "641aa938422e9bb273054f07"
+    },
+    {
+      "$oid": "641f02c10a33addb8c68d781"
+    },
+    {
+      "$oid": "641f9b45e4d425ca75c1de97"
+    },
+    {
+      "$oid": "64290ffe9f778be5421c47b7"
+    }
+  ],
+  "slug": "arrays",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b95b131d88191d203566a"
+  },
+  "name": "Math",
+  "count": 0,
+  "problems": [
+    {
+      "$oid": "642b95ce31d88191d2035674"
+    }
+  ],
+  "slug": "math",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b95b631d88191d203566e"
+  },
+  "name": "Linked List",
+  "count": 0,
+  "problems": [
+    {
+      "$oid": "64252130bb7c037da7bb49e7"
+    }
+  ],
+  "slug": "linked-list",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b962431d88191d203567f"
+  },
+  "name": "Strings",
+  "count": 0,
+  "problems": [],
+  "slug": "strings",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b962b31d88191d2035683"
+  },
+  "name": "Dynamic Programming",
+  "count": 0,
+  "problems": [],
+  "slug": "dynamic-programming",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b963331d88191d2035687"
+  },
+  "name": "Sorting",
+  "count": 0,
+  "problems": [],
+  "slug": "sorting",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b963931d88191d203568b"
+  },
+  "name": "Greedy",
+  "count": 0,
+  "problems": [],
+  "slug": "greedy",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b963e31d88191d203568f"
+  },
+  "name": "Depth-First Search",
+  "count": 0,
+  "problems": [],
+  "slug": "depth-first-search",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b964531d88191d2035693"
+  },
+  "name": "Database",
+  "count": 0,
+  "problems": [],
+  "slug": "database",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b964c31d88191d2035697"
+  },
+  "name": "Breadth-First Search",
+  "count": 0,
+  "problems": [],
+  "slug": "breadth-first-search",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b965431d88191d203569b"
+  },
+  "name": "Binary Search",
+  "count": 0,
+  "problems": [],
+  "slug": "binary-search",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b965931d88191d203569f"
+  },
+  "name": "Tree",
+  "count": 0,
+  "problems": [],
+  "slug": "tree",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b965e31d88191d20356a3"
+  },
+  "name": "Matrix",
+  "count": 0,
+  "problems": [],
+  "slug": "matrix",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b966431d88191d20356a7"
+  },
+  "name": "Two Pointers",
+  "count": 0,
+  "problems": [],
+  "slug": "two-pointers",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b966e31d88191d20356ab"
+  },
+  "name": "Binary Tree",
+  "count": 0,
+  "problems": [],
+  "slug": "binary-tree",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b96793200f6b57709189c"
+  },
+  "name": "Heap (Priority Queue)",
+  "count": 0,
+  "problems": [],
+  "slug": "heap-priority-queue",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b967e3200f6b5770918a0"
+  },
+  "name": "Stack",
+  "count": 0,
+  "problems": [],
+  "slug": "stack",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b96823200f6b5770918a4"
+  },
+  "name": "Graph",
+  "count": 0,
+  "problems": [],
+  "slug": "graph",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b96863200f6b5770918a8"
+  },
+  "name": "Queue",
+  "count": 0,
+  "problems": [],
+  "slug": "queue",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b968b3200f6b5770918ac"
+  },
+  "name": "Trie",
+  "count": 0,
+  "problems": [],
+  "slug": "trie",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b96935b9ee844a2f04823"
+  },
+  "name": "Sliding Window",
+  "count": 0,
+  "problems": [],
+  "slug": "sliding-window",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b969a5b9ee844a2f04827"
+  },
+  "name": "Backtracking",
+  "count": 0,
+  "problems": [],
+  "slug": "backtracking",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b969e5b9ee844a2f0482b"
+  },
+  "name": "Recursion",
+  "count": 0,
+  "problems": [],
+  "slug": "recursion",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b96a35b9ee844a2f0482f"
+  },
+  "name": "Divide And Conquer",
+  "count": 0,
+  "problems": [],
+  "slug": "divide-and-conquer",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b96aa5b9ee844a2f04833"
+  },
+  "name": "Binary Search Tree",
+  "count": 0,
+  "problems": [],
+  "slug": "binary-search-tree",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b96b15b9ee844a2f04837"
+  },
+  "name": "Union Find",
+  "count": 0,
+  "problems": [],
+  "slug": "union-find",
+  "__v": 0
+}]

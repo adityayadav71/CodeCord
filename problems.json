@@ -1,0 +1,456 @@
+[{
+  "_id": {
+    "$oid": "641aa938422e9bb273054f07"
+  },
+  "number": 1,
+  "title": "Two Sum",
+  "statement": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n You may assume that each input would have exactly one solution, and you may not use the same element twice.\n You can return the answer in any order.",
+  "difficulty": "easy",
+  "example": [
+    {
+      "input": "nums = [2,7,11,15], target = 9",
+      "output": "[0,1]",
+      "explanation": "Because nums[0] + nums[1] == 9, we return [0, 1].",
+      "_id": {
+        "$oid": "641aa938422e9bb273054f08"
+      }
+    },
+    {
+      "input": "[3,2,4], target = 6",
+      "output": "[1,2]",
+      "_id": {
+        "$oid": "641aa938422e9bb273054f09"
+      }
+    }
+  ],
+  "testcases": [
+    {
+      "input": [
+        "[2,7,11,15]",
+        "9"
+      ],
+      "output": "[0,1]",
+      "_id": {
+        "$oid": "641aa938422e9bb273054f0a"
+      }
+    },
+    {
+      "input": [
+        "[3,2,4]",
+        "6"
+      ],
+      "output": "[1,2]",
+      "_id": {
+        "$oid": "641aa938422e9bb273054f0b"
+      }
+    }
+  ],
+  "constraints": [
+    "2 &lt;= nums.length &lt;= 104",
+    "-109 &lt;= nums[i] &lt;= 109",
+    "-109 &lt;= target &lt;= 109",
+    "Only one valid answer exists."
+  ],
+  "solutions": [],
+  "slug": "two-sum",
+  "__v": 0,
+  "stats": {
+    "likes": "25000",
+    "dislikes": "2200",
+    "submissions": "1000000",
+    "acceptance": "49.7",
+    "accepted": "800000"
+  },
+  "tags": [
+    "Arrays"
+  ]
+},{
+  "_id": {
+    "$oid": "641f02c10a33addb8c68d781"
+  },
+  "number": 2,
+  "title": "Three Sum",
+  "statement": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0. Notice that the solution set must not contain duplicate triplets.",
+  "difficulty": "medium",
+  "example": [
+    {
+      "input": "nums = [-1,0,1,2,-1,-4]",
+      "output": "[[-1,-1,2],[-1,0,1]]",
+      "explanation": "nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0. nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0. nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0. The distinct triplets are [-1,0,1] and [-1,-1,2]. Notice that the order of the output and the order of the triplets does not matter.",
+      "_id": {
+        "$oid": "641f02c10a33addb8c68d782"
+      }
+    },
+    {
+      "input": "nums = [0,1,1]",
+      "output": "[]",
+      "explanation": "The only possible triplet does not sum up to 0.",
+      "_id": {
+        "$oid": "641f02c10a33addb8c68d783"
+      }
+    },
+    {
+      "input": "nums = [0,0,0]",
+      "output": "[[0,0,0]]",
+      "explanation": "The only possible triplet sums up to 0.",
+      "_id": {
+        "$oid": "641f02c10a33addb8c68d784"
+      }
+    }
+  ],
+  "testcases": [
+    {
+      "input": [
+        "[-1,0,1,2,-1,-4]"
+      ],
+      "output": "[[-1,-1,2],[-1,0,1]]",
+      "_id": {
+        "$oid": "641f02c10a33addb8c68d785"
+      }
+    },
+    {
+      "input": [
+        "[0,1,1]"
+      ],
+      "output": "[]",
+      "_id": {
+        "$oid": "641f02c10a33addb8c68d786"
+      }
+    },
+    {
+      "input": [
+        "[0,0,0]"
+      ],
+      "output": "[[0,0,0]]",
+      "_id": {
+        "$oid": "641f02c10a33addb8c68d787"
+      }
+    }
+  ],
+  "constraints": [
+    "3 &lt;= nums.length &lt;= 3000",
+    "-105 &lt;= nums[i] &lt;= 105"
+  ],
+  "solutions": [],
+  "slug": "three-sum",
+  "__v": 0,
+  "tags": [
+    "Arrays"
+  ],
+  "stats": {
+    "likes": 0,
+    "dislikes": 0,
+    "submissions": 7987566,
+    "accepted": 2609044,
+    "acceptance": {
+      "$numberDecimal": "32.6"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "641f9b45e4d425ca75c1de97"
+  },
+  "number": 3,
+  "title": "Four Sum",
+  "statement": "Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:\n 0 &lt;= a, b, c, d &lt; n \n a, b, c, and d are distinct.\n nums[a] + nums[b] + nums[c] + nums[d] == target\n You may return the answer in any order.",
+  "difficulty": "medium",
+  "example": [
+    {
+      "input": "nums = [1,0,-1,0,-2,2], target = 0",
+      "output": "[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]",
+      "_id": {
+        "$oid": "641f9b45e4d425ca75c1de98"
+      }
+    },
+    {
+      "input": "nums = [2,2,2,2,2], target = 8",
+      "output": "[[2,2,2,2]]",
+      "_id": {
+        "$oid": "641f9b45e4d425ca75c1de99"
+      }
+    }
+  ],
+  "testcases": [
+    {
+      "input": [
+        "[1,0,-1,0,-2,2]",
+        "0"
+      ],
+      "output": "[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]",
+      "_id": {
+        "$oid": "641f9b45e4d425ca75c1de9a"
+      }
+    },
+    {
+      "input": [
+        "[2,2,2,2,2]",
+        "8"
+      ],
+      "output": "[2,2,2,2,2]",
+      "_id": {
+        "$oid": "641f9b45e4d425ca75c1de9b"
+      }
+    }
+  ],
+  "constraints": [
+    "1 &lt;= nums.length &lt;= 200",
+    "-109 &lt;= nums[i] &lt;= 109",
+    "-109 &lt;= target &lt;= 109"
+  ],
+  "solutions": [],
+  "slug": "four-sum",
+  "__v": 0,
+  "tags": [
+    "Arrays"
+  ],
+  "stats": {
+    "likes": 0,
+    "dislikes": 0,
+    "submissions": 18293829,
+    "accepted": 9142000,
+    "acceptance": {
+      "$numberDecimal": "35.9"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "64252130bb7c037da7bb49e7"
+  },
+  "number": 4,
+  "title": "Merge k Sorted Lists",
+  "statement": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.\n Merge all the linked-lists into one sorted linked-list and return it.",
+  "difficulty": "hard",
+  "tags": [
+    "Linked List"
+  ],
+  "example": [
+    {
+      "input": "lists = [[1,4,5],[1,3,4],[2,6]]",
+      "output": "[1,1,2,3,4,4,5,6]",
+      "explanation": "The linked-lists are:\n [\n   1->4->5,\n   1->3->4,\n   2->6\n ]\n merging them into one sorted list:\n 1->1->2->3->4->4->5->6",
+      "_id": {
+        "$oid": "64252130bb7c037da7bb49e8"
+      }
+    },
+    {
+      "input": "lists = []",
+      "output": "[]",
+      "_id": {
+        "$oid": "64252130bb7c037da7bb49e9"
+      }
+    },
+    {
+      "input": "lists = [[]]",
+      "output": "[]",
+      "_id": {
+        "$oid": "64252130bb7c037da7bb49ea"
+      }
+    }
+  ],
+  "testcases": [
+    {
+      "input": [
+        "[[1,4,5],[1,3,4],[2,6]]"
+      ],
+      "output": "[1,1,2,3,4,4,5,6]",
+      "_id": {
+        "$oid": "64252130bb7c037da7bb49eb"
+      }
+    },
+    {
+      "input": [
+        "[]"
+      ],
+      "output": "[]",
+      "_id": {
+        "$oid": "64252130bb7c037da7bb49ec"
+      }
+    },
+    {
+      "input": [
+        "[[]]"
+      ],
+      "output": "[]",
+      "_id": {
+        "$oid": "64252130bb7c037da7bb49ed"
+      }
+    }
+  ],
+  "constraints": [
+    "k == lists.length",
+    "0 &lt;= k &lt;= 104",
+    "0 &lt;= lists[i].length &lt;= 500",
+    "-104 &lt;= lists[i][j] &lt;= 104",
+    "lists[i] is sorted in ascending order.",
+    "The sum of lists[i].length will not exceed 104."
+  ],
+  "solutions": [],
+  "stats": {
+    "likes": 0,
+    "dislikes": 0,
+    "submissions": 824876,
+    "accepted": 98733,
+    "acceptance": {
+      "$numberDecimal": "49.8"
+    },
+    "_id": {
+      "$oid": "64252130bb7c037da7bb49e6"
+    }
+  },
+  "slug": "merge-k-sorted-lists",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64290ffe9f778be5421c47b7"
+  },
+  "number": 5,
+  "title": "Median of Two Sorted Arrays",
+  "statement": "Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.The overall run time complexity should be O(log (m+n)).",
+  "difficulty": "hard",
+  "tags": [
+    "Arrays"
+  ],
+  "example": [
+    {
+      "input": "nums1 = [1,3], nums2 = [2]",
+      "output": "2.00000",
+      "explanation": "merged array = [1,2,3] and median is 2.",
+      "_id": {
+        "$oid": "64290ffe9f778be5421c47b8"
+      }
+    },
+    {
+      "input": "nums1 = [1,2], nums2 = [3,4]",
+      "output": "2.50000",
+      "explanation": "merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.",
+      "_id": {
+        "$oid": "64290ffe9f778be5421c47b9"
+      }
+    }
+  ],
+  "testcases": [
+    {
+      "input": [
+        "[1,3]",
+        "[2]"
+      ],
+      "output": "2.00000",
+      "_id": {
+        "$oid": "64290ffe9f778be5421c47ba"
+      }
+    },
+    {
+      "input": [
+        "[1,2]",
+        "[3,4]"
+      ],
+      "output": "2.50000",
+      "_id": {
+        "$oid": "64290ffe9f778be5421c47bb"
+      }
+    }
+  ],
+  "constraints": [
+    "nums1.length == m",
+    "nums2.length == n",
+    "0 &lt;= m &lt;= 1000",
+    "0 &lt;= n &lt;= 1000",
+    "1 &lt;= m + n &lt;= 2000",
+    "-106 &lt;= nums1[i], nums2[i] &lt;= 106"
+  ],
+  "solutions": [],
+  "stats": {
+    "likes": 22800,
+    "dislikes": 2600,
+    "submissions": 5100000,
+    "accepted": 1800000,
+    "acceptance": 36.2,
+    "_id": {
+      "$oid": "64290ffe9f778be5421c47bc"
+    }
+  },
+  "slug": "median-of-two-sorted-arrays",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "642b95ce31d88191d2035674"
+  },
+  "number": 6,
+  "title": "Palindrome Number",
+  "statement": "Given an integer x, return true if x is a palindrome, and false otherwise.",
+  "difficulty": "easy",
+  "tags": [
+    "Math"
+  ],
+  "example": [
+    {
+      "input": "x = 121",
+      "output": "true",
+      "explanation": "121 reads as 121 from left to right and from right to left.",
+      "_id": {
+        "$oid": "642b95ce31d88191d2035675"
+      }
+    },
+    {
+      "input": "x = -121",
+      "output": "false",
+      "explanation": "From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not palindrome.",
+      "_id": {
+        "$oid": "642b95ce31d88191d2035676"
+      }
+    },
+    {
+      "input": "x = 10",
+      "output": "false",
+      "explanation": "Reads 01 from right to left. Therefore it is not a palindrome.",
+      "_id": {
+        "$oid": "642b95ce31d88191d2035677"
+      }
+    }
+  ],
+  "testcases": [
+    {
+      "input": [
+        "121"
+      ],
+      "output": "true",
+      "_id": {
+        "$oid": "642b95ce31d88191d2035678"
+      }
+    },
+    {
+      "input": [
+        "-121"
+      ],
+      "output": "false",
+      "_id": {
+        "$oid": "642b95ce31d88191d2035679"
+      }
+    },
+    {
+      "input": [
+        "10"
+      ],
+      "output": "false",
+      "_id": {
+        "$oid": "642b95ce31d88191d203567a"
+      }
+    }
+  ],
+  "constraints": [
+    "-231 &lt;= x &lt;= 231 - 1"
+  ],
+  "solutions": [],
+  "stats": {
+    "likes": 0,
+    "dislikes": 0,
+    "submissions": 0,
+    "accepted": 0,
+    "acceptance": 0,
+    "_id": {
+      "$oid": "642b95ce31d88191d2035673"
+    }
+  },
+  "slug": "palindrome-number",
+  "__v": 0
+}]
