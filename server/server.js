@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const { instrument } = require("@socket.io/admin-ui");
 
 process.env.NODE_ENV = process.argv[2].split("=")[1];
 
@@ -44,26 +45,57 @@ const server = app.listen(port, () => {
 const io = require("socket.io")(server, {
   path: "/api/v1/socket.io",
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: ["https://admin.socket.io", "http://localhost:5173"],
+    credentials: true,
   },
 });
 
 io.on("connection", (socket) => {
-  socket.on("disconnect", function () {
-    console.log("disconnect: ", socket.id);
+  socket.on("disconnect", () => {
+    console.log("A client disconnected");
   });
-  socket.on("reconnect", function () {
-    socket.join(user?.roomId, () => {
-      console.log("The user has joined the existing room.");
-    });
+
+  socket.on("send-message", (data, roomId) => {
+    socket.to(roomId).emit("receive-message", data);
   });
+
   // Handle Create-room event
-  socket.on("create-room", () => {
-    socket.join(user?.roomId, () => {
-      console.log("The user has joined the existing room.");
-    });
-    socket.emit("room-created", user?.roomId);
+  socket.on("create-room", (roomId) => {
+    try {
+      socket.join(roomId, () => {
+        console.log("Created a new room successfully.");
+      });
+      socket.emit("room-created", roomId);
+    } catch (err) {
+      socket.emit("error", err);
+    }
   });
+
+  // Handle Join-room event
+  socket.on("join-room", (username, userId, roomId) => {
+    try {
+      socket.join(roomId, () => {
+        console.log(`The user: ${userId} has joined the room successfully.`);
+      });
+      socket.emit("room-joined", roomId);
+      const data = {
+        type: "roomMessage",
+        message: `${username} joined the room.`,
+        timeStamp:
+          new Date(Date.now()).getHours().toString().padStart(2, "0") +
+          ":" +
+          new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
+      };
+      socket.to(roomId).emit("receive-message", data);
+    } catch (err) {
+      socket.emit("error", err);
+    }
+  });
+});
+
+instrument(io, {
+  auth: false,
+  mode: "development",
 });
 
 process.on("unhandledRejection", (err) => {
