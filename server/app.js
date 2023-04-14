@@ -30,6 +30,7 @@ app.use(helmet());
 app.use(
   cors({
     origin: [
+      "https://admin.socket.io",
       "http://127.0.0.1:5173",
       "http://localhost:5173",
       "https://www.codeack.tk",
