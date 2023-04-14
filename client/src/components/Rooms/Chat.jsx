@@ -1,4 +1,10 @@
-import { FaUserPlus, FaPhoneAlt, FaSmile, FaUserAlt, FaCog } from "react-icons/fa";
+import {
+  FaUserPlus,
+  FaPhoneAlt,
+  FaSmile,
+  FaUserAlt,
+  FaCog,
+} from "react-icons/fa";
 import { BiAlarm } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { useState, useContext, useEffect } from "react";
@@ -19,10 +25,15 @@ const Chat = ({ socket }) => {
         type: "chatMessage",
         message: formData.message,
         author: userData?.username,
-        avatar: userData?.avatar?.image && `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`,
-        timeStamp: new Date(Date.now()).getHours().toString().padStart(2, "0") + ":" + new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
+        avatar:
+          userData?.avatar?.image &&
+          `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`,
+        timeStamp:
+          new Date(Date.now()).getHours().toString().padStart(2, "0") +
+          ":" +
+          new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
       };
-      await socket.emit("send-message", messageData);
+      await socket.emit("send-message", messageData, params.name);
 
       setMessageList((prevList) => [...prevList, messageData]);
     }
@@ -55,7 +66,9 @@ const Chat = ({ socket }) => {
           </div>
         </div>
         <div className="flex flex-row gap-x-3 w-full">
-          <button className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover">Scoreboard</button>
+          <button className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover">
+            Scoreboard
+          </button>
         </div>
       </div>
       <h1 className="flex flex-row items-center gap-x-3 bg-lightSecondary px-6 py-2 mb-3">
@@ -67,14 +80,21 @@ const Chat = ({ socket }) => {
         <div className="h-full overflow-y-scroll mb-12" id="chat-window">
           {messageList.map((messageContent) => {
             return messageContent?.type === "roomMessage" ? (
-              <div className="px-3 py-2 mb-3 bg-primary rounded-lg">{messageContent.message}</div>
+              <div className="flex flex-row items-center justify-between gap-x-1 px-3 py-2 mb-3 bg-primary rounded-lg">
+                {messageContent.message}
+                <p className="text-grey1">{messageContent.timeStamp}</p>
+              </div>
             ) : (
               <div className="flex flex-col gap-y-3 mb-3">
                 <div className="grid grid-cols-6">
                   <div className="col-span-1">
                     <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
                       {messageContent.avatar ? (
-                        <img className="rounded-full overflow-clip object-cover h-full w-full" src={messageContent.avatar} alt="user-profile-picture" />
+                        <img
+                          className="rounded-full overflow-clip object-cover h-full w-full"
+                          src={messageContent.avatar}
+                          alt="user-profile-picture"
+                        />
                       ) : (
                         <FaUserAlt className="text-xl hover:cursor-pointer" />
                       )}

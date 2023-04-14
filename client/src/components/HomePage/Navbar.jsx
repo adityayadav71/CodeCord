@@ -5,9 +5,13 @@ import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
 import { createRoom } from "../../api/roomsAPI";
+import { nanoid } from "nanoid";
+import { RoomContext } from "../../layouts/AppLayout";
 
 const HomeNavbar = ({ handleLogout }) => {
   const { isLoggedIn, userData } = useContext(AuthContext);
+  const { socket, setSocket } = useContext(RoomContext);
+  
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
   };
@@ -16,10 +20,17 @@ const HomeNavbar = ({ handleLogout }) => {
   const [imageURL, setImageURL] = useState();
   const [profileActive, setProfileActive] = useState(false);
   const [searchbarActive, setSearchbarActive] = useState(false);
+  
   const openRoomModal = async () => {
+    const roomID = nanoid();
     // 1. Create Room in Database - Return RoomID
-    const roomID = await createRoom(userData.userId);
-    setModal(<CreateRoom isContest={false} inviteLink={roomID} />);
+    const result = await createRoom(userData?.userId, roomID);
+    if (result?.response?.data?.result)
+      window.alert(result?.response?.data?.result);
+    else {
+      setSocket(result.socket);
+      setModal(<CreateRoom isContest={false} roomId={result.id} />);
+    }
   };
   useEffect(() => {
     const closeModal = (event) => {
