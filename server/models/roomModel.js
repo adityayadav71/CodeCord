@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const roomSchema = new mongoose.Schema({
-  roomId: String,
+  roomId: { type: String, unique: [true, "Room Name should be unique"] },
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -47,3 +47,7 @@ roomSchema.post("save", (doc, next) => {
   }, 60 * 1000);
   next();
 });
+
+const Room = mongoose.model("Room", roomSchema);
+
+module.exports = Room;
