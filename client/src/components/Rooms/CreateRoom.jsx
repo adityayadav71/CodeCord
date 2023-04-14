@@ -8,15 +8,17 @@ import RoomInviteLink from "./RoomInviteLink";
 import RoomVisibility from "./RoomVisibility";
 import ProblemFilter from "../Problems/ProblemFilter";
 import { AuthContext } from "../../App";
+import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
-import {createSocket} from "../../api/roomAPI"
+import { updateRoomSettings, joinRoom } from "../../api/roomsAPI";
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest }) => {
+const CreateRoom = ({ isContest, roomId }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
+  const { socket, setSocket } = useContext(RoomContext);
   const navigate = useNavigate();
 
   // Declaring States
@@ -26,7 +28,7 @@ const CreateRoom = ({ isContest }) => {
   const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
   const [visibility, setVisibility] = useState("private");
   const [timeLimit, setTimeLimit] = useState(10);
-  const [inviteLink, setInviteLink] = useState();
+  const [inviteLink, setInviteLink] = useState(roomId);
   const [hrs, sethrs] = useState("");
   const [mins, setmins] = useState("10 mins");
   const [selected, setSelected] = useState([]);
@@ -38,7 +40,6 @@ const CreateRoom = ({ isContest }) => {
     difficulty: "",
     sort: "",
   });
-  const [connection, setConnection] = useState(null);
 
   // State Change/Event handler functions
   const updateTimeLimit = () => {
@@ -60,15 +61,14 @@ const CreateRoom = ({ isContest }) => {
   };
 
   const handleJoinRoom = async () => {
+    const roomId = inviteRef.current.value;
     // 1. Find Room In Database
-    if (await findRoom()) {
-      // 2. Create Socket Connection
-      const inviteCode = inviteRef.current.value;
-      if (inviteCode !== "") {
-        connection?.emit("join-room", inviteCode, userData?.username, () => {
-          navigate(`/app/room/${inviteCode}`, { replace: false });
-        });
-      }
+    try {
+      const { socket, id } = await joinRoom(userData.username, userData.userId, roomId);
+      setSocket(socket);
+      navigate(`/app/room/${id}`, { replace: false });
+    } catch (err) {
+      window.alert(err.message);
     }
   };
 
@@ -78,15 +78,16 @@ const CreateRoom = ({ isContest }) => {
       roomType,
       participantLimit,
       timeLimit: roomType === "Default" ? 40 : timeLimit,
-      selected,
+      problems: selected,
     };
-    // 1. Create Room with these settings
-    await updateRoomSettings(inviteLink, settings);
+    // 1. Update Room with these settings
+    const response = await updateRoomSettings(roomId, settings);
 
-    // 2. Create Socket Connection
-    // connection?.emit("create-room", (inviteCode) => {
-    //   navigate(`/app/room/${inviteCode}`, { replace: false });
-    // }); 
+    if (response.status === 200) {
+      navigate(`/app/room/${roomId}`, { replace: false });
+    } else {
+      window.alert("Something went wrong. Please try again.");
+    }
   };
 
   // Utility functions for this component
@@ -109,24 +110,6 @@ const CreateRoom = ({ isContest }) => {
       else if (mins > 1) return `${mins} mins`;
     });
   }, [timeLimit]);
-
-  useEffect(() => {  
-    const createRoom = async() => {
-      const settings = {
-        visibility,
-        roomType,
-        participantLimit,
-        timeLimit: roomType === "Default" ? 40 : timeLimit,
-        selected,
-      };
-      const owner = userData.id;
-      // 1. Create Room in Database - Return RoomID
-      const roomID = await createSocket(owner, settings)
-      setInviteLink(roomID);
-    }
-    createRoom();
-  }, [])
-
 
   return (
     <div>

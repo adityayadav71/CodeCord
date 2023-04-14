@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
-  roomId: String,
+  activeRooms: { type: [String], default: [] },
 });
 
 userSchema.pre("save", async function (next) {

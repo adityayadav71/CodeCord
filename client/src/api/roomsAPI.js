@@ -2,29 +2,76 @@ import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 import { io } from "socket.io-client";
 
-export const createRoom = async (userId) => {
-  // Establish socket connection with the server
-  const socket = io("http://localhost:5000", {
-    path: "/api/v1/socket.io",
+export const updateRoomSettings = async (roomId, settings) => {
+  const response = await axios.patch("/api/v1/rooms/", {
+    roomId,
+    settings,
   });
-  // emit the create-room event
-  socket.emit("create-room", userId);
+  return response;
+};
 
-  // Create room in database
-  await axios.post(`${BASE_URL}/api/v1/rooms`, JSON.stringify(userId));
+export const joinRoom = async (username, userId, roomId) => {
+  try {
+    let socket = {};
+    const response = await axios.post(`${BASE_URL}/api/v1/rooms/join`, {
+      userId,
+      roomId,
+    });
+    if (response.status === 200) {
+      // Establish socket connection with the server
+      socket = io("http://localhost:5000", {
+        path: "/api/v1/socket.io",
+      });
 
-  return new Promise((resolve, reject) => {
-    // listen for the room-created event
-    socket.on("room-created", (id) => {
-      console.log("Room created with id:", id);
-      socket.disconnect(); // disconnect from the server after the room is created
-      resolve(id);
+      // emit the create-room event
+      socket.emit("join-room", username, userId, roomId);
+
+      return new Promise((resolve, reject) => {
+        // listen for the room-created event
+        socket.on("room-joined", (id) => {
+          resolve({ socket, id });
+        });
+
+        // listen for any errors
+        socket.on("error", (error) => {
+          reject(error);
+        });
+      });
+    }
+  } catch (err) {
+    return err;
+  }
+};
+
+export const createRoom = async (userId, roomId) => {
+  try {
+    let socket = {};
+    // Create room in database
+    await axios.post(`${BASE_URL}/api/v1/rooms`, {
+      userId,
+      roomId,
     });
 
-    // listen for any errors
-    socket.on("error", (error) => {
-      console.error(error);
-      reject(error);
+    // Establish socket connection with the server
+    socket = io("http://localhost:5000", {
+      path: "/api/v1/socket.io",
     });
-  });
+
+    // emit the create-room event
+    socket.emit("create-room", roomId);
+
+    return new Promise((resolve, reject) => {
+      // listen for the room-created event
+      socket.on("room-created", (id) => {
+        resolve({ socket, id });
+      });
+
+      // listen for any errors
+      socket.on("error", (error) => {
+        reject(error);
+      });
+    });
+  } catch (err) {
+    return err;
+  }
 };

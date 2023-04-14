@@ -7,6 +7,7 @@ import Console from "./Console";
 import Chat from "../Rooms/Chat";
 import LanguageSelector from "./LanguageSelector";
 import { AuthContext } from "../../App";
+import { RoomContext } from "../../layouts/AppLayout";
 import { Link, useParams } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
 import ThemeSelector from "./ThemeSelector";
@@ -28,6 +29,7 @@ const Editor = ({
 }) => {
   const editorRef = useRef(null);
   const { isLoggedIn } = useContext(AuthContext);
+  const { socket, setSocket } = useContext(RoomContext);
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
@@ -200,7 +202,7 @@ const Editor = ({
         </div>
         {isRoom ? (
           <div className="bg-lightAccent3">
-            <Chat socket={connection} />
+            <Chat socket={socket} />
           </div>
         ) : null}
       </Split>
