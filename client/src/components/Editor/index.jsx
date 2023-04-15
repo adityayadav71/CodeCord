@@ -8,28 +8,22 @@ import Chat from "../Rooms/Chat";
 import LanguageSelector from "./LanguageSelector";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
 import ThemeSelector from "./ThemeSelector";
 import FontSelector from "./FontSelector";
 import KeyBindSelector from "./KeyBindSelector";
 import TabSelector from "./TabSelector";
 import { getProblem } from "../../api/problemDataAPI";
+import { getRoomSettings } from "../../api/roomsAPI";
+import queryString from "query-string";
 
 export const ProblemContext = createContext(null);
 
-const Editor = ({
-  isRoom,
-  selectedProblems = [
-    "two-sum",
-    "three-sum",
-    "four-sum",
-    "merge-k-sorted-lists",
-  ],
-}) => {
+const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
   const { isLoggedIn } = useContext(AuthContext);
-  const { socket, setSocket } = useContext(RoomContext);
+  const { socket } = useContext(RoomContext);
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
@@ -45,6 +39,16 @@ const Editor = ({
   const [problems, setProblems] = useState({});
   const [activeProblem, setActiveProblem] = useState({});
   const params = useParams();
+  const location = useLocation();
+
+  const values = queryString.parse(location.search);
+  let roomSettings;
+  const getRoomSettings = async () => {
+    roomSettings = await getRoomSettings(params.name);
+  };
+  // getRoomSettings();
+  const selectedProblems =
+    values?.problems?.split(",");
 
   useEffect(() => {
     const loadProblems = async () => {
