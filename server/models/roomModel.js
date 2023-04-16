@@ -7,7 +7,13 @@ const roomSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  participants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      unique: [true, "This participant already exists."],
+    },
+  ],
 
   settings: {
     roomType: {
@@ -18,7 +24,7 @@ const roomSchema = new mongoose.Schema({
     participantsLimit: {
       type: Number,
       default: 10,
-      enum: [10, 20, 30],
+      enum: [10, 20, 50],
     },
     timeLimit: {
       type: Number,
@@ -31,7 +37,7 @@ const roomSchema = new mongoose.Schema({
       default: "public",
       enum: ["public", "private"],
     },
-    problems: [Number],
+    problems: { type: [Number], default: [1, 2, 3, 4] },
   },
 });
 
