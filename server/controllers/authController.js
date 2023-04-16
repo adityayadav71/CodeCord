@@ -203,7 +203,10 @@ exports.isLoggedIn = async (req, res, next) => {
   if (token) {
     try {
       // 1) verify token
-      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      const decoded = await promisify(jwt.verify)(
+        token,
+        process.env.JWT_SECRET
+      );
 
       // 2) Check if user still exists
       const currentUser = await User.findById(decoded.id);
@@ -223,13 +226,15 @@ exports.isLoggedIn = async (req, res, next) => {
       }
 
       // 4) Get user profile data if user is logged in
-      const currentUserData = await userProfile.findOne({ userId: decoded.id });
-
+      const userData = await userProfile
+        .findOne({ user: decoded.id })
+        .populate("user");
+        
       // THERE IS A LOGGED IN USER
       return res.json({
         status: "success",
         isLoggedIn: true,
-        userData: currentUserData
+        userData,
       });
     } catch (err) {
       return next(new AppError("Something went wrong!", 500));
@@ -259,4 +264,3 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // 4) Log user in, send JWT
   createSendToken(user, 200, req, res);
 });
-
