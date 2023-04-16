@@ -4,9 +4,13 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post("/", authController.protect, roomController.createRoom);
-router.post("/join", authController.protect, roomController.joinRoom);
-router.patch("/", authController.protect, roomController.updateRoom);
+router.use(authController.protect);
+
+router
+  .route("/")
+  .get(roomController.roomSettings)
+  .post(roomController.createRoom)
+  .patch(roomController.updateRoom);
+router.post("/join", roomController.roomExists, roomController.joinRoom);
 
 module.exports = router;
-
