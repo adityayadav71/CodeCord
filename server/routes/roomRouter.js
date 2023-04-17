@@ -3,10 +3,15 @@ const roomController = require("../controllers/roomController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+router.use(authController.protect);
 
-router.post("/", authController.protect, roomController.createRoom);
-router.post("/join", authController.protect, roomController.joinRoom);
-router.patch("/", authController.protect, roomController.updateRoom);
+router
+  .route("/")
+  .get(roomController.roomSettings)
+  .post(roomController.createRoom)
+  .patch(roomController.updateRoom);
+
+router.post("/join", roomController.joinRoom);
+router.patch("/leave", roomController.leaveRoom);
 
 module.exports = router;
-

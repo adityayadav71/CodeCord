@@ -5,14 +5,18 @@ import {
   FaUserAlt,
   FaCog,
 } from "react-icons/fa";
+import { GiExitDoor as LeaveIcon } from "react-icons/gi";
 import { BiAlarm } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../App";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { leaveRoom } from "../../api/roomsAPI";
 
 const Chat = ({ socket }) => {
   const { userData } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const params = useParams();
 
   const { register, handleSubmit, reset } = useForm();
@@ -39,6 +43,14 @@ const Chat = ({ socket }) => {
     }
   };
 
+  const handleLeaveRoom = async () => {
+    console.log(socket);
+    const { userId, username } = userData;
+    const res = await leaveRoom(userId, username, params.name, socket);
+    console.log(res);
+    navigate('/');
+  };
+
   useEffect(() => {
     socket?.on("receive-message", (data) => {
       setMessageList((prevList) => [...prevList, data]);
@@ -63,8 +75,29 @@ const Chat = ({ socket }) => {
             <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
               <FaCog className="text-xl" />
             </button>
+            {state?.iamHost && (
+              <button
+                className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
+                onClick={handleLeaveRoom}
+              >
+                <LeaveIcon className="text-xl" />
+              </button>
+            )}
           </div>
         </div>
+        {/* {state?.iamHost && ( */}
+          <div className="flex flex-row gap-x-3 w-full mb-2">
+            <button
+              className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
+              onClick={handleLeaveRoom}
+            >
+              Leave Room
+            </button>
+            <button className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400">
+              End Room
+            </button>
+          </div>
+        {/* )} */}
         <div className="flex flex-row gap-x-3 w-full">
           <button className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover">
             Scoreboard

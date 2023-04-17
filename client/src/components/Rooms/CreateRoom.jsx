@@ -25,7 +25,7 @@ const CreateRoom = ({ isContest, roomId }) => {
   const [isUserJoining, setIsUserJoining] = useState(false);
   const [isLimitActive, setLimitActive] = useState(false);
   const [participantLimit, setParticipantLimit] = useState(10);
-  const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
+  const [roomType, setRoomType] = useState(isContest ? "contest" : "default");
   const [visibility, setVisibility] = useState("private");
   const [timeLimit, setTimeLimit] = useState(10);
   const [inviteLink, setInviteLink] = useState(roomId);
@@ -40,6 +40,8 @@ const CreateRoom = ({ isContest, roomId }) => {
     difficulty: "",
     sort: "",
   });
+
+  // declaring variables
 
   // State Change/Event handler functions
   const updateTimeLimit = () => {
@@ -64,9 +66,17 @@ const CreateRoom = ({ isContest, roomId }) => {
     const roomId = inviteRef.current.value;
     // 1. Find Room In Database
     try {
-      const { socket, id } = await joinRoom(userData.username, userData.userId, roomId);
+      const { socket, id } = await joinRoom(
+        userData.username,
+        userData.userId,
+        roomId
+      );
       setSocket(socket);
-      navigate(`/app/room/${id}`, { replace: false });
+      navigate(
+        `/app/room/${id}`,
+        { replace: false },
+        { state: { iamHost: false } }
+      );
     } catch (err) {
       window.alert(err.message);
     }
@@ -84,7 +94,11 @@ const CreateRoom = ({ isContest, roomId }) => {
     const response = await updateRoomSettings(roomId, settings);
 
     if (response.status === 200) {
-      navigate(`/app/room/${roomId}`, { replace: false });
+      navigate(
+        `/app/room/${roomId}`,
+        { replace: false },
+        { state: { iamHost: true } }
+      );
     } else {
       window.alert("Something went wrong. Please try again.");
     }

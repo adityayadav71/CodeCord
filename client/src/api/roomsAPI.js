@@ -19,7 +19,7 @@ export const joinRoom = async (username, userId, roomId) => {
     });
     if (response.status === 200) {
       // Establish socket connection with the server
-      socket = io("http://localhost:5000", {
+      socket = io("http://localhost:5001", {
         path: "/api/v1/socket.io",
       });
 
@@ -47,13 +47,13 @@ export const createRoom = async (userId, roomId) => {
   try {
     let socket = {};
     // Create room in database
-    await axios.post(`${BASE_URL}/api/v1/rooms`, {
+    const res = await axios.post(`${BASE_URL}/api/v1/rooms`, {
       userId,
       roomId,
     });
 
     // Establish socket connection with the server
-    socket = io("http://localhost:5000", {
+    socket = io("http://localhost:5001", {
       path: "/api/v1/socket.io",
     });
 
@@ -73,5 +73,19 @@ export const createRoom = async (userId, roomId) => {
     });
   } catch (err) {
     return err;
+  }
+};
+
+export const leaveRoom = async (userId, username, roomId, socket) => {
+  console.log(userId, username, roomId);
+  try {
+    const { data } = await axios.patch(`${BASE_URL}/api/v1/rooms/leave`, {
+      userId,
+      roomId,
+    });
+    // console.log(data);
+    socket.emit("leave-room", username, roomId);
+  } catch (error) {
+    console.log(error);
   }
 };

@@ -91,6 +91,20 @@ io.on("connection", (socket) => {
       socket.emit("error", err);
     }
   });
+
+  //Handle Leave-room event
+  socket.on("leave-room", (username, roomId) => {
+    io.in(socket.id).socketsLeave(roomId);
+    const data = {
+      type: "roomMessage",
+      message: `${username} left the room.`,
+      timeStamp:
+        new Date(Date.now()).getHours().toString().padStart(2, "0") +
+        ":" +
+        new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
+    };
+    socket.to(roomId).emit("receive-message", data);
+  });
 });
 
 instrument(io, {
@@ -112,5 +126,3 @@ process.on("SIGTERM", () => {
     console.log("💥 Process terminated!");
   });
 });
-
-// module.exports = io;
