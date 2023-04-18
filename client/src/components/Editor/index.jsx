@@ -15,7 +15,7 @@ import FontSelector from "./FontSelector";
 import KeyBindSelector from "./KeyBindSelector";
 import TabSelector from "./TabSelector";
 import { getProblem } from "../../api/problemDataAPI";
-import { getRoomSettings } from "../../api/roomsAPI";
+// import { getRoomSettings } from "../../api/roomsAPI";
 import queryString from "query-string";
 
 export const ProblemContext = createContext(null);
@@ -42,13 +42,7 @@ const Editor = ({ isRoom }) => {
   const location = useLocation();
 
   const values = queryString.parse(location.search);
-  let roomSettings;
-  const getRoomSettings = async () => {
-    roomSettings = await getRoomSettings(params.name);
-  };
-  // getRoomSettings();
-  const selectedProblems =
-    values?.problems?.split(",");
+  const selectedProblems = values?.problems.split(",");
 
   useEffect(() => {
     const loadProblems = async () => {

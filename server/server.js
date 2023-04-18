@@ -51,8 +51,10 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
+  console.log(" %s sockets connected", io.engine.clientsCount);
+
   socket.on("disconnect", () => {
-    console.log("A client disconnected");
+    console.log("A client disconnected!!!");
   });
 
   socket.on("send-message", (data, roomId) => {
@@ -112,5 +114,3 @@ process.on("SIGTERM", () => {
     console.log("💥 Process terminated!");
   });
 });
-
-// module.exports = io;

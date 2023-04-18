@@ -2,6 +2,13 @@ import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 import { io } from "socket.io-client";
 
+export const getRoomSettings = async (roomId) => {
+  const response = await axios.get("/api/v1/rooms/", {
+    roomId,
+  });
+  return response.data.settings;
+};
+
 export const updateRoomSettings = async (roomId, settings) => {
   const response = await axios.patch("/api/v1/rooms/", {
     roomId,
@@ -14,13 +21,13 @@ export const joinRoom = async (username, userId, roomId) => {
   try {
     let socket = {};
     const response = await axios.post(`${BASE_URL}/api/v1/rooms/join`, {
-      userId,
       roomId,
     });
     if (response.status === 200) {
       // Establish socket connection with the server
       socket = io("http://localhost:5000", {
         path: "/api/v1/socket.io",
+        query: { roomId: roomId },
       });
 
       // emit the create-room event
@@ -48,13 +55,13 @@ export const createRoom = async (userId, roomId) => {
     let socket = {};
     // Create room in database
     await axios.post(`${BASE_URL}/api/v1/rooms`, {
-      userId,
       roomId,
     });
 
     // Establish socket connection with the server
     socket = io("http://localhost:5000", {
       path: "/api/v1/socket.io",
+      query: { roomId: roomId },
     });
 
     // emit the create-room event

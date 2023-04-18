@@ -18,6 +18,9 @@ import { AuthContext } from "../../App";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { getRandomProblems } from "../../api/problemDataAPI";
+import { createRoom } from "../../api/roomsAPI";
+import { RoomContext } from "../../layouts/AppLayout";
+import { nanoid } from "nanoid";
 
 const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
   useEffect(() => {
@@ -48,7 +51,8 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
     topics: [],
   });
 
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userData } = useContext(AuthContext);
+  const { setSocket } = useContext(RoomContext);
   const { setFilterObj } = useContext(
     filterInsideModal ? RoomFilterContext : FilterContext
   );
@@ -168,8 +172,16 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
   };
 
   const [modal, setModal] = useState();
-  const openRoomModal = () => {
-    setModal(<CreateRoom isContest={true} />);
+  const openRoomModal = async () => {
+    const roomID = nanoid();
+    // 1. Create Room in Database - Return RoomID
+    const result = await createRoom(userData?.userId, roomID);
+    if (result?.response?.data?.result)
+      window.alert(result?.response?.data?.result);
+    else {
+      setSocket(result.socket);
+      setModal(<CreateRoom isContest={true} roomId={result.id} />);
+    }
   };
 
   useEffect(() => {

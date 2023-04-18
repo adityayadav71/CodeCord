@@ -29,9 +29,11 @@ const HomeNavbar = ({ handleLogout }) => {
       window.alert(result?.response?.data?.result);
     else {
       setSocket(result.socket);
-      setModal(<CreateRoom isContest={false} roomId={result.id} />);
+      setModal(<CreateRoom isContest={false} roomId={result.id} setModal={setModal} />);
     }
   };
+  const goToActiveRoom = async() => {}
+
   useEffect(() => {
     const closeModal = (event) => {
       if (
@@ -132,9 +134,11 @@ const HomeNavbar = ({ handleLogout }) => {
             </div>
             <button
               className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 bg-accent1 text-white text-base font-bold rounded-xl"
-              onClick={openRoomModal}
+              onClick={userData?.user?.activeRooms.length === 0 ? openRoomModal : goToActiveRoom}
             >
-              Create/Join a Room
+              {userData?.user?.activeRooms.length === 0
+                ? "Create/Join a Room"
+                : "Go to Active Room"}
             </button>
             <FaBell className="text-2xl hover:cursor-pointer" />
             <div className="relative profile">

@@ -14,11 +14,11 @@ import { updateRoomSettings, joinRoom } from "../../api/roomsAPI";
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest, roomId }) => {
+const CreateRoom = ({ isContest, roomId, setModal }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
-  const { socket, setSocket } = useContext(RoomContext);
+  const { setRoomSettings, setSocket } = useContext(RoomContext);
   const navigate = useNavigate();
 
   // Declaring States
@@ -31,7 +31,7 @@ const CreateRoom = ({ isContest, roomId }) => {
   const [inviteLink, setInviteLink] = useState(roomId);
   const [hrs, sethrs] = useState("");
   const [mins, setmins] = useState("10 mins");
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState([1,2,3,4]);
   const [filterObj, setFilterObj] = useState({
     tags: [],
     page: 1,
@@ -66,6 +66,7 @@ const CreateRoom = ({ isContest, roomId }) => {
     try {
       const { socket, id } = await joinRoom(userData.username, userData.userId, roomId);
       setSocket(socket);
+      setModal(null)
       navigate(`/app/room/${id}`, { replace: false });
     } catch (err) {
       window.alert(err.message);
@@ -80,11 +81,13 @@ const CreateRoom = ({ isContest, roomId }) => {
       timeLimit: roomType === "Default" ? 40 : timeLimit,
       problems: selected,
     };
+    // setRoomSettings(settings)
     // 1. Update Room with these settings
     const response = await updateRoomSettings(roomId, settings);
 
     if (response.status === 200) {
-      navigate(`/app/room/${roomId}`, { replace: false });
+      setModal(null)
+      navigate(`/app/room/${roomId}?problems=${selected}`, { replace: false });
     } else {
       window.alert("Something went wrong. Please try again.");
     }
