@@ -13,7 +13,7 @@ const roomSchema = new mongoose.Schema({
     roomType: {
       type: String,
       default: "default",
-      enum: ["default", "contest"],
+      enum: ["Default", "Contest"],
     },
     participantsLimit: {
       type: Number,

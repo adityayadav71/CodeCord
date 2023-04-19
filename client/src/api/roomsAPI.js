@@ -10,11 +10,16 @@ export const updateRoomSettings = async (roomId, settings) => {
   return response;
 };
 
-export const joinRoom = async (username, userId, roomId) => {
+export const getRoomData = async (roomId) => {
+  const response = await axios.get(`/api/v1/rooms/${roomId}`);
+  return response.data.room;
+};
+
+export const joinRoom = async (userData, roomId) => {
   try {
     let socket = {};
+
     const response = await axios.post(`${BASE_URL}/api/v1/rooms/join`, {
-      userId,
       roomId,
     });
     if (response.status === 200) {
@@ -24,7 +29,7 @@ export const joinRoom = async (username, userId, roomId) => {
       });
 
       // emit the create-room event
-      socket.emit("join-room", username, userId, roomId);
+      socket.emit("join-room", userData?.username, userData?.userId, roomId);
 
       return new Promise((resolve, reject) => {
         // listen for the room-created event
@@ -77,13 +82,11 @@ export const createRoom = async (userId, roomId) => {
 };
 
 export const leaveRoom = async (userId, username, roomId, socket) => {
-  console.log(userId, username, roomId);
   try {
     const { data } = await axios.patch(`${BASE_URL}/api/v1/rooms/leave`, {
       userId,
       roomId,
     });
-    // console.log(data);
     socket.emit("leave-room", username, roomId);
   } catch (error) {
     console.log(error);

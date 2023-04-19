@@ -12,12 +12,13 @@ exports.createRoom = catchAsync(async (req, res, next) => {
   const currentTimeStamp = Date.now();
 
   //1) User created room but not updated/Joined that room (only opened the modal & closed it)
+  if (!user.activeRoom?.expiresAt) {
+    await User.findByIdAndUpdate(userId, { activeRoom: undefined });
+  }
+
   //2) Room is created but it is expired
-  if (
-    !user.activeRoom?.expiresAt ||
-    user.activeRoom?.expiresAt < currentTimeStamp
-  ) {
-    await Room.findOneAndDelete({ roomId });
+  if (user.activeRoom?.expiresAt < currentTimeStamp) {
+    await Room.findOneAndDelete({ roomId: user.activeRoom.roomId });
     await User.findByIdAndUpdate(userId, { activeRoom: undefined });
   }
 
@@ -33,7 +34,7 @@ exports.createRoom = catchAsync(async (req, res, next) => {
     });
   }
   // If the Room is active & working, then throw an error.
-  if (user.activeRoom?.expiresAt < currentTimeStamp) {
+  if (user.activeRoom?.expiresAt > currentTimeStamp) {
     return res.status(403).json({
       status: "failure",
       result:
@@ -49,9 +50,10 @@ exports.createRoom = catchAsync(async (req, res, next) => {
 
 exports.joinRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
-  const userId = req.user.id;
 
-  const room = await Room.findOne({ roomId: roomId });
+  const userId = req.user._id;
+
+  const room = await Room.findOne({ roomId });
 
   if (!room)
     return next(
@@ -75,7 +77,7 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
     const owner = await User.findById(room.owner);
     const expiresAt = owner.activeRoom.expiresAt;
 
-    await User.findByIdAndUpdate(req.user.id, {
+    await User.findByIdAndUpdate(userId, {
       activeRoom: { roomId, expiresAt },
     });
 
@@ -96,13 +98,13 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
   // Create a new room
   const room = await Room.create({
     roomId,
-    owner: req.user.id,
+    owner: req.user._id,
     settings: settings,
     participants: [req.user.id],
     expiresAt,
   });
 
-  await User.findByIdAndUpdate(req.user.id, {
+  await User.findByIdAndUpdate(req.user._id, {
     activeRoom: { roomId, expiresAt },
   });
 
@@ -117,18 +119,25 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
 
 exports.leaveRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   const room = await Room.findOne({ roomId: roomId });
   let hostChanged = false;
 
-  if (room?.owner === userId) {
+  //Remove from user model (delete activeRoom field from userModel)
+  await User.findByIdAndUpdate(userId, {
+    $unset: { activeRoom: "" },
+  });
+
+  if (room?.owner.equals(userId)) {
     // User is a host of that room so change the host of perticular room
     if (room?.participants?.length === 1) {
-      // Delete the room OR simply remove the user from room
+      // Delete the room
+      await Room.findOneAndDelete({ roomId });
     } else {
       hostChanged = true;
-      const newOwner = participants.filter((id) => id !== userId)[0];
+      console.log(room.participants);
+      const newOwner = room.participants.filter((id) => !id.equals(userId))[0];
       await Room.findOneAndUpdate(
         { roomId },
         { owner: newOwner, $pull: { participants: userId } }
@@ -145,16 +154,18 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     hostChanged,
+    newOwner: newRoom?.owner,
     newRoom,
   });
 });
 
-exports.roomSettings = catchAsync(async (req, res, next) => {
-  const { roomId } = req.body;
-  const response = await Room.findOne({ roomId: roomId });
+exports.getRoomData = catchAsync(async (req, res, next) => {
+  const { roomId } = req.params;
+  console.log(roomId);
+  const room = await Room.findOne({ roomId: roomId });
 
   res.status(200).json({
     status: "success",
-    settings: response.settings,
+    room,
   });
 });

@@ -8,28 +8,44 @@ import Chat from "../Rooms/Chat";
 import LanguageSelector from "./LanguageSelector";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
 import ThemeSelector from "./ThemeSelector";
 import FontSelector from "./FontSelector";
 import KeyBindSelector from "./KeyBindSelector";
 import TabSelector from "./TabSelector";
 import { getProblem } from "../../api/problemDataAPI";
+import queryString from "query-string";
+import { io } from "socket.io-client";
 
 export const ProblemContext = createContext(null);
 
-const Editor = ({
-  isRoom,
-  selectedProblems = [
-    "two-sum",
-    "three-sum",
-    "four-sum",
-    "merge-k-sorted-lists",
-  ],
-}) => {
+const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
-  const { isLoggedIn } = useContext(AuthContext);
-  const { socket, setSocket } = useContext(RoomContext);
+  const { isLoggedIn, userData } = useContext(AuthContext);
+  let { socket, setSocket, roomData } = useContext(RoomContext);
+
+  if (!roomData) {
+    roomData = JSON.parse(localStorage.getItem("room"));
+  }
+
+  useEffect(() => {
+    if (!socket && userData?.user?._id) {
+      // Establish socket connection with the server
+      socket = io("http://localhost:5001", {
+        path: "/api/v1/socket.io",
+      });
+      // Join the user back to stored room
+      socket.emit(
+        "join-room",
+        userData?.username,
+        userData?.userId,
+        roomData?.roomId,
+        true
+      );
+      setSocket(socket);
+    }
+  }, [userData]);
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
@@ -45,8 +61,15 @@ const Editor = ({
   const [problems, setProblems] = useState({});
   const [activeProblem, setActiveProblem] = useState({});
   const params = useParams();
+  const location = useLocation();
+
+  const values = queryString.parse(location.search);
 
   useEffect(() => {
+    const selectedProblems =
+      values?.problems?.split(",") || // User creating a new room
+      roomData?.settings?.problems; // User joining a new room
+
     const loadProblems = async () => {
       let response;
       if (isRoom) {

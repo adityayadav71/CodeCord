@@ -7,10 +7,10 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .get(roomController.roomSettings)
   .post(roomController.createRoom)
   .patch(roomController.updateRoom);
 
+router.get("/:roomId", roomController.getRoomData);
 router.post("/join", roomController.joinRoom);
 router.patch("/leave", roomController.leaveRoom);
 
