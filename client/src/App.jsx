@@ -22,7 +22,7 @@ function App() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
-
+  
   useEffect(() => {
     const setLoggedIn = async () => {
       const status = await checkLogInStatus();

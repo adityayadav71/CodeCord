@@ -1,3 +1,4 @@
+import { useState, useContext, useEffect, memo } from "react";
 import {
   FaUserPlus,
   FaPhoneAlt,
@@ -5,14 +6,19 @@ import {
   FaUserAlt,
   FaCog,
 } from "react-icons/fa";
+import { GiExitDoor as LeaveIcon } from "react-icons/gi";
 import { BiAlarm } from "react-icons/bi";
 import { useForm } from "react-hook-form";
-import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../App";
-import { useParams } from "react-router-dom";
+import { RoomContext } from "../../layouts/AppLayout";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { leaveRoom } from "../../api/roomsAPI";
 
 const Chat = ({ socket }) => {
   const { userData } = useContext(AuthContext);
+  const { roomData } = useContext(RoomContext);
+
+  const navigate = useNavigate();
   const params = useParams();
 
   const { register, handleSubmit, reset } = useForm();
@@ -39,6 +45,16 @@ const Chat = ({ socket }) => {
     }
   };
 
+  const handleLeaveRoom = async () => {
+    const res = await leaveRoom(
+      userData.user._id,
+      userData.username,
+      params.name,
+      socket
+    );
+    navigate("/");
+  };
+
   useEffect(() => {
     socket?.on("receive-message", (data) => {
       setMessageList((prevList) => [...prevList, data]);
@@ -51,7 +67,9 @@ const Chat = ({ socket }) => {
         <div className="flex flex-row justify-between gap-x-3 mb-4">
           <div className="flex flex-col gap-y-1">
             <h1 className="text-lg font-bold">Room Name</h1>
-            <p className="text-grey1">2 participants</p>
+            <p className="text-grey1">
+              {roomData?.participants.length} participants
+            </p>
           </div>
           <div className="flex flex-row items-center gap-x-1">
             <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
@@ -63,8 +81,30 @@ const Chat = ({ socket }) => {
             <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
               <FaCog className="text-xl" />
             </button>
+
+            {roomData?.owner !== userData?.user?._id && (
+              <button
+                className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
+                onClick={handleLeaveRoom}
+              >
+                <LeaveIcon className="text-xl" />
+              </button>
+            )}
           </div>
         </div>
+        {roomData?.owner === userData?.user?._id && (
+          <div className="flex flex-row gap-x-3 w-full mb-2">
+            <button
+              className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
+              onClick={handleLeaveRoom}
+            >
+              Leave Room
+            </button>
+            <button className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400">
+              End Room
+            </button>
+          </div>
+        )}
         <div className="flex flex-row gap-x-3 w-full">
           <button className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover">
             Scoreboard
@@ -133,4 +173,4 @@ const Chat = ({ socket }) => {
   );
 };
 
-export default Chat;
+export default memo(Chat);

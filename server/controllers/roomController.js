@@ -1,63 +1,61 @@
+const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const Room = require("../models/roomModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
-const isUserInAnyOtherRooms = catchAsync(async (userId) => {
-  let user = await User.findById(userId);
-  return user.activeRooms && user?.activeRooms?.length === 1;
-});
-
-exports.roomExists = catchAsync(async (req, res, next) => {
-  const { roomId } = req.body;
-  const room = await Room.findOne({ roomId: roomId });
-  if (!room)
-    return next(
-      new AppError(
-        "This room does not exist or the invite code may have expired.",
-        400
-      )
-    );
-  next();
-});
-
 exports.createRoom = catchAsync(async (req, res, next) => {
-  const userId = req.user._id;
+  const { roomId } = req.body;
+  const userId = req.user.id;
 
-  // 1. Check if user is currently not in any other room
-  if (!(await isUserInAnyOtherRooms(userId))) {
-    // Create a new room
-    const room = await Room.create({
-      roomId: req.body.roomId,
-      owner: userId,
-      participants: [userId],
-    });
+  let user = await User.findById(userId);
+  const currentTimeStamp = Date.now();
 
-    // 2. Add new room in users' activeRooms list
-    await User.findByIdAndUpdate(userId, {
-      $push: { activeRooms: req.body.roomId },
-    });
+  //1) User created room but not updated/Joined that room (only opened the modal & closed it)
+  if (!user.activeRoom?.expiresAt) {
+    await User.findByIdAndUpdate(userId, { activeRoom: undefined });
+  }
 
-    // 3. On Successful room creation, send the room details in response
-    return res.status(200).json({
-      status: "success",
-      room,
+  //2) Room is created but it is expired
+  if (user.activeRoom?.expiresAt < currentTimeStamp) {
+    await Room.findOneAndDelete({ roomId: user.activeRoom.roomId });
+    await User.findByIdAndUpdate(userId, { activeRoom: undefined });
+  }
+
+  // No Active Room created
+  if (
+    !user.activeRoom?.expiresAt ||
+    user.activeRoom?.expiresAt < currentTimeStamp ||
+    !user.activeRoom
+  ) {
+    // Update User
+    user = await User.findByIdAndUpdate(userId, {
+      activeRoom: { roomId },
     });
-  } else {
-    // 4. If user is already in a room respond with an error
-    return next(
-      new AppError(
+  }
+  // If the Room is active & working, then throw an error.
+  if (user.activeRoom?.expiresAt > currentTimeStamp) {
+    return res.status(403).json({
+      status: "failure",
+      result:
         "Cannot create more than 1 room for a user. Leave other rooms before creating a new one.",
         403
       )
     );
   }
+
+  res.status(200).json({
+    status: "success",
+    user,
+  });
 });
 
 exports.joinRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
-  // 1. Get Room details by ID
-  const room = await Room.findOne({ roomId: roomId });
+  const userId = req.user._id;
+
+  const room = await Room.findOne({ roomId });
+
 
   if (req.user._id.equals(room.owner))
     return next(
@@ -66,24 +64,27 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
         403
       )
     );
-
-  // 3. Check if user is already in other rooms
-  if (await isUserInAnyOtherRooms(req.user._id)) {
+    
+  if (userId.equals(room.owner))
     return next(
-      new AppError("Please leave other rooms, before joining a new one.", 403)
+      new AppError(
+        "You are the host of this room. You can't join this room.",
+        403
+      )
     );
-  }
-
-  // 4. If room has less participants than the set limit, then add the user in room participants list
+    
   if (room.participants.length < room.settings.participantsLimit) {
     const room = await Room.findOneAndUpdate(
       { roomId: roomId },
       { $push: { participants: req.user._id } }
     );
+    // Get expiresAt from owner
+    const owner = await User.findById(room.owner);
+    const expiresAt = owner.activeRoom.expiresAt;
 
-    // 5. Add joined room in users' activeRooms list
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: { activeRooms: roomId },
+
+    await User.findByIdAndUpdate(userId, {
+      activeRoom: { roomId, expiresAt },
     });
 
     return res.status(200).json({
@@ -97,23 +98,22 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
 
 exports.updateRoom = catchAsync(async (req, res, next) => {
   const { roomId, settings } = req.body;
-  let room = await Room.findOne({ roomId }).exec();
+  
+  const expiresAt =
+    Date.now() + (settings.timeLimit ? 40 : settings.timeLimit) * 60000;
 
-  // 1. Check if the user is the room owner
-  if (!req.user._id.equals(room.owner)) {
-    return next(
-      new AppError(
-        "You don't have the privileges to update room settings.",
-        403
-      )
-    );
-  }
+  // Create a new room
+  const room = await Room.create({
+    roomId,
+    owner: req.user._id,
+    settings: settings,
+    participants: [req.user.id],
+    expiresAt,
+  });
 
-  // 2. Update Room Settings
-  room = await Room.findOneAndUpdate(
-    { roomId: roomId },
-    { settings: settings }
-  );
+  await User.findByIdAndUpdate(req.user._id, {
+    activeRoom: { roomId, expiresAt },
+  });
 
   if (!room)
     return next(new AppError("Something went wrong. Please try again", 500));
@@ -125,12 +125,55 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.roomSettings = catchAsync(async (req, res, next) => {
+exports.leaveRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
-  const response = await Room.findOne({ roomId: roomId });
+  const userId = req.user._id;
+
+  const room = await Room.findOne({ roomId: roomId });
+  let hostChanged = false;
+
+  //Remove from user model (delete activeRoom field from userModel)
+  await User.findByIdAndUpdate(userId, {
+    $unset: { activeRoom: "" },
+  });
+
+  if (room?.owner.equals(userId)) {
+    // User is a host of that room so change the host of perticular room
+    if (room?.participants?.length === 1) {
+      // Delete the room
+      await Room.findOneAndDelete({ roomId });
+    } else {
+      hostChanged = true;
+      console.log(room.participants);
+      const newOwner = room.participants.filter((id) => !id.equals(userId))[0];
+      await Room.findOneAndUpdate(
+        { roomId },
+        { owner: newOwner, $pull: { participants: userId } }
+      );
+    }
+  } else {
+    await Room.findOneAndUpdate(
+      { roomId },
+      { $pull: { participants: userId } }
+    );
+  }
+  const newRoom = await Room.findOne({ roomId });
 
   res.status(200).json({
     status: "success",
-    settings: response.settings,
+    hostChanged,
+    newOwner: newRoom?.owner,
+    newRoom,
+  });
+});
+
+exports.getRoomData = catchAsync(async (req, res, next) => {
+  const { roomId } = req.params;
+  console.log(roomId);
+  const room = await Room.findOne({ roomId: roomId });
+
+  res.status(200).json({
+    status: "success",
+    room,
   });
 });

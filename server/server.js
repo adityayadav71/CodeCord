@@ -52,7 +52,7 @@ const io = require("socket.io")(server, {
 
 io.on("connection", (socket) => {
   socket.on("disconnect", () => {
-    console.log("A client disconnected");
+    console.log("A client disconnected")
   });
 
   socket.on("send-message", (data, roomId) => {
@@ -72,24 +72,42 @@ io.on("connection", (socket) => {
   });
 
   // Handle Join-room event
-  socket.on("join-room", (username, userId, roomId) => {
+  socket.on("join-room", (username, userId, roomId, reloaded = false) => {
     try {
       socket.join(roomId, () => {
         console.log(`The user: ${userId} has joined the room successfully.`);
       });
       socket.emit("room-joined", roomId);
-      const data = {
-        type: "roomMessage",
-        message: `${username} joined the room.`,
-        timeStamp:
-          new Date(Date.now()).getHours().toString().padStart(2, "0") +
-          ":" +
-          new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
-      };
-      socket.to(roomId).emit("receive-message", data);
+
+      // If user has joined back don't broadcast message
+      if (!reloaded) {
+        const data = {
+          type: "roomMessage",
+          message: `${username} joined the room.`,
+          timeStamp:
+            new Date(Date.now()).getHours().toString().padStart(2, "0") +
+            ":" +
+            new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
+        };
+        socket.to(roomId).emit("receive-message", data);
+      }
     } catch (err) {
       socket.emit("error", err);
     }
+  });
+
+  //Handle Leave-room event
+  socket.on("leave-room", (username, roomId) => {
+    io.in(socket.id).socketsLeave(roomId);
+    const data = {
+      type: "roomMessage",
+      message: `${username} left the room.`,
+      timeStamp:
+        new Date(Date.now()).getHours().toString().padStart(2, "0") +
+        ":" +
+        new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
+    };
+    socket.to(roomId).emit("receive-message", data);
   });
 });
 
@@ -112,5 +130,3 @@ process.on("SIGTERM", () => {
     console.log("💥 Process terminated!");
   });
 });
-
-// module.exports = io;

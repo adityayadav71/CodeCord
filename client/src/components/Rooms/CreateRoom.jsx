@@ -10,17 +10,16 @@ import ProblemFilter from "../Problems/ProblemFilter";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
-import { updateRoomSettings, joinRoom } from "../../api/roomsAPI";
+import { updateRoomSettings, getRoomData, joinRoom } from "../../api/roomsAPI";
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest, roomId }) => {
+const CreateRoom = ({ isContest, roomId, setModal }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
-  const { socket, setSocket } = useContext(RoomContext);
+  const { socket, setSocket, setRoomData } = useContext(RoomContext);
   const navigate = useNavigate();
-
   // Declaring States
   const [isUserJoining, setIsUserJoining] = useState(false);
   const [isLimitActive, setLimitActive] = useState(false);
@@ -62,31 +61,49 @@ const CreateRoom = ({ isContest, roomId }) => {
 
   const handleJoinRoom = async () => {
     const roomId = inviteRef.current.value;
-    // 1. Find Room In Database
     try {
-      const { socket, id } = await joinRoom(userData.username, userData.userId, roomId);
+      // 1. Find Room In Database
+      const { socket, id } = await joinRoom(userData, roomId);
       setSocket(socket);
-      navigate(`/app/room/${id}`, { replace: false });
+      setModal(null);
+
+      // 2 Save newly joined room in RoomContext
+      const room = await getRoomData(roomId);
+      setRoomData(room);
+
+      //3. Store roomData in localStorage
+      localStorage.setItem("room", JSON.stringify(room));
+
+      // 4. Navigate user to new room
+      navigate(`app/room/${roomId}`, { replace: false });
     } catch (err) {
       window.alert(err.message);
     }
   };
 
   const handleUpdateRoom = async () => {
-    const settings = {
-      visibility,
-      roomType,
-      participantLimit,
-      timeLimit: roomType === "Default" ? 40 : timeLimit,
-      problems: selected,
-    };
-    // 1. Update Room with these settings
-    const response = await updateRoomSettings(roomId, settings);
+    try {
+      const settings = {
+        visibility,
+        roomType,
+        participantLimit,
+        timeLimit: roomType === "Default" ? 40 : timeLimit,
+        problems: selected,
+      };
+      // 1. Update Room with these settings
+      const response = await updateRoomSettings(roomId, settings);
 
-    if (response.status === 200) {
-      navigate(`/app/room/${roomId}`, { replace: false });
-    } else {
-      window.alert("Something went wrong. Please try again.");
+      // 2 Save newly joined room in RoomContext
+      const room = await getRoomData(roomId);
+      setRoomData(room);
+
+      //3. Store roomData in localStorage
+      localStorage.setItem("room", JSON.stringify(room));
+
+      setModal(null);
+      navigate(`/app/room/${roomId}?problems=${selected}`, { replace: false });
+    } catch (err) {
+      window.alert(err.message);
     }
   };
 
@@ -149,7 +166,7 @@ const CreateRoom = ({ isContest, roomId }) => {
               className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
               type="text"
               placeholder="Invite Code"
-            />{" "}
+            />
             {isUserJoining ? (
               <button
                 onClick={handleJoinRoom}
@@ -188,5 +205,4 @@ const CreateRoom = ({ isContest, roomId }) => {
     </div>
   );
 };
-
 export default CreateRoom;

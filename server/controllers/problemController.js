@@ -60,11 +60,13 @@ exports.createProblemTag = catchAsync(async (req, res, next) => {
 
 exports.getProblem = catchAsync(async (req, res, next) => {
   const problemsStr = req.query.problems;
-  const problemsArr = problemsStr.split(",");
+  let problemsArr = problemsStr.split(",");
+  problemsArr = problemsArr.map((problem) => parseInt(problem) && parseInt(problem));
+
   const problems = await Problem.find({
     $or: [
-      { number: { $in: problemsArr.filter(val => typeof val === 'number') } },
-      { slug: { $in: problemsArr.filter(val => typeof val === 'string') } },
+      { number: { $in: problemsArr.filter((val) => typeof val === "number") } },
+      { slug: { $in: problemsArr.filter((val) => typeof val === "string") } },
     ],
   }).sort({
     number: 1,

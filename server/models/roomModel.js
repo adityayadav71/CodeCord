@@ -19,7 +19,7 @@ const roomSchema = new mongoose.Schema({
     roomType: {
       type: String,
       default: "default",
-      enum: ["default", "contest"],
+      enum: ["Default", "Contest"],
     },
     participantsLimit: {
       type: Number,
@@ -39,20 +39,23 @@ const roomSchema = new mongoose.Schema({
     },
     problems: { type: [Number], default: [1, 2, 3, 4] },
   },
+  expiresAt: String,
 });
 
-roomSchema.post("save", (doc, next) => {
-  // Schedule a job to delete the room if no participants are present after 1 minute
-  setTimeout(async () => {
-    if (doc.participants.length === 0) {
-      await Room.findByIdAndDelete(doc._id);
-      console.log(
-        `Room ${room.roomId} has been deleted as there were no participants after 1 minute.`
-      );
-    }
-  }, 60 * 1000);
-  next();
-});
+roomSchema.index({ expireAfterSeconds: this.expiresAt / 1000 });
+
+// roomSchema.post("save", (doc, next) => {
+//   // Schedule a job to delete the room if no participants are present after 1 minute
+//   setTimeout(async () => {
+//     if (doc.participants.length === 0) {
+//       await Room.findByIdAndDelete(doc._id);
+//       console.log(
+//         `Room ${room.roomId} has been deleted as there were no participants after 1 minute.`
+//       );
+//     }
+//   }, 60 * 1000);
+//   next();
+// });
 
 const Room = mongoose.model("Room", roomSchema);
 

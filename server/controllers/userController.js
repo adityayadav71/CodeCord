@@ -10,6 +10,7 @@ exports.upload = multer({ storage });
 
 exports.getUserData = catchAsync(async (req, res, next) => {
   const userData = await userProfile.findOne({ username: req.query.username });
+  console.log(userData);
   res.status(200).json({
     status: "success",
     userData,
@@ -22,7 +23,7 @@ exports.createUserProfile = catchAsync(async (req, res, next) => {
   
   const userId = decoded.id;
   const userData = await userProfile.create({
-    userId: userId,
+    user: userId,
     username: req.query.username,
   });
 
@@ -46,7 +47,7 @@ exports.updateUserProfile = catchAsync(async (req, res, next) => {
       image: Buffer.from(encode_image, "base64"),
     };
     userProfile.findOneAndUpdate(
-      { userId: userId },
+      { user: userId },
       { ...data, avatar: finalImg },
       (err, userData) => {
         if (err) new AppError("File upload failed!", 400);
@@ -60,7 +61,7 @@ exports.updateUserProfile = catchAsync(async (req, res, next) => {
   } else {
     // No file uploaded, update user profile without avatar field
     const userData = await userProfile.findOneAndUpdate(
-      { userId: userId },
+      { user: userId },
       data
     );
 
