@@ -22,6 +22,7 @@ export const ProblemContext = createContext(null);
 
 const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
+  
   const { isLoggedIn, userData } = useContext(AuthContext);
   let { socket, setSocket, roomData } = useContext(RoomContext);
 

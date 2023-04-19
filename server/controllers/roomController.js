@@ -39,7 +39,9 @@ exports.createRoom = catchAsync(async (req, res, next) => {
       status: "failure",
       result:
         "Cannot create more than 1 room for a user. Leave other rooms before creating a new one.",
-    });
+        403
+      )
+    );
   }
 
   res.status(200).json({
@@ -50,16 +52,19 @@ exports.createRoom = catchAsync(async (req, res, next) => {
 
 exports.joinRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
-
   const userId = req.user._id;
 
   const room = await Room.findOne({ roomId });
 
-  if (!room)
-    return next(
-      new AppError("The invite code may have expired. Please try again.", 400)
-    );
 
+  if (req.user._id.equals(room.owner))
+    return next(
+      new AppError(
+        "You are the host of this room. You can't join this room.",
+        403
+      )
+    );
+    
   if (userId.equals(room.owner))
     return next(
       new AppError(
@@ -67,15 +72,16 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
         403
       )
     );
-
+    
   if (room.participants.length < room.settings.participantsLimit) {
     const room = await Room.findOneAndUpdate(
       { roomId: roomId },
-      { $push: { participants: userId } }
+      { $push: { participants: req.user._id } }
     );
     // Get expiresAt from owner
     const owner = await User.findById(room.owner);
     const expiresAt = owner.activeRoom.expiresAt;
+
 
     await User.findByIdAndUpdate(userId, {
       activeRoom: { roomId, expiresAt },
@@ -92,6 +98,7 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
 
 exports.updateRoom = catchAsync(async (req, res, next) => {
   const { roomId, settings } = req.body;
+  
   const expiresAt =
     Date.now() + (settings.timeLimit ? 40 : settings.timeLimit) * 60000;
 
@@ -111,6 +118,7 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
   if (!room)
     return next(new AppError("Something went wrong. Please try again", 500));
 
+  // 3. Send room details on success
   return res.status(200).json({
     status: "success",
     room,
