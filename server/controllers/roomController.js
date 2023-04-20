@@ -39,9 +39,7 @@ exports.createRoom = catchAsync(async (req, res, next) => {
       status: "failure",
       result:
         "Cannot create more than 1 room for a user. Leave other rooms before creating a new one.",
-        403
-      )
-    );
+    });
   }
 
   res.status(200).json({
@@ -56,7 +54,6 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
 
   const room = await Room.findOne({ roomId });
 
-
   if (req.user._id.equals(room.owner))
     return next(
       new AppError(
@@ -64,7 +61,7 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
         403
       )
     );
-    
+
   if (userId.equals(room.owner))
     return next(
       new AppError(
@@ -72,16 +69,16 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
         403
       )
     );
-    
+
   if (room.participants.length < room.settings.participantsLimit) {
     const room = await Room.findOneAndUpdate(
       { roomId: roomId },
-      { $push: { participants: req.user._id } }
+      { $push: { participants: req.user._id } },
+      { new: true }
     );
     // Get expiresAt from owner
     const owner = await User.findById(room.owner);
     const expiresAt = owner.activeRoom.expiresAt;
-
 
     await User.findByIdAndUpdate(userId, {
       activeRoom: { roomId, expiresAt },
@@ -98,20 +95,20 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
 
 exports.updateRoom = catchAsync(async (req, res, next) => {
   const { roomId, settings } = req.body;
-  
-  const expiresAt =
-    Date.now() + (settings.timeLimit ? 40 : settings.timeLimit) * 60000;
+  const userId = req.user._id;
+
+  const expiresAt = Date.now() + 4 * 60000;
 
   // Create a new room
   const room = await Room.create({
     roomId,
-    owner: req.user._id,
+    owner: userId,
     settings: settings,
-    participants: [req.user.id],
+    participants: [userId],
     expiresAt,
   });
 
-  await User.findByIdAndUpdate(req.user._id, {
+  await User.findByIdAndUpdate(userId, {
     activeRoom: { roomId, expiresAt },
   });
 
@@ -128,7 +125,7 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
 exports.leaveRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
   const userId = req.user._id;
-
+  let newRoom;
   const room = await Room.findOne({ roomId: roomId });
   let hostChanged = false;
 
@@ -144,20 +141,20 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
       await Room.findOneAndDelete({ roomId });
     } else {
       hostChanged = true;
-      console.log(room.participants);
       const newOwner = room.participants.filter((id) => !id.equals(userId))[0];
-      await Room.findOneAndUpdate(
+      newRoom = await Room.findOneAndUpdate(
         { roomId },
-        { owner: newOwner, $pull: { participants: userId } }
+        { owner: newOwner, $pull: { participants: userId } },
+        { new: true }
       );
     }
   } else {
-    await Room.findOneAndUpdate(
+    newRoom = await Room.findOneAndUpdate(
       { roomId },
-      { $pull: { participants: userId } }
+      { $pull: { participants: userId } },
+      { new: true }
     );
   }
-  const newRoom = await Room.findOne({ roomId });
 
   res.status(200).json({
     status: "success",
@@ -169,11 +166,35 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
 
 exports.getRoomData = catchAsync(async (req, res, next) => {
   const { roomId } = req.params;
-  console.log(roomId);
   const room = await Room.findOne({ roomId: roomId });
 
   res.status(200).json({
     status: "success",
     room,
+  });
+});
+
+exports.startRoom = catchAsync(async (req, res, next) => {
+  const { roomId } = req.body;
+  const userId = req.user._id;
+  const room = await Room.findOne({ roomId });
+
+  if (!room) {
+    return next(new AppError("No such room exist with that Id", 404));
+  }
+
+  if (!room.owner.equals(userId)) {
+    return next(new AppError("Only Host can start the room", 404));
+  }
+
+  const updatedRoom = await Room.findOneAndUpdate(
+    { roomId },
+    { hasStarted: true },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: "success",
+    room: updatedRoom,
   });
 });

@@ -61,7 +61,10 @@ exports.createProblemTag = catchAsync(async (req, res, next) => {
 exports.getProblem = catchAsync(async (req, res, next) => {
   const problemsStr = req.query.problems;
   let problemsArr = problemsStr.split(",");
-  problemsArr = problemsArr.map((problem) => parseInt(problem) && parseInt(problem));
+  problemsArr = problemsArr.map((problem) => {
+    const number = Number(problem);
+    return isNaN(number) ? problem : number;
+  });
 
   const problems = await Problem.find({
     $or: [

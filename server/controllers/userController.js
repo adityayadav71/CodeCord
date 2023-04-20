@@ -9,8 +9,15 @@ const userProfile = require("../models/userProfileModel");
 exports.upload = multer({ storage });
 
 exports.getUserData = catchAsync(async (req, res, next) => {
-  const userData = await userProfile.findOne({ username: req.query.username });
-  console.log(userData);
+  const userData = await userProfile.findOne({ user: req.user._id });
+  res.status(200).json({
+    status: "success",
+    userData,
+  });
+});
+
+exports.getUserById = catchAsync(async (req, res, next) => {
+  const userData = await userProfile.findOne({ user: req.params.id });
   res.status(200).json({
     status: "success",
     userData,

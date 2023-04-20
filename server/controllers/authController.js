@@ -233,7 +233,7 @@ exports.isLoggedIn = async (req, res, next) => {
       return res.json({
         status: "success",
         isLoggedIn: true,
-        userData,
+        userData: currentUserData,
       });
     } catch (err) {
       return next(new AppError("Something went wrong!", 500));
