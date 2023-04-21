@@ -4,51 +4,52 @@ import "swiper/css";
 import CodeMirror from "@uiw/react-codemirror";
 import { historyField } from "@codemirror/commands";
 import { java } from "@codemirror/lang-java";
+import { useContext, useState, useEffect } from "react";
+import { RoomContext } from "../../layouts/AppLayout";
+import { AuthContext } from "../../App";
 
 const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
   const stateFields = { history: historyField };
+  const { roomData } = useContext(RoomContext);
+  const { userData } = useContext(AuthContext);
 
   const serializedState = localStorage.getItem("myEditorState");
 
+  const [activeEditor, setActiveEditor] = useState(userData?.username);
+
   return (
     <div className="flex flex-col h-full">
-      {isRoom && (
+      {isRoom && roomData?.participants && (
         <Swiper
           className="flex flex-row items-center shrink-0 w-full gap-x-5 border-b border-lightAccent3 relative"
           slidesPerView={4}
         >
-          <SwiperSlide className="py-3 border-b-2 border-accent1">
-            <button className="flex flex-row items-center justify-center gap-x-3 px-6 py-2 w-full rounded-lg">
-              <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
-                <FaUserAlt className="text-2xl hover:cursor-pointer" />
-              </div>
-              <p>User 1</p>
-            </button>
-          </SwiperSlide>
-          <SwiperSlide className="py-3 hover:border-b-2 border-grey3">
-            <button className="flex flex-row items-center justify-center gap-x-3 px-3 py-2 w-full rounded-lg">
-              <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
-                <FaUserAlt className="text-2xl hover:cursor-pointer" />
-              </div>
-              <p>User 2</p>
-            </button>
-          </SwiperSlide>
-          <SwiperSlide className="py-3 hover:border-b-2 border-grey3">
-            <button className="flex flex-row items-center justify-center gap-x-3 px-3 py-2 w-full rounded-lg">
-              <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
-                <FaUserAlt className="text-2xl hover:cursor-pointer" />
-              </div>
-              <p>User 3</p>
-            </button>
-          </SwiperSlide>
-          <SwiperSlide className="py-3 hover:border-b-2 border-grey3">
-            <button className="flex flex-row items-center justify-center gap-x-3 px-3 py-2 w-full rounded-lg">
-              <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
-                <FaUserAlt className="text-2xl hover:cursor-pointer" />
-              </div>
-              <p>User 4</p>
-            </button>
-          </SwiperSlide>
+          {roomData?.participants?.map((participant, i) => (
+            <SwiperSlide
+              key={i}
+              className={`py-3 ${
+                participant?.username === activeEditor
+                  ? "border-b-2 border-accent1"
+                  : ""
+              }`}
+              onClick={() => setActiveEditor(participant?.username)}
+            >
+              <button className="flex flex-row items-center justify-center gap-x-3 px-6 py-2 w-full rounded-lg">
+                <div className="flex flex-row items-center justify-center rounded-full bg-grey2">
+                  {participant?.avatar ? (
+                    <img
+                      className="w-8 h-8 overflow-clip object-cover rounded-full"
+                      src={participant?.avatar}
+                      alt="user-profile-picture"
+                    />
+                  ) : (
+                    <FaUserAlt className="text-2xl hover:cursor-pointer" />
+                  )}
+                </div>
+                <p>{participant?.username}</p>
+              </button>
+            </SwiperSlide>
+          ))}
         </Swiper>
       )}
       <CodeMirror

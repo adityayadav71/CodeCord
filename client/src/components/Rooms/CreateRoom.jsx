@@ -18,7 +18,7 @@ const CreateRoom = ({ isContest, roomId, setModal }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData } = useContext(AuthContext);
-  const { socket, setSocket, setRoomData } = useContext(RoomContext);
+  const { setSocket, setRoomData } = useContext(RoomContext);
   const navigate = useNavigate();
   // Declaring States
   const [isUserJoining, setIsUserJoining] = useState(false);
@@ -63,7 +63,8 @@ const CreateRoom = ({ isContest, roomId, setModal }) => {
     const roomId = inviteRef.current.value;
     try {
       // 1. Find Room In Database
-      const { socket, id } = await joinRoom(userData, roomId);
+      const { socket, roomData } = await joinRoom(userData, roomId);
+      setRoomData(roomData);
       setSocket(socket);
       setModal(null);
 

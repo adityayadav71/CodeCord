@@ -5,16 +5,19 @@ import {
   FaSmile,
   FaUserAlt,
   FaCog,
+  FaDoorOpen as EntryIcon,
+  FaDoorClosed as LeaveIcon,
 } from "react-icons/fa";
-import { GiExitDoor as LeaveIcon } from "react-icons/gi";
 import { BiAlarm } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { leaveRoom } from "../../api/roomsAPI";
+import InviteLinkModal from "./InviteLinkModal";
+import { startRoom } from "../../api/roomsAPI";
 
-const Chat = ({ socket }) => {
+const Chat = ({ socket, hasStarted, setHasStarted }) => {
   const { userData } = useContext(AuthContext);
   const { roomData } = useContext(RoomContext);
 
@@ -23,6 +26,10 @@ const Chat = ({ socket }) => {
 
   const { register, handleSubmit, reset } = useForm();
   const [messageList, setMessageList] = useState([]);
+  const [participants, setParticipants] = useState(
+    roomData?.participants?.length || 0
+  );
+  const [inviteLinkModal, setInviteLinkModal] = useState(roomData?.hasStarted);
 
   const sendMessage = async (formData) => {
     if (formData.message !== "") {
@@ -55,9 +62,27 @@ const Chat = ({ socket }) => {
     navigate("/");
   };
 
+  const handleStartRoom = async () => {
+    const room = await startRoom(roomData?.roomId, socket);
+    setHasStarted(room.hasStarted);
+  };
+
+  useEffect(() => {
+    setParticipants(roomData?.participants?.length);
+  }, [roomData]);
+
   useEffect(() => {
     socket?.on("receive-message", (data) => {
       setMessageList((prevList) => [...prevList, data]);
+    });
+
+    socket?.on("participants-changed", (data) => {
+      setParticipants(data);
+    });
+
+    socket?.on("room-started", (data) => {
+      console.log(data);
+      setHasStarted(true);
     });
   }, [socket]);
 
@@ -66,18 +91,27 @@ const Chat = ({ socket }) => {
       <div className="w-full p-3 border-b border-lightSecondary">
         <div className="flex flex-row justify-between gap-x-3 mb-4">
           <div className="flex flex-col gap-y-1">
-            <h1 className="text-lg font-bold">Room Name</h1>
-            <p className="text-grey1">
-              {roomData?.participants.length} participants
-            </p>
+            <h1 className="text-lg font-bold">
+              {roomData?.ownerUsername}'s Room
+            </h1>
+            <p className="text-grey1">{participants} participants</p>
           </div>
           <div className="flex flex-row items-center gap-x-1">
             <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
               <FaPhoneAlt className="text-xl" />
             </button>
-            <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
-              <FaUserPlus className="text-xl" />
-            </button>
+            <div className="relative">
+              <button
+                className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
+                onClick={() => setInviteLinkModal((prevState) => !prevState)}
+              >
+                <FaUserPlus className="text-xl" />
+              </button>
+              <InviteLinkModal
+                inviteLinkModal={inviteLinkModal}
+                inviteCode={roomData?.roomId || ""}
+              />
+            </div>
             <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
               <FaCog className="text-xl" />
             </button>
@@ -94,15 +128,27 @@ const Chat = ({ socket }) => {
         </div>
         {roomData?.owner === userData?.user?._id && (
           <div className="flex flex-row gap-x-3 w-full mb-2">
-            <button
-              className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
-              onClick={handleLeaveRoom}
-            >
-              Leave Room
-            </button>
-            <button className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400">
-              End Room
-            </button>
+            {hasStarted ? (
+              <>
+                <button
+                  className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
+                  onClick={handleLeaveRoom}
+                >
+                  Leave Room
+                </button>
+                <button className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400">
+                  End Room
+                </button>
+              </>
+            ) : (
+              <button
+                className="flex flex-row items-center justify-center gap-x-3 font-bold py-2 px-4 grow-[5] rounded-lg bg-green hover:bg-easyGreen"
+                onClick={handleStartRoom}
+              >
+                <EntryIcon className="text-2xl" />
+                Start Room
+              </button>
+            )}
           </div>
         )}
         <div className="flex flex-row gap-x-3 w-full">
@@ -120,7 +166,10 @@ const Chat = ({ socket }) => {
         <div className="h-full pr-3 overflow-y-scroll" id="chat-window">
           {messageList.map((messageContent, i) => {
             return messageContent?.type === "roomMessage" ? (
-              <div key={i} className="flex flex-row items-center justify-between gap-x-1 px-3 py-2 mb-3 bg-primary rounded-lg">
+              <div
+                key={i}
+                className="flex flex-row items-center justify-between gap-x-1 px-3 py-2 mb-3 bg-primary rounded-lg"
+              >
                 {messageContent.message}
                 <p className="text-grey1">{messageContent.timeStamp}</p>
               </div>
