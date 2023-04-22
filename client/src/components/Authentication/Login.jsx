@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
 import { AuthContext } from "../../App";
 import { login, checkLogInStatus } from "../../api/authDataAPI";
+import { io } from "socket.io-client";
 
 const Login = (props) => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Login = (props) => {
   } = useForm();
   const [apiErrors, setAPIErrors] = useState();
   const [status, setStatus] = useState();
-  const { setIsLoggedIn, setUserData } = useContext(AuthContext);
+  const { setIsLoggedIn, setUserData, setSocket } = useContext(AuthContext);
 
   const onSubmit = async (formData) => {
     setStatus("waiting");
@@ -25,6 +26,10 @@ const Login = (props) => {
       const status = await checkLogInStatus();
       setIsLoggedIn(status.isLoggedIn);
       setUserData(status.userData);
+      const socket = io("http://localhost:5000", {
+        path: "/api/v1/socket.io",
+      });
+      setSocket(socket);
       navigate("/", { replace: true });
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);

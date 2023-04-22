@@ -6,16 +6,13 @@ import {
   AiOutlineDislike,
 } from "react-icons/ai";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import * as React from "react";
-import CircularProgress from "@mui/material/CircularProgress";
-// import Box from "@mui/material/Box";
 import { RoomContext } from "../../layouts/AppLayout";
 import { ProblemContext } from "./index";
 import he from "he";
 import formatStats from "../../utilities/formatStats";
 import User from "../Rooms/User";
 
-const Description = ({ isRoom, handleProblemChange, hasStarted }) => {
+const Description = ({ isRoom, handleProblemChange }) => {
   const { activeProblem } = useContext(ProblemContext);
   const { roomData } = useContext(RoomContext);
 
@@ -23,7 +20,7 @@ const Description = ({ isRoom, handleProblemChange, hasStarted }) => {
 
   return (
     <div className="p-3">
-      {hasStarted || !isRoom ? (
+      {roomData?.hasStarted || !isRoom ? (
         <div className="flex flex-col h-full">
           {!isRoom && (
             <nav className="flex items-center justify-between px-3 py-3 border-b border-lightAccent3">
@@ -162,7 +159,7 @@ const Description = ({ isRoom, handleProblemChange, hasStarted }) => {
             </div>
           </div>
         </div>
-      ) : roomData && roomData?.participants && roomData?.ownerUsername ? (
+      ) : (
         <div className="flex flex-col gap-3 rounded-xl grow">
           <h1 className="text-2xl font-bold mb-3">
             {roomData?.ownerUsername}'s Room
@@ -179,10 +176,6 @@ const Description = ({ isRoom, handleProblemChange, hasStarted }) => {
               imageURL={participant.avatar}
             />
           ))}
-        </div>
-      ) : (
-        <div className="flex h-full items-center justify-center">
-          <CircularProgress />
         </div>
       )}
     </div>

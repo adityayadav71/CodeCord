@@ -52,7 +52,6 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
   });
 
   const { isLoggedIn, userData } = useContext(AuthContext);
-  const { setSocket } = useContext(RoomContext);
   const { setFilterObj } = useContext(
     filterInsideModal ? RoomFilterContext : FilterContext
   );
@@ -179,7 +178,6 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
     if (result?.response?.data?.result)
       window.alert(result?.response?.data?.result);
     else {
-      setSocket(result.socket);
       setModal(<CreateRoom isContest={true} roomId={result.id} />);
     }
   };

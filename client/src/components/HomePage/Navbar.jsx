@@ -6,11 +6,9 @@ import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
 import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
-import { RoomContext } from "../../layouts/AppLayout";
 
 const HomeNavbar = ({ handleLogout }) => {
-  const { isLoggedIn, userData } = useContext(AuthContext);
-  const { setSocket } = useContext(RoomContext);
+  const { isLoggedIn, userData, socket } = useContext(AuthContext);
 
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
@@ -24,11 +22,10 @@ const HomeNavbar = ({ handleLogout }) => {
   const openRoomModal = async () => {
     const roomID = nanoid();
     // 1. Create Room in Database - Return RoomID
-    const result = await createRoom(userData?.userId, roomID);
+    const result = await createRoom(socket, roomID);
     if (result?.response?.data?.result)
       window.alert(result?.response?.data?.result);
     else {
-      setSocket(result.socket);
       setModal(
         <CreateRoom isContest={false} roomId={result.id} setModal={setModal} />
       );

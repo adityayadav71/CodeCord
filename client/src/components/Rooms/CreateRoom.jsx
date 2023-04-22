@@ -17,8 +17,8 @@ export const RoomFilterContext = createContext(null);
 const CreateRoom = ({ isContest, roomId, setModal }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
-  const { userData } = useContext(AuthContext);
-  const { setSocket, setRoomData } = useContext(RoomContext);
+  const { userData, socket } = useContext(AuthContext);
+  const { setRoomData } = useContext(RoomContext);
   const navigate = useNavigate();
   // Declaring States
   const [isUserJoining, setIsUserJoining] = useState(false);
@@ -63,15 +63,14 @@ const CreateRoom = ({ isContest, roomId, setModal }) => {
     const roomId = inviteRef.current.value;
     try {
       // 1. Find Room In Database
-      const { socket, roomData } = await joinRoom(userData, roomId);
+      const { roomData } = await joinRoom(userData, socket, roomId);
       setRoomData(roomData);
-      setSocket(socket);
       setModal(null);
 
       // 2 Save newly joined room in RoomContext
       const room = await getRoomData(roomId);
       setRoomData(room);
-
+      
       //3. Store roomData in localStorage
       localStorage.setItem("room", JSON.stringify(room));
 
@@ -104,6 +103,7 @@ const CreateRoom = ({ isContest, roomId, setModal }) => {
       setModal(null);
       navigate(`/app/room/${roomId}?problems=${selected}`, { replace: false });
     } catch (err) {
+      console.log(err);
       window.alert(err.message);
     }
   };
