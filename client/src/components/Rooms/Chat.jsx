@@ -8,28 +8,27 @@ import {
   FaDoorOpen as EntryIcon,
   FaDoorClosed as LeaveIcon,
 } from "react-icons/fa";
-import { BiAlarm } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../App";
-import { RoomContext } from "../../layouts/AppLayout";
+import { RoomContext, populateParticipants } from "../../layouts/AppLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import { leaveRoom } from "../../api/roomsAPI";
 import InviteLinkModal from "./InviteLinkModal";
 import { startRoom } from "../../api/roomsAPI";
+import Timer from "./Timer";
 
-const Chat = ({ socket, hasStarted, setHasStarted }) => {
-  const { userData } = useContext(AuthContext);
-  const { roomData } = useContext(RoomContext);
+const Chat = () => {
+  const { userData, socket } = useContext(AuthContext);
+  const { roomData, setRoomData } = useContext(RoomContext);
 
   const navigate = useNavigate();
   const params = useParams();
-
   const { register, handleSubmit, reset } = useForm();
   const [messageList, setMessageList] = useState([]);
   const [participants, setParticipants] = useState(
     roomData?.participants?.length || 0
   );
-  const [inviteLinkModal, setInviteLinkModal] = useState(roomData?.hasStarted);
+  const [inviteLinkModal, setInviteLinkModal] = useState(false);
 
   const sendMessage = async (formData) => {
     if (formData.message !== "") {
@@ -53,18 +52,14 @@ const Chat = ({ socket, hasStarted, setHasStarted }) => {
   };
 
   const handleLeaveRoom = async () => {
-    const res = await leaveRoom(
-      userData.user._id,
-      userData.username,
-      params.name,
-      socket
-    );
+    const res = await leaveRoom(userData.username, params.name, socket);
     navigate("/");
   };
 
   const handleStartRoom = async () => {
     const room = await startRoom(roomData?.roomId, socket);
-    setHasStarted(room.hasStarted);
+    const populatedRoom = await populateParticipants(room);
+    setRoomData(populatedRoom);
   };
 
   useEffect(() => {
@@ -76,13 +71,9 @@ const Chat = ({ socket, hasStarted, setHasStarted }) => {
       setMessageList((prevList) => [...prevList, data]);
     });
 
-    socket?.on("participants-changed", (data) => {
-      setParticipants(data);
-    });
-
-    socket?.on("room-started", (data) => {
-      console.log(data);
-      setHasStarted(true);
+    socket?.on("room-started", (room) => {
+      localStorage.setItem("room", JSON.stringify(room));
+      setRoomData(room);
     });
   }, [socket]);
 
@@ -128,7 +119,7 @@ const Chat = ({ socket, hasStarted, setHasStarted }) => {
         </div>
         {roomData?.owner === userData?.user?._id && (
           <div className="flex flex-row gap-x-3 w-full mb-2">
-            {hasStarted ? (
+            {roomData?.hasStarted ? (
               <>
                 <button
                   className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
@@ -157,11 +148,7 @@ const Chat = ({ socket, hasStarted, setHasStarted }) => {
           </button>
         </div>
       </div>
-      <h1 className="flex flex-row items-center gap-x-3 bg-lightSecondary px-6 py-2 mb-3">
-        <BiAlarm className="text-xl" />
-        Round ends in
-        <span className="bg-accent1 rounded-lg px-3 font-bold">30:00</span>
-      </h1>
+      <Timer roomData={roomData} />
       <div className="relative ml-3 mb-14 py-3 overflow-y-hidden">
         <div className="h-full pr-3 overflow-y-scroll" id="chat-window">
           {messageList.map((messageContent, i) => {

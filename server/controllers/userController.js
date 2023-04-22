@@ -27,7 +27,7 @@ exports.getUserById = catchAsync(async (req, res, next) => {
 exports.createUserProfile = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  
+
   const userId = decoded.id;
   const userData = await userProfile.create({
     user: userId,
@@ -43,7 +43,7 @@ exports.createUserProfile = catchAsync(async (req, res, next) => {
 exports.updateUserProfile = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  
+
   const userId = decoded.id;
   const data = JSON.parse(req.body.data);
 
@@ -69,7 +69,8 @@ exports.updateUserProfile = catchAsync(async (req, res, next) => {
     // No file uploaded, update user profile without avatar field
     const userData = await userProfile.findOneAndUpdate(
       { user: userId },
-      data
+      data,
+      { new: true }
     );
 
     res.status(200).json({

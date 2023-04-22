@@ -17,30 +17,28 @@ import TabSelector from "./TabSelector";
 import { getProblem } from "../../api/problemDataAPI";
 import queryString from "query-string";
 import { io } from "socket.io-client";
+import * as React from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const ProblemContext = createContext(null);
 
 const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
 
-  const { isLoggedIn, userData } = useContext(AuthContext);
-  let { socket, setSocket, roomData,setRoomData } = useContext(RoomContext);
+  const { isLoggedIn, userData, socket, setSocket } = useContext(AuthContext);
+  let { roomData, setRoomData } = useContext(RoomContext);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!roomData) {
       roomData = JSON.parse(localStorage.getItem("room"));
       setRoomData(roomData);
     }
-  },[roomData])
+  }, [roomData]);
 
   useEffect(() => {
-    if (!socket && userData?.user?._id) {
-      // Establish socket connection with the server
-      socket = io("http://localhost:5000", {
-        path: "/api/v1/socket.io",
-      });
+    if (userData?.user?._id) {
       // Join the user back to stored room
-      socket.emit(
+      socket?.emit(
         "join-room",
         userData?.username,
         userData?.userId,
@@ -49,7 +47,7 @@ const Editor = ({ isRoom }) => {
       );
       setSocket(socket);
     }
-  }, [userData,socket]);
+  }, [userData, socket]);
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
@@ -64,7 +62,6 @@ const Editor = ({ isRoom }) => {
   });
   const [problems, setProblems] = useState({});
   const [activeProblem, setActiveProblem] = useState({});
-  const [hasStarted, setHasStarted] = useState(false);
   const params = useParams();
   const location = useLocation();
 
@@ -154,7 +151,6 @@ const Editor = ({ isRoom }) => {
         <div className="bg-transparentSecondary overflow-x-hidden">
           <Description
             isRoom={isRoom}
-            hasStarted={hasStarted}
             handleProblemChange={handleActiveProblemChange}
           />
         </div>
@@ -231,11 +227,7 @@ const Editor = ({ isRoom }) => {
         </div>
         {isRoom ? (
           <div className="bg-lightAccent3">
-            <Chat
-              socket={socket}
-              hasStarted={hasStarted}
-              setHasStarted={setHasStarted}
-            />
+            <Chat />
           </div>
         ) : null}
       </Split>

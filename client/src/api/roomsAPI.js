@@ -1,6 +1,12 @@
 import axios from "axios";
 import { BASE_URL } from "./apiConfig";
-import { io } from "socket.io-client";
+
+export const getRoomSettings = async (roomId) => {
+  const response = await axios.get("/api/v1/rooms/", {
+    roomId,
+  });
+  return response.data.settings;
+};
 
 export const updateRoomSettings = async (roomId, settings) => {
   const response = await axios.patch("/api/v1/rooms/", {
@@ -20,39 +26,32 @@ export const startRoom = async (roomId, socket) => {
     const response = await axios.post(`/api/v1/rooms/start/`, {
       roomId,
     });
-    if (response.status === 200) socket.emit("start-room", roomId);
+    if (response.status === 200) socket.emit("start-room", response.data.room);
     return response.data.room;
   } catch (err) {
     return err;
   }
 };
 
-export const joinRoom = async (userData, roomId) => {
+export const joinRoom = async (userData, socket, roomId) => {
   try {
-    let socket = {};
-
     const response = await axios.post(`${BASE_URL}/api/v1/rooms/join`, {
       roomId,
     });
     if (response.status === 200) {
-      // Establish socket connection with the server
-      socket = io("http://localhost:5000", {
-        path: "/api/v1/socket.io",
-      });
-
       // emit the create-room event
       socket.emit(
         "join-room",
-        userData?.username,
-        userData?.userId,
+        userData,
         response.data.room,
-        roomId
+        roomId,
+        false
       );
 
       return new Promise((resolve, reject) => {
         // listen for the room-created event
         socket.on("room-joined", (id) => {
-          resolve({ socket, roomData: response.data.room });
+          resolve({ roomData: response.data.room });
         });
 
         // listen for any errors
@@ -66,17 +65,11 @@ export const joinRoom = async (userData, roomId) => {
   }
 };
 
-export const createRoom = async (userId, roomId) => {
+export const createRoom = async (socket, roomId) => {
   try {
-    let socket = {};
     // Create room in database
     const response = await axios.post(`${BASE_URL}/api/v1/rooms`, {
       roomId,
-    });
-
-    // Establish socket connection with the server
-    socket = io("http://localhost:5000", {
-      path: "/api/v1/socket.io",
     });
 
     // emit the create-room event
@@ -85,7 +78,7 @@ export const createRoom = async (userId, roomId) => {
     return new Promise((resolve, reject) => {
       // listen for the room-created event
       socket.on("room-created", (id) => {
-        resolve({ socket, id });
+        resolve({ id });
       });
 
       // listen for any errors
@@ -98,7 +91,7 @@ export const createRoom = async (userId, roomId) => {
   }
 };
 
-export const leaveRoom = async (userId, username, roomId, socket) => {
+export const leaveRoom = async (username, roomId, socket) => {
   try {
     const response = await axios.patch(`${BASE_URL}/api/v1/rooms/leave`, {
       roomId,

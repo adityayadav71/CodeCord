@@ -59,8 +59,10 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
+  console.log(" %s sockets connected", io.engine.clientsCount);
+
   socket.on("disconnect", () => {
-    console.log("A client disconnected");
+    console.log("A client disconnected!!!");
   });
 
   socket.on("send-message", (data, roomId) => {
@@ -80,10 +82,12 @@ io.on("connection", (socket) => {
   });
 
   // Handle Join-room event
-  socket.on("join-room", (username, userId, room, roomId, reloaded = false) => {
+  socket.on("join-room", (userData, room, roomId, reloaded) => {
     try {
       socket.join(roomId, () => {
-        console.log(`The user: ${userId} has joined the room successfully.`);
+        console.log(
+          `The user: ${userData?.userId} has joined the room successfully.`
+        );
       });
       socket.emit("room-joined", roomId);
       socket.to(roomId).emit("updated-room-data", room);
@@ -92,7 +96,7 @@ io.on("connection", (socket) => {
       if (!reloaded) {
         const data = {
           type: "roomMessage",
-          message: `${username} joined the room.`,
+          message: `${userData?.username} joined the room.`,
           timeStamp: serverTime(),
         };
         socket.to(roomId).emit("receive-message", data);
@@ -103,14 +107,13 @@ io.on("connection", (socket) => {
   });
 
   // Handle Start-room event
-  socket.on("start-room", (roomId) => {
-    console.log(roomId)
-    socket.to(roomId).emit("room-started", true);
+  socket.on("start-room", (room) => {
+    socket.to(room.roomId).emit("room-started", room);
   });
 
   //Handle Leave-room event
   socket.on("leave-room", (username, room, roomId) => {
-    io.in(socket.id).socketsLeave(roomId);
+    io.in(roomId).socketsLeave(roomId);
     socket.to(roomId).emit("updated-room-data", room);
 
     const data = {

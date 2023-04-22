@@ -97,19 +97,16 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
   const { roomId, settings } = req.body;
   const userId = req.user._id;
 
-  const expiresAt = Date.now() + 4 * 60000;
-
   // Create a new room
   const room = await Room.create({
     roomId,
     owner: userId,
     settings: settings,
     participants: [userId],
-    expiresAt,
   });
 
   await User.findByIdAndUpdate(userId, {
-    activeRoom: { roomId, expiresAt },
+    activeRoom: { roomId },
   });
 
   if (!room)
@@ -186,10 +183,10 @@ exports.startRoom = catchAsync(async (req, res, next) => {
   if (!room.owner.equals(userId)) {
     return next(new AppError("Only Host can start the room", 404));
   }
-
+  const expiresAt = Date.now() + room?.settings?.timeLimit * 60 * 1000;
   const updatedRoom = await Room.findOneAndUpdate(
     { roomId },
-    { hasStarted: true },
+    { hasStarted: true, expiresAt },
     { new: true }
   );
 

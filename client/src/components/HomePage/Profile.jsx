@@ -1,6 +1,12 @@
-import { FaCamera, FaRegTimesCircle, FaGithub, FaLinkedin, FaUserAlt } from "react-icons/fa";
+import {
+  FaCamera,
+  FaRegTimesCircle,
+  FaGithub,
+  FaLinkedin,
+  FaUserAlt,
+} from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import { getUserData } from "../../api/profileDataAPI";
+import { getCurrentUserData } from "../../api/profileDataAPI";
 import { useEffect, useState, useRef, useContext } from "react";
 import { updateUserProfile } from "../../api/profileDataAPI";
 import { AuthContext } from "../../App";
@@ -50,7 +56,7 @@ const Profile = () => {
         setIsMyProfile(true);
         setProfileData(userData);
       } else {
-        const response = await getUserData();
+        const response = await getCurrentUserData();
         if (response.userData) setProfileData(response.userData);
         else navigate("/notfound", { replace: true });
       }
@@ -124,9 +130,8 @@ const Profile = () => {
       formData.append("file", file);
       formData.append("data", JSON.stringify({ username: username }));
 
-      await updateUserProfile(formData);
+      const response = await updateUserProfile(formData);
 
-      const response = await getUserData();
       if (response.userData) {
         setUserData(response.userData);
         setProfileData(response.userData);
@@ -154,7 +159,7 @@ const Profile = () => {
 
     await updateUserProfile(formData);
 
-    const response = await getUserData();
+    const response = await getCurrentUserData();
     if (response.userData) {
       setUserData(response.userData);
       setProfileData(response.userData);
@@ -170,7 +175,9 @@ const Profile = () => {
   const addTag = (e) => {
     if (e.key === "Enter" && e.target.value !== "") {
       const newTag = e.target.value.trim();
-      setTags((prevTags) => (!prevTags.includes(newTag) ? [...prevTags, newTag] : prevTags));
+      setTags((prevTags) =>
+        !prevTags.includes(newTag) ? [...prevTags, newTag] : prevTags
+      );
       e.target.value = "";
     } else if (e.key === "Backspace" && e.target.value === "") {
       setTags((prevTags) => prevTags.slice(0, -1));
@@ -191,9 +198,17 @@ const Profile = () => {
       >
         <div className="rounded-lg w-64 h-64">
           {preview ? (
-            <img className="w-full h-full object-cover rounded-lg" src={preview} alt="user-avatar-preview" />
+            <img
+              className="w-full h-full object-cover rounded-lg"
+              src={preview}
+              alt="user-avatar-preview"
+            />
           ) : profileData?.avatar ? (
-            <img className="w-full h-full object-cover rounded-lg" src={imageURL} alt="user-avatar" />
+            <img
+              className="w-full h-full object-cover rounded-lg"
+              src={imageURL}
+              alt="user-avatar"
+            />
           ) : (
             <div className="w-full h-full bg-gray-300 rounded-lg flex items-center justify-center">
               <FaUserAlt className="text-8xl" />
@@ -201,7 +216,14 @@ const Profile = () => {
           )}
         </div>
         <form onSubmit={uploadFile} encType="multipart/form-data">
-          <input type="file" accept="image/*" ref={fileInputRef} name="file" onChange={checkUploadedFile} className="w-64 hidden" />
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            name="file"
+            onChange={checkUploadedFile}
+            className="w-64 hidden"
+          />
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -218,7 +240,7 @@ const Profile = () => {
               name="submit"
               value="Save"
               className="px-6 py-2 bg-grey1 hover:bg-easyGreen transition-all duration-300 rounded-lg text-primary hover:cursor-pointer font-bold"
-            ></input>
+            />
             <button
               className="px-6 py-2 bg-grey1 hover:bg-red-500 rounded-lg text-primary hover:cursor-pointer font-bold"
               onClick={(e) => {
@@ -238,7 +260,15 @@ const Profile = () => {
           }}
           className="modal group absolute flex items-center justify-center w-24 h-24 hover:cursor-pointer rounded-lg overflow-hidden bg-grey2 shadow shadow-heading -top-12 left-1/2 -translate-x-1/2"
         >
-          {profileData?.avatar ? <img className="w-full h-full object-cover" src={imageURL} alt="profile-pic" /> : <FaUserAlt className="text-5xl" />}
+          {profileData?.avatar ? (
+            <img
+              className="w-full h-full object-cover"
+              src={imageURL}
+              alt="profile-pic"
+            />
+          ) : (
+            <FaUserAlt className="text-5xl" />
+          )}
           {isMyProfile && (
             <>
               <FaCamera className="absolute group-hover:opacity-100 z-10 opacity-0 transition duration-300 text-5xl" />
@@ -246,15 +276,21 @@ const Profile = () => {
             </>
           )}
         </div>
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold text-xl">{profileData?.username}</div>
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold text-xl">
+          {profileData?.username}
+        </div>
         <div className="mr-auto flex items-center">
           <div className="text-center px-6 mr-6 border-r border-accent3">
             <p>Rooms Joined</p>
-            <p className="text-4xl font-bold">{profileData?.roomsCreated?.length}</p>
+            <p className="text-4xl font-bold">
+              {profileData?.roomsCreated?.length}
+            </p>
           </div>
           <div className="text-center">
             <p>Problems Solved</p>
-            <p className="text-4xl font-bold">{profileData?.totalSubmissions}</p>
+            <p className="text-4xl font-bold">
+              {profileData?.totalSubmissions}
+            </p>
           </div>
         </div>
         <div className="ml-auto flex items-center">
@@ -262,10 +298,22 @@ const Profile = () => {
             <p>Country</p>
             <div className="flex items-center justify-center gap-x-3">
               {profileData?.country && (
-                <img className="w-5 h-5 object-cover overflow-clip rounded-full" src={`${countries?.filter((country) => country.name === profileData?.country)[0]?.flag}`} alt="country-flag" />
+                <img
+                  className="w-5 h-5 object-cover overflow-clip rounded-full"
+                  src={`${
+                    countries?.filter(
+                      (country) => country.name === profileData?.country
+                    )[0]?.flag
+                  }`}
+                  alt="country-flag"
+                />
               )}
               {editing ? (
-                <select className="profile-data focus:outline-none px-3 py-1 rounded-lg bg-primary" defaultValue={profileData?.country} name="country">
+                <select
+                  className="profile-data focus:outline-none px-3 py-1 rounded-lg bg-primary"
+                  defaultValue={profileData?.country}
+                  name="country"
+                >
                   {countries.map((country, index) => (
                     <option key={index} value={country.name}>
                       {country.name}
@@ -273,7 +321,11 @@ const Profile = () => {
                   ))}
                 </select>
               ) : (
-                <p>{profileData?.country ?? <span className="text-sm text-grey1">Country</span>}</p>
+                <p>
+                  {profileData?.country ?? (
+                    <span className="text-sm text-grey1">Country</span>
+                  )}
+                </p>
               )}
             </div>
           </div>
@@ -281,11 +333,17 @@ const Profile = () => {
             {profileData?.socials?.map((social, index) => {
               if (social !== "")
                 return index === 0 ? (
-                  <a href={social} className="hover:text-accent1 transition duration-300">
+                  <a
+                    href={social}
+                    className="hover:text-accent1 transition duration-300"
+                  >
                     <FaGithub className="text-4xl" />
                   </a>
                 ) : (
-                  <a href={social} className="hover:text-accent1 transition duration-300">
+                  <a
+                    href={social}
+                    className="hover:text-accent1 transition duration-300"
+                  >
                     <FaLinkedin className="text-4xl" />
                   </a>
                 );
@@ -299,35 +357,61 @@ const Profile = () => {
       <div className="grid grid-rows-2 grid-cols-3 gap-6 grow mt-6">
         <div className="row-span-2 bg-secondary rounded-lg p-6">
           <section className="mb-8">
-            <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">About</h2>
+            <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">
+              About
+            </h2>
             {editing ? (
-              <textarea maxLength="512" name="about" className="profile-data w-full h-40 leading-4 rounded-lg bg-lightSecondary focus:outline-none p-3">
+              <textarea
+                maxLength="512"
+                name="about"
+                className="profile-data w-full h-40 leading-4 rounded-lg bg-lightSecondary focus:outline-none p-3"
+              >
                 {profileData?.about}
               </textarea>
             ) : (
-              <p className="leading-6">{profileData?.about || <span className="text-sm text-grey1">Not updated</span>} </p>
+              <p className="leading-6">
+                {profileData?.about || (
+                  <span className="text-sm text-grey1">Not updated</span>
+                )}{" "}
+              </p>
             )}
           </section>
           <section className="mb-8">
-            <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Skills</h2>
+            <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">
+              Skills
+            </h2>
             <div className="flex flex-row gap-3 flex-wrap">
               {editing ? (
                 <div className="flex items-center flex-wrap gap-3 p-3 w-full bg-lightSecondary rounded-lg">
                   {tags &&
                     tags?.map((tag, index) => {
                       return (
-                        <div key={index} className="flex items-center px-3 py-1 bg-primary gap-x-3 rounded-lg">
+                        <div
+                          key={index}
+                          className="flex items-center px-3 py-1 bg-primary gap-x-3 rounded-lg"
+                        >
                           {tag}
-                          <button className="hover:text-accent1 hover:cursor-pointer" data-tagname={tag} onClick={deleteTag}>
+                          <button
+                            className="hover:text-accent1 hover:cursor-pointer"
+                            data-tagname={tag}
+                            onClick={deleteTag}
+                          >
                             <FaRegTimesCircle />
                           </button>
                         </div>
                       );
                     })}
-                  <input type="text" placeholder="Press enter to add skill..." onKeyDown={addTag} className="bg-transparent focus:outline-none" />
+                  <input
+                    type="text"
+                    placeholder="Press enter to add skill..."
+                    onKeyDown={addTag}
+                    className="bg-transparent focus:outline-none"
+                  />
                 </div>
               ) : profileData?.skills?.length !== 0 ? (
-                profileData?.skills?.map((skill) => <span className="px-3 rounded-lg bg-primary">{skill}</span>)
+                profileData?.skills?.map((skill) => (
+                  <span className="px-3 rounded-lg bg-primary">{skill}</span>
+                ))
               ) : (
                 <p className="leading-6">
                   <span className="text-sm text-grey1">Not updated</span>
@@ -337,7 +421,9 @@ const Profile = () => {
           </section>
           {editing && (
             <section className="mb-8">
-              <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Socials</h2>
+              <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">
+                Socials
+              </h2>
               <div className="z-[2] grow">
                 <form>
                   <div className="flex items-center gap-x-3 mb-3">
@@ -369,7 +455,9 @@ const Profile = () => {
             </section>
           )}
           <section className="mb-8">
-            <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">Friends</h2>
+            <h2 className="uppercase font-bold text-xl mb-3 tracking-wider">
+              Friends
+            </h2>
             {profileData?.friends?.length !== 0 ? (
               <div className="z-[2] grow">
                 {profileData?.friends?.map((friend) => (
@@ -428,31 +516,54 @@ const Profile = () => {
               <div className="flex flex-col gap-y-1 items-center">
                 <p className="font-bold">{totalEasy}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-greenBackGround relative">
-                  <div className={`absolute bg-green bottom-0 w-14`} style={{ height: `${percentageSolved[0]}%` }}></div>
-                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(profileData?.numberOfSubmissions && profileData.numberOfSubmissions[0]) || 0}</p>
+                  <div
+                    className={`absolute bg-green bottom-0 w-14`}
+                    style={{ height: `${percentageSolved[0]}%` }}
+                  ></div>
+                  <p className="absolute bottom-3 text-center w-full font-bold text-base">
+                    {(profileData?.numberOfSubmissions &&
+                      profileData.numberOfSubmissions[0]) ||
+                      0}
+                  </p>
                 </div>
                 <p>E</p>
               </div>
               <div className="flex flex-col gap-y-1 items-center">
                 <p className="font-bold">{totalMedium}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-yellowBackGround relative">
-                  <div className={`absolute bg-yellow-500 bottom-0 w-14`} style={{ height: `${percentageSolved[1]}%` }}></div>
-                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(profileData?.numberOfSubmissions && profileData.numberOfSubmissions[1]) || 0}</p>
+                  <div
+                    className={`absolute bg-yellow-500 bottom-0 w-14`}
+                    style={{ height: `${percentageSolved[1]}%` }}
+                  ></div>
+                  <p className="absolute bottom-3 text-center w-full font-bold text-base">
+                    {(profileData?.numberOfSubmissions &&
+                      profileData.numberOfSubmissions[1]) ||
+                      0}
+                  </p>
                 </div>
                 <p>M</p>
               </div>
               <div className="flex flex-col gap-y-1 items-center">
                 <p className="font-bold">{totalHard}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-redBackGround relative">
-                  <div className={`absolute bg-hardRed bottom-0 w-14`} style={{ height: `${percentageSolved[2]}%` }}></div>
-                  <p className="absolute bottom-3 text-center w-full font-bold text-base">{(profileData?.numberOfSubmissions && profileData.numberOfSubmissions[2]) || 0}</p>
+                  <div
+                    className={`absolute bg-hardRed bottom-0 w-14`}
+                    style={{ height: `${percentageSolved[2]}%` }}
+                  ></div>
+                  <p className="absolute bottom-3 text-center w-full font-bold text-base">
+                    {(profileData?.numberOfSubmissions &&
+                      profileData.numberOfSubmissions[2]) ||
+                      0}
+                  </p>
                 </div>
                 <p>H</p>
               </div>
             </div>
             <div className="grow">
               <div className="flex flex-col items-center justify-center h-52 w-52 rounded-full border-8 border-accent1 m-auto">
-                <p className="font-bold text-5xl">{profileData?.totalSubmissions}</p>
+                <p className="font-bold text-5xl">
+                  {profileData?.totalSubmissions}
+                </p>
                 <p>solved</p>
               </div>
             </div>
@@ -460,15 +571,29 @@ const Profile = () => {
         </div>
         <div className="col-span-2 bg-secondary rounded-lg p-6">
           <div className="flex flex-row gap-x-3 mb-6">
-            <button onClick={() => switchTab("Recent Submissions")} className={`px-3 py-1 rounded-lg ${tabActive === "Recent Submissions" ? "bg-accent3" : ""}`}>
+            <button
+              onClick={() => switchTab("Recent Submissions")}
+              className={`px-3 py-1 rounded-lg ${
+                tabActive === "Recent Submissions" ? "bg-accent3" : ""
+              }`}
+            >
               Recent Submissions
             </button>
-            <button onClick={() => switchTab("Created Rooms")} className={`px-3 py-1 rounded-lg ${tabActive === "Created Rooms" ? "bg-accent3" : ""}`}>
+            <button
+              onClick={() => switchTab("Created Rooms")}
+              className={`px-3 py-1 rounded-lg ${
+                tabActive === "Created Rooms" ? "bg-accent3" : ""
+              }`}
+            >
               Created Rooms
             </button>
           </div>
           <div className="flex flex-col">
-            {tabActive === "Recent Submissions" ? <p className="text-grey1 p-3">No submissions yet</p> : <p className="text-grey1 p-3">No rooms created or joined yet</p>}
+            {tabActive === "Recent Submissions" ? (
+              <p className="text-grey1 p-3">No submissions yet</p>
+            ) : (
+              <p className="text-grey1 p-3">No rooms created or joined yet</p>
+            )}
           </div>
         </div>
       </div>
