@@ -106,7 +106,6 @@ io.on("connection", (socket) => {
 
   // Handle Start-room event
   socket.on("start-room", (roomId) => {
-    console.log(roomId)
     socket.to(roomId).emit("room-started", true);
   });
 

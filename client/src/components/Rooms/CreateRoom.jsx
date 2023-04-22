@@ -30,7 +30,7 @@ const CreateRoom = ({ isContest, roomId, setModal }) => {
   const [inviteLink, setInviteLink] = useState(roomId);
   const [hrs, sethrs] = useState("");
   const [mins, setmins] = useState("10 mins");
-  const [selected, setSelected] = useState([1,2,3,4]);
+  const [selected, setSelected] = useState([]);
   const [filterObj, setFilterObj] = useState({
     tags: [],
     page: 1,

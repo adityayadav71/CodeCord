@@ -239,7 +239,7 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
               Randomize
             </button>
             <div className="flex flex-col ml-auto items-end justify-center">
-              <p className="ml-auto text-md text-green font-bold">
+              <p className="ml-auto text-base text-green font-bold">
                 {selected.length !== 0
                   ? `${selected.length}/4 problems selected`
                   : "Select upto 4 problems"}
