@@ -50,7 +50,7 @@ const Profile = () => {
         setIsMyProfile(true);
         setProfileData(userData);
       } else {
-        const response = await getUserData(username);
+        const response = await getUserData();
         if (response.userData) setProfileData(response.userData);
         else navigate("/notfound", { replace: true });
       }
@@ -126,7 +126,7 @@ const Profile = () => {
 
       await updateUserProfile(formData);
 
-      const response = await getUserData(username);
+      const response = await getUserData();
       if (response.userData) {
         setUserData(response.userData);
         setProfileData(response.userData);
@@ -154,7 +154,7 @@ const Profile = () => {
 
     await updateUserProfile(formData);
 
-    const response = await getUserData(username);
+    const response = await getUserData();
     if (response.userData) {
       setUserData(response.userData);
       setProfileData(response.userData);

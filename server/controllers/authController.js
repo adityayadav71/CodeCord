@@ -226,15 +226,14 @@ exports.isLoggedIn = async (req, res, next) => {
       }
 
       // 4) Get user profile data if user is logged in
-      const userData = await userProfile
-        .findOne({ user: decoded.id })
-        .populate("user");
-        
+      const currentUserData = await userProfile.findOne({ user: decoded.id }).populate('user');
+
+
       // THERE IS A LOGGED IN USER
       return res.json({
         status: "success",
         isLoggedIn: true,
-        userData,
+        userData: currentUserData,
       });
     } catch (err) {
       return next(new AppError("Something went wrong!", 500));

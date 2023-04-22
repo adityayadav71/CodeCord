@@ -28,7 +28,7 @@ const RoomInviteLink = ({ inviteLink }) => {
           type="text"
           value={inviteLink}
           onChange={() => {}}
-          placeholder="Invite link"
+          placeholder="Invite Code"
         />
       </div>
     </div>

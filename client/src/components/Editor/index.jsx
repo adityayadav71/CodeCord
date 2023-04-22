@@ -15,15 +15,41 @@ import FontSelector from "./FontSelector";
 import KeyBindSelector from "./KeyBindSelector";
 import TabSelector from "./TabSelector";
 import { getProblem } from "../../api/problemDataAPI";
-// import { getRoomSettings } from "../../api/roomsAPI";
 import queryString from "query-string";
+import { io } from "socket.io-client";
 
 export const ProblemContext = createContext(null);
 
 const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
-  const { isLoggedIn } = useContext(AuthContext);
-  const { socket } = useContext(RoomContext);
+
+  const { isLoggedIn, userData } = useContext(AuthContext);
+  let { socket, setSocket, roomData,setRoomData } = useContext(RoomContext);
+
+  useEffect(()=>{
+    if (!roomData) {
+      roomData = JSON.parse(localStorage.getItem("room"));
+      setRoomData(roomData);
+    }
+  },[roomData])
+
+  useEffect(() => {
+    if (!socket && userData?.user?._id) {
+      // Establish socket connection with the server
+      socket = io("http://localhost:5000", {
+        path: "/api/v1/socket.io",
+      });
+      // Join the user back to stored room
+      socket.emit(
+        "join-room",
+        userData?.username,
+        userData?.userId,
+        roomData?.roomId,
+        true
+      );
+      setSocket(socket);
+    }
+  }, [userData,socket]);
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
@@ -38,13 +64,17 @@ const Editor = ({ isRoom }) => {
   });
   const [problems, setProblems] = useState({});
   const [activeProblem, setActiveProblem] = useState({});
+  const [hasStarted, setHasStarted] = useState(false);
   const params = useParams();
   const location = useLocation();
 
   const values = queryString.parse(location.search);
-  const selectedProblems = values?.problems.split(",");
 
   useEffect(() => {
+    const selectedProblems =
+      values?.problems?.split(",") || // User creating a new room
+      roomData?.settings?.problems; // User joining a new room
+
     const loadProblems = async () => {
       let response;
       if (isRoom) {
@@ -124,6 +154,7 @@ const Editor = ({ isRoom }) => {
         <div className="bg-transparentSecondary overflow-x-hidden">
           <Description
             isRoom={isRoom}
+            hasStarted={hasStarted}
             handleProblemChange={handleActiveProblemChange}
           />
         </div>
@@ -170,13 +201,13 @@ const Editor = ({ isRoom }) => {
             <div className="flex flex-row items-center gap-x-3">
               {!isLoggedIn ? (
                 <p>
-                  Please{" "}
+                  Please
                   <Link
                     to="/app/auth/login"
                     className="text-blue-500 font-bold hover:underline"
                   >
                     Log in/Signup
-                  </Link>{" "}
+                  </Link>
                   to run or submit your code
                 </p>
               ) : (
@@ -200,7 +231,11 @@ const Editor = ({ isRoom }) => {
         </div>
         {isRoom ? (
           <div className="bg-lightAccent3">
-            <Chat socket={socket} />
+            <Chat
+              socket={socket}
+              hasStarted={hasStarted}
+              setHasStarted={setHasStarted}
+            />
           </div>
         ) : null}
       </Split>

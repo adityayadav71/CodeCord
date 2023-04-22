@@ -17,9 +17,27 @@ export const updateRoomSettings = async (roomId, settings) => {
   return response;
 };
 
-export const joinRoom = async (username, userId, roomId) => {
+export const getRoomData = async (roomId) => {
+  const response = await axios.get(`/api/v1/rooms/${roomId}`);
+  return response.data.room;
+};
+
+export const startRoom = async (roomId, socket) => {
+  try {
+    const response = await axios.post(`/api/v1/rooms/start/`, {
+      roomId,
+    });
+    if (response.status === 200) socket.emit("start-room", roomId);
+    return response.data.room;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const joinRoom = async (userData, roomId) => {
   try {
     let socket = {};
+
     const response = await axios.post(`${BASE_URL}/api/v1/rooms/join`, {
       roomId,
     });
@@ -31,12 +49,18 @@ export const joinRoom = async (username, userId, roomId) => {
       });
 
       // emit the create-room event
-      socket.emit("join-room", username, userId, roomId);
+      socket.emit(
+        "join-room",
+        userData?.username,
+        userData?.userId,
+        response.data.room,
+        roomId
+      );
 
       return new Promise((resolve, reject) => {
         // listen for the room-created event
         socket.on("room-joined", (id) => {
-          resolve({ socket, id });
+          resolve({ socket, roomData: response.data.room });
         });
 
         // listen for any errors
@@ -54,7 +78,7 @@ export const createRoom = async (userId, roomId) => {
   try {
     let socket = {};
     // Create room in database
-    await axios.post(`${BASE_URL}/api/v1/rooms`, {
+    const response = await axios.post(`${BASE_URL}/api/v1/rooms`, {
       roomId,
     });
 
@@ -80,5 +104,16 @@ export const createRoom = async (userId, roomId) => {
     });
   } catch (err) {
     return err;
+  }
+};
+
+export const leaveRoom = async (userId, username, roomId, socket) => {
+  try {
+    const response = await axios.patch(`${BASE_URL}/api/v1/rooms/leave`, {
+      roomId,
+    });
+    socket.emit("leave-room", username, response.data.newRoom, roomId);
+  } catch (error) {
+    console.log(error);
   }
 };
