@@ -53,7 +53,11 @@ function serverTime() {
 const io = require("socket.io")(server, {
   path: "/api/v1/socket.io",
   cors: {
-    origin: ["https://admin.socket.io", "http://localhost:5173", "https://codecord.vercel.app"],
+    origin: [
+      "https://admin.socket.io",
+      "http://localhost:5173",
+      "https://codecord.vercel.app",
+    ],
     credentials: true,
   },
 });
@@ -89,7 +93,7 @@ io.on("connection", (socket) => {
           `The user: ${userData?.userId} has joined the room successfully.`
         );
       });
-      socket.emit("room-joined", roomId);
+      io.to(roomId).emit("room-joined", roomId);
       socket.to(roomId).emit("updated-room-data", room);
 
       // If user has joined back don't broadcast message
@@ -113,15 +117,35 @@ io.on("connection", (socket) => {
 
   //Handle Leave-room event
   socket.on("leave-room", (username, room, roomId) => {
-    io.in(roomId).socketsLeave(roomId);
-    socket.to(roomId).emit("updated-room-data", room);
-
-    const data = {
-      type: "roomMessage",
-      message: `${username} left the room.`,
-      timeStamp: serverTime(),
-    };
-    socket.to(roomId).emit("receive-message", data);
+    try {
+      socket.leave(roomId);
+      socket.to(roomId).emit("updated-room-data", room);
+      
+      const data = {
+        type: "roomMessage",
+        message: `${username} left the room.`,
+        timeStamp: serverTime(),
+      };
+      socket.to(roomId).emit("receive-message", data);
+    } catch (err) {
+      socket.emit("error", err);
+    }
+  });
+  
+  socket.on("remove-participant", (username, userId, roomId, room) => {
+    try {
+      const data = {
+        type: "roomMessage",
+        message: `${username} was removed.`,
+        timeStamp: serverTime(),
+      };
+      io.to(roomId).emit("receive-message", data);
+      socket.to(roomId).emit("participant-removed", username);
+      socket.to(roomId).emit("updated-room-data", room);
+      io.sockets.sockets.get(userId).leave(roomId);
+    } catch (err) {
+      socket.emit("error", err);
+    }
   });
 });
 

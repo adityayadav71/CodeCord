@@ -40,13 +40,7 @@ export const joinRoom = async (userData, socket, roomId) => {
     });
     if (response.status === 200) {
       // emit the create-room event
-      socket.emit(
-        "join-room",
-        userData,
-        response.data.room,
-        roomId,
-        false
-      );
+      socket.emit("join-room", userData, response.data.room, roomId, false);
 
       return new Promise((resolve, reject) => {
         // listen for the room-created event
@@ -97,6 +91,22 @@ export const leaveRoom = async (username, roomId, socket) => {
       roomId,
     });
     socket.emit("leave-room", username, response.data.newRoom, roomId);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const removeParticipant = async (username, userId, roomId, socket) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/v1/rooms/remove`, {
+      userId,
+      roomId,
+    });
+
+    if (response.status === 200) {
+      socket.emit("remove-participant", username, userId, roomId, response.data.room);
+      return response.data.room;
+    }
   } catch (error) {
     console.log(error);
   }

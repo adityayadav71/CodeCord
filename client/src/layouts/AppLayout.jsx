@@ -8,7 +8,7 @@ import { AuthContext } from "../App";
 
 export const RoomContext = createContext(null);
 
-export const populateParticipants = async (room) => {
+export const populateParticipants = async (room, userData) => {
   let ownerUsername = "";
   // 1. Populate Participants array
   const participants = await Promise?.all(
@@ -18,6 +18,7 @@ export const populateParticipants = async (room) => {
         ownerUsername = user?.userData?.username;
       }
       return {
+        userId: user?.userData?.user,
         country: user?.userData?.country,
         username: user?.userData?.username,
         avatar: `data:${user.userData?.avatar?.contentType};base64,${user.userData?.avatar?.image}`,
@@ -25,10 +26,18 @@ export const populateParticipants = async (room) => {
     })
   );
 
+  // 2. Check if user is the host and assign iAmHost field value
+  let iAmHost = false;
+  const userId = userData?.user?._id;
+  if (userId === room.owner) {
+    iAmHost = true;
+  }
+
   return {
     ...room,
     participants,
     ownerUsername,
+    iAmHost,
   };
 };
 
@@ -48,22 +57,10 @@ const AppLayout = ({ handleLogout }) => {
 
           // If roomData is not undefined
           if (room) {
-            const populatedRoom = await populateParticipants(room);
-
-            // 2. Check if user is the host and assign iAmHost field value
-            let iAmHost = false;
-            const userId = userData?.user?._id;
-            if (userId === roomData?.owner) {
-              iAmHost = true;
-            }
+            const populatedRoom = await populateParticipants(room, userData);
 
             // 3. Update roomData state value with participants, ownerUsername and iAmHost fields
-            setRoomData((prevData) => {
-              return {
-                ...populatedRoom,
-                iAmHost,
-              };
-            });
+            setRoomData(populatedRoom);
           }
         }
       };
@@ -71,14 +68,14 @@ const AppLayout = ({ handleLogout }) => {
     }
 
     socket?.on("updated-room-data", async (data) => {
-      data = await populateParticipants(data);
+      data = await populateParticipants(data, userData);
       // 2. Check if user is the host and assign iAmHost field value
       let iAmHost = false;
       const userId = userData?.user?._id;
-      if (userId === roomData?.owner) {
-        iAmHost = true;
-      }
+      if (userId === data?.owner) iAmHost = true;
+
       setRoomData({ ...data, iAmHost });
+      localStorage.setItem("room", JSON.stringify({ ...data, iAmHost }));
     });
   }, [location, socket]);
 

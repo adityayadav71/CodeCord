@@ -195,3 +195,33 @@ exports.startRoom = catchAsync(async (req, res, next) => {
     room: updatedRoom,
   });
 });
+
+exports.removeParticipant = catchAsync(async (req, res, next) => {
+  const { userId, roomId } = req.body;
+
+  const room = await Room.findOne({ roomId });
+
+  if (!room) {
+    return next(new AppError("No such room exists with that Id", 404));
+  }
+
+  if (!room.owner.equals(req.user._id)) {
+    return next(new AppError("You are not authorized", 403));
+  }
+
+  //Remove from user model (delete activeRoom field from userModel)
+  await User.findByIdAndUpdate(userId, {
+    $unset: { activeRoom: "" },
+  });
+
+  const updatedRoom = await Room.findOneAndUpdate(
+    { roomId },
+    { $pull: { participants: userId } },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: "success",
+    room: updatedRoom,
+  });
+});
