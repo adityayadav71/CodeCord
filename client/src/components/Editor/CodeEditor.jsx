@@ -34,7 +34,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
               }`}
               onClick={() => setActiveEditor(participant?.username)}
             >
-              <button className="flex flex-row items-center justify-center gap-x-3 px-6 py-2 w-full rounded-lg">
+              <button className="flex flex-row items-center justify-center gap-x-3 px-6 py-2 rounded-lg">
                 <div className="flex flex-row items-center justify-center rounded-full bg-grey2">
                   {participant?.avatar ? (
                     <img
@@ -46,7 +46,11 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
                     <FaUserAlt className="text-2xl hover:cursor-pointer" />
                   )}
                 </div>
-                <p>{participant?.username}</p>
+                <p>
+                  {participant?.username === userData?.username
+                    ? "Me"
+                    : participant?.username}
+                </p>
               </button>
             </SwiperSlide>
           ))}

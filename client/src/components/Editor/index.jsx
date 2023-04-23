@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Split from "react-split";
-import { FaAngleUp, FaRegTimesCircle } from "react-icons/fa";
+import { TbTerminal2 } from "react-icons/tb";
+import { FaTerminal, FaRegTimesCircle } from "react-icons/fa";
 import Description from "./Description";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
@@ -8,7 +9,7 @@ import Chat from "../Rooms/Chat";
 import LanguageSelector from "./LanguageSelector";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
 import ThemeSelector from "./ThemeSelector";
 import FontSelector from "./FontSelector";
@@ -16,14 +17,13 @@ import KeyBindSelector from "./KeyBindSelector";
 import TabSelector from "./TabSelector";
 import { getProblem } from "../../api/problemDataAPI";
 import queryString from "query-string";
-import { io } from "socket.io-client";
-import * as React from "react";
-import CircularProgress from "@mui/material/CircularProgress";
+import { FaCog, FaCompress, FaExpand, FaUndo } from "react-icons/fa";
 
 export const ProblemContext = createContext(null);
 
 const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
+  const navigate = useNavigate();
 
   const { isLoggedIn, userData, socket, setSocket } = useContext(AuthContext);
   let { roomData, setRoomData } = useContext(RoomContext);
@@ -47,6 +47,13 @@ const Editor = ({ isRoom }) => {
       );
       setSocket(socket);
     }
+
+    socket?.on("participant-removed", (data) => {
+      console.log(userData?.username, data);
+      if (userData?.username === data) {
+        navigate("/", { replace: true });
+      }
+    });
   }, [userData, socket]);
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
@@ -62,6 +69,7 @@ const Editor = ({ isRoom }) => {
   });
   const [problems, setProblems] = useState({});
   const [activeProblem, setActiveProblem] = useState({});
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const params = useParams();
   const location = useLocation();
 
@@ -106,6 +114,10 @@ const Editor = ({ isRoom }) => {
   const updateSize = (sizes) => {
     localStorage.setItem("sizes", JSON.stringify(sizes));
     setSizes(sizes);
+  };
+
+  const handleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
   };
 
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -172,23 +184,65 @@ const Editor = ({ isRoom }) => {
             <div className="bg-lightAccent3 z-10">
               {Object.keys(problems).length > 0 && (
                 <Console
-                  handleSettings={handleSettings}
+                  isFullScreen={isFullScreen}
                   editorSettings={editorSettings}
                   problems={activeProblem}
-                  clearEditor={handleClearEditor}
                 />
               )}
             </div>
           </Split>
           <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
-            <div className="flex flex-row items-center gap-x-3">
-              <button
-                className="flex flex-row items-center justify-between gap-x-3 px-3 py-1 bg-primary hover:bg-lightPrimary rounded-lg"
-                onClick={() => setConsoleOpen((prev) => !prev)}
-              >
-                <p>Console</p>
-                <FaAngleUp className={`${consoleOpen ? "rotate-180" : ""}`} />
-              </button>
+            <div className="flex flex-row items-center ml-3 gap-x-6">
+              <div className="relative">
+                <TbTerminal2
+                  className="peer text-2xl rounded-lg hover:text-grey1 hover:cursor-pointer"
+                  onClick={() => setConsoleOpen((prev) => !prev)}
+                />
+                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                  Console
+                </div>
+              </div>
+              <div className="relative">
+                <FaUndo
+                  className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
+                  onClick={handleClearEditor}
+                />
+                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                  Reset
+                </div>
+              </div>
+              <div className="relative">
+                <FaCog
+                  className="settings peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
+                  onClick={handleSettings}
+                />
+                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                  Settings
+                </div>
+              </div>
+              <div className="relative">
+                {isFullScreen ? (
+                  <>
+                    <FaCompress
+                      className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
+                      onClick={handleFullScreen}
+                    />
+                    <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                      Minimize
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <FaExpand
+                      className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
+                      onClick={handleFullScreen}
+                    />
+                    <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                      FullScreen
+                    </div>
+                  </>
+                )}
+              </div>
               <LanguageSelector
                 editorSettings={editorSettings}
                 setEditorSettings={setEditorSettings}

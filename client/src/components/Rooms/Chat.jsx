@@ -53,12 +53,12 @@ const Chat = () => {
 
   const handleLeaveRoom = async () => {
     const res = await leaveRoom(userData.username, params.name, socket);
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   const handleStartRoom = async () => {
     const room = await startRoom(roomData?.roomId, socket);
-    const populatedRoom = await populateParticipants(room);
+    const populatedRoom = await populateParticipants(room, userData);
     setRoomData(populatedRoom);
   };
 
@@ -88,33 +88,53 @@ const Chat = () => {
             <p className="text-grey1">{participants} participants</p>
           </div>
           <div className="flex flex-row items-center gap-x-1">
-            <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
-              <FaPhoneAlt className="text-xl" />
-            </button>
+            <div className="relative">
+              <button className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
+                <FaPhoneAlt className="text-xl" />
+              </button>
+              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 px-3 py-1 bg-white text-primary rounded-lg">
+                Join Voice Chat
+              </div>
+            </div>
             <div className="relative">
               <button
-                className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
+                className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
                 onClick={() => setInviteLinkModal((prevState) => !prevState)}
               >
                 <FaUserPlus className="text-xl" />
               </button>
+              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 px-3 py-1 bg-white text-primary rounded-lg">
+                Invite Code
+              </div>
               <InviteLinkModal
                 inviteLinkModal={inviteLinkModal}
                 inviteCode={roomData?.roomId || ""}
               />
             </div>
-            <button className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
-              <FaCog className="text-xl" />
-            </button>
-
-            {roomData?.owner !== userData?.user?._id && (
-              <button
-                className="flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
-                onClick={handleLeaveRoom}
-              >
-                <LeaveIcon className="text-xl" />
-              </button>
-            )}
+            <div className="relative">
+              {roomData?.owner !== userData?.user?._id ? (
+                <>
+                  <button
+                    className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
+                    onClick={handleLeaveRoom}
+                  >
+                    <LeaveIcon className="text-xl" />
+                  </button>
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-14 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                    Leave
+                  </div>
+                </>
+              ) : (
+                <>
+                  <button className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
+                    <FaCog className="text-xl" />
+                  </button>
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-14 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                    Settings
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
         {roomData?.owner === userData?.user?._id && (

@@ -1,21 +1,16 @@
-import { useState, useEffect, useContext, Fragment } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ProblemContext } from "./index";
-import { FaCog, FaCompress, FaExpand, FaPlus, FaUndo } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { nanoid } from "nanoid";
 
-const Console = ({ handleSettings, clearEditor }) => {
+const Console = ({ isFullScreen }) => {
   const { activeProblem } = useContext(ProblemContext);
 
-  const [isFullScreen, setIsFullScreen] = useState(false);
   const [testcases, setTestcases] = useState([]);
   const [currentTestCase, setCurrentTestCase] = useState({});
   const [outputReceived, setOutputReceived] = useState(false);
   const [activeTab, setActiveTab] = useState("Testcase");
-
-  const handleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-  };
 
   const handleActiveTestCase = (e) => {
     const active = parseInt(e.target.dataset.key);
@@ -131,49 +126,6 @@ const Console = ({ handleSettings, clearEditor }) => {
           >
             Result
           </button>
-        </div>
-        <div className="flex flex-row items-center gap-x-3">
-          <div className="relative">
-            <FaUndo
-              className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-              onClick={clearEditor}
-            />
-            <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
-              Reset
-            </div>
-          </div>
-          <div className="relative">
-            <FaCog
-              className="settings peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-              onClick={handleSettings}
-            />
-            <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
-              Settings
-            </div>
-          </div>
-          <div className="relative">
-            {isFullScreen ? (
-              <>
-                <FaCompress
-                  className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-                  onClick={handleFullScreen}
-                />
-                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-8 right-0 px-3 py-1 bg-white text-primary rounded-lg">
-                  Minimize
-                </div>
-              </>
-            ) : (
-              <>
-                <FaExpand
-                  className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-                  onClick={handleFullScreen}
-                />
-                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-8 right-0 px-3 py-1 bg-white text-primary rounded-lg">
-                  FullScreen
-                </div>
-              </>
-            )}
-          </div>
         </div>
       </div>
       <div className="grow flex flex-col py-3 px-4 overflow-y-scroll">

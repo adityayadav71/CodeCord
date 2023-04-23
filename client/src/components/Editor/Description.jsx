@@ -171,7 +171,8 @@ const Description = ({ isRoom, handleProblemChange }) => {
           {roomData?.participants?.map((participant, i) => (
             <User
               key={i}
-              name={participant.username}
+              userId={participant.userId}
+              username={participant.username}
               country={participant.country}
               imageURL={participant.avatar}
             />
