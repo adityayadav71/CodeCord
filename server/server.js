@@ -113,6 +113,7 @@ io.on("connection", (socket) => {
   // Handle Start-room event
   socket.on("start-room", (room) => {
     socket.to(room.roomId).emit("room-started", room);
+    socket.to(room.roomId).emit("updated-room-data", room);
   });
 
   //Handle Leave-room event

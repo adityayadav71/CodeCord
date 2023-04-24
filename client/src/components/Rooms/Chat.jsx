@@ -81,7 +81,7 @@ const Chat = () => {
     <div className="relative flex flex-col h-full">
       <div className="w-full p-3 border-b border-lightSecondary">
         <div className="flex flex-row justify-between gap-x-3 mb-4">
-          <div className="flex flex-col gap-y-1">
+          <div className="flex flex-col">
             <h1 className="text-lg font-bold">
               {roomData?.ownerUsername}'s Room
             </h1>

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
 import { signup, checkLogInStatus } from "../../api/authDataAPI";
 import { AuthContext } from "../../App";
+import {io} from "socket.io-client"
 
 const SignUp = (props) => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const SignUp = (props) => {
   const [apiErrors, setAPIErrors] = useState();
   const [status, setStatus] = useState();
 
-  const { setIsLoggedIn, setUserData } = useContext(AuthContext);
+  const { setIsLoggedIn, setUserData, setSocket } = useContext(AuthContext);
 
   const onSubmit = async (formData) => {
     setStatus("waiting");

@@ -5,7 +5,9 @@ import {
   AiOutlineLike,
   AiOutlineDislike,
 } from "react-icons/ai";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { FaUserFriends as UserIcon } from "react-icons/fa";
+import { HiChevronLeft as LeftIcon, HiChevronRight as RightIcon } from "react-icons/hi";
+import { IoClose } from "react-icons/io5";
 import { RoomContext } from "../../layouts/AppLayout";
 import { ProblemContext } from "./index";
 import he from "he";
@@ -17,10 +19,11 @@ const Description = ({ isRoom, handleProblemChange }) => {
   const { roomData } = useContext(RoomContext);
 
   const [activeTab, setActiveTab] = useState("Description");
+  const [showParticipant, setShowParticipant] = useState(false);
 
   return (
     <div className="p-3">
-      {roomData?.hasStarted || !isRoom ? (
+      {(roomData?.hasStarted && !showParticipant) || !isRoom ? (
         <div className="flex flex-col h-full">
           {!isRoom && (
             <nav className="flex items-center justify-between px-3 py-3 border-b border-lightAccent3">
@@ -57,25 +60,37 @@ const Description = ({ isRoom, handleProblemChange }) => {
             </nav>
           )}
           <div className="overflow-y-scroll px-3 pt-6">
-            <div className="flex flex-row justify-between items-center">
-              <h1 className="text-2xl mb-2">
-                {activeProblem?.number}. {activeProblem?.title}
-              </h1>
+            <div className="flex flex-row justify-between items-center mb-3">
+              <div>
+                <h1 className="text-2xl">
+                  {activeProblem?.number}. {activeProblem?.title}
+                </h1>
+                <p className="text-grey1">Question 1 of 4 </p>
+              </div>
               {isRoom && (
-                <div className="flex item-center gap-x-3">
+                <div className="flex items-center gap-x-3">
                   <button
-                    className="switch p-2 rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
+                    className="switch p-2 text-2xl rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
+                    data-position="prev"
+                    onClick={() => {
+                      setShowParticipant((prevState) => !prevState);
+                    }}
+                  >
+                    <UserIcon />
+                  </button>
+                  <button
+                    className="switch p-2 text-2xl rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
                     data-position="prev"
                     onClick={handleProblemChange}
                   >
-                    <FaAngleLeft />
+                    <LeftIcon />
                   </button>
                   <button
-                    className="switch p-2 rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
+                    className="switch p-2 text-2xl rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
                     data-position="next"
                     onClick={handleProblemChange}
                   >
-                    <FaAngleRight />
+                    <RightIcon />
                   </button>
                 </div>
               )}
@@ -160,14 +175,26 @@ const Description = ({ isRoom, handleProblemChange }) => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 rounded-xl grow">
-          <h1 className="text-2xl font-bold mb-3">
-            {roomData?.ownerUsername}'s Room
-            {"  "}
-            <span className="text-base text-grey1">
-              {roomData?.participants?.length || 0} participants
-            </span>
-          </h1>
+        <div className="flex flex-col gap-3 px-3 py-6 rounded-xl grow">
+          <div className="flex flex-row items-center">
+            <div className="flex-col">
+              <h1 className="text-2xl font-bold">
+                {roomData?.ownerUsername}'s Room
+              </h1>
+              <p className="text-base text-grey1 mb-3">
+                {roomData?.participants?.length || 0} participants
+              </p>
+            </div>
+            <button
+              className="switch p-2 text-2xl ml-auto rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
+              data-position="prev"
+              onClick={() => {
+                setShowParticipant((prevState) => !prevState);
+              }}
+            >
+              <IoClose />
+            </button>
+          </div>
           {roomData?.participants?.map((participant, i) => (
             <User
               key={i}
