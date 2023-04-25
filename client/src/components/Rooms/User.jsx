@@ -20,8 +20,6 @@ const User = ({ userId, username, imageURL, country }) => {
     localStorage.setItem("room", JSON.stringify(room));
   };
 
-  console.log(roomData?.iAmHost, username, userData?.user?.username);
-
   return (
     <div className="p-4 flex flex-row justify-between bg-hover hover:text-accent1 hover:cursor-pointer rounded-xl">
       <div className="flex flex-row gap-x-3">

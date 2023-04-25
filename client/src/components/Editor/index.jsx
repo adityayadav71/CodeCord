@@ -40,9 +40,8 @@ const Editor = ({ isRoom }) => {
       // Join the user back to stored room
       socket?.emit(
         "join-room",
-        userData?.username,
-        userData?.userId,
-        roomData?.roomId,
+        userData,
+        roomData,
         true
       );
       setSocket(socket);

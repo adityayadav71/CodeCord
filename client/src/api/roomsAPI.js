@@ -40,7 +40,7 @@ export const joinRoom = async (userData, socket, roomId) => {
     });
     if (response.status === 200) {
       // emit the create-room event
-      socket.emit("join-room", userData, response.data.room, roomId, false);
+      socket.emit("join-room", userData, response.data.room, false);
 
       return new Promise((resolve, reject) => {
         // listen for the room-created event

@@ -54,14 +54,6 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
 
   const room = await Room.findOne({ roomId });
 
-  if (req.user._id.equals(room.owner))
-    return next(
-      new AppError(
-        "You are the host of this room. You can't join this room.",
-        403
-      )
-    );
-
   if (userId.equals(room.owner))
     return next(
       new AppError(
@@ -73,7 +65,7 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
   if (room.participants.length < room.settings.participantsLimit) {
     const room = await Room.findOneAndUpdate(
       { roomId: roomId },
-      { $push: { participants: req.user._id } },
+      { $push: { participants: userId } },
       { new: true }
     );
     // Get expiresAt from owner

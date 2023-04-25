@@ -86,24 +86,24 @@ io.on("connection", (socket) => {
   });
 
   // Handle Join-room event
-  socket.on("join-room", (userData, room, roomId, reloaded) => {
+  socket.on("join-room", (user, room, reloaded) => {
     try {
-      socket.join(roomId, () => {
+      socket.join(room.roomId, () => {
         console.log(
-          `The user: ${userData?.userId} has joined the room successfully.`
+          `The user: ${user?.userId} has joined the room successfully.`
         );
       });
-      io.to(roomId).emit("room-joined", roomId);
-      socket.to(roomId).emit("updated-room-data", room);
+      io.to(room.roomId).emit("room-joined", room.roomId);
+      socket.to(room.roomId).emit("updated-room-data", room);
 
       // If user has joined back don't broadcast message
       if (!reloaded) {
         const data = {
           type: "roomMessage",
-          message: `${userData?.username} joined the room.`,
+          message: `${user?.username} joined the room.`,
           timeStamp: serverTime(),
         };
-        socket.to(roomId).emit("receive-message", data);
+        socket.to(room.roomId).emit("receive-message", data);
       }
     } catch (err) {
       socket.emit("error", err);
