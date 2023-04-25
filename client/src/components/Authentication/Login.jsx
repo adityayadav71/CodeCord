@@ -26,9 +26,14 @@ const Login = (props) => {
       const status = await checkLogInStatus();
       setIsLoggedIn(status.isLoggedIn);
       setUserData(status.userData);
-      const socket = io("http://localhost:5000", {
-        path: "/api/v1/socket.io",
-      });
+      const socket = io(
+        import.meta.env.MODE === "production"
+          ? import.meta.env.PROD_API_URL
+          : import.meta.env.DEV_API_URL,
+        {
+          path: "/api/v1/socket.io",
+        }
+      );
       setSocket(socket);
       navigate("/", { replace: true });
     } catch (err) {

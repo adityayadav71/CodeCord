@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
 import { signup, checkLogInStatus } from "../../api/authDataAPI";
 import { AuthContext } from "../../App";
-import {io} from "socket.io-client"
+import { io } from "socket.io-client";
 
 const SignUp = (props) => {
   const navigate = useNavigate();
@@ -29,9 +29,14 @@ const SignUp = (props) => {
       setIsLoggedIn(status.isLoggedIn);
       setUserData(status.userData);
       if (status.isLoggedIn) {
-        const socket = io("http://localhost:5000", {
-          path: "/api/v1/socket.io",
-        });
+        const socket = io(
+          import.meta.env.MODE === "production"
+            ? import.meta.env.PROD_API_URL
+            : import.meta.env.DEV_API_URL,
+          {
+            path: "/api/v1/socket.io",
+          }
+        );
         setSocket(socket);
         navigate("/", { replace: true });
       }
