@@ -2,14 +2,14 @@ import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 
 export const getRoomSettings = async (roomId) => {
-  const response = await axios.get("/api/v1/rooms/", {
+  const response = await axios.get(`${BASE_URL}/api/v1/rooms/`, {
     roomId,
   });
   return response.data.settings;
 };
 
 export const updateRoomSettings = async (roomId, settings) => {
-  const response = await axios.patch("/api/v1/rooms/", {
+  const response = await axios.patch(`${BASE_URL}/api/v1/rooms/`, {
     roomId,
     settings,
   });
@@ -17,13 +17,13 @@ export const updateRoomSettings = async (roomId, settings) => {
 };
 
 export const getRoomData = async (roomId) => {
-  const response = await axios.get(`/api/v1/rooms/${roomId}`);
+  const response = await axios.get(`${BASE_URL}/api/v1/rooms/${roomId}`);
   return response.data.room;
 };
 
 export const startRoom = async (roomId, socket) => {
   try {
-    const response = await axios.post(`/api/v1/rooms/start/`, {
+    const response = await axios.post(`${BASE_URL}/api/v1/rooms/start/`, {
       roomId,
     });
     if (response.status === 200) socket.emit("start-room", response.data.room);
