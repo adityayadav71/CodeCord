@@ -20,8 +20,11 @@ const HomeNavbar = ({ handleLogout }) => {
   const [searchbarActive, setSearchbarActive] = useState(false);
 
   const openRoomModal = async () => {
+    setModal(<CreateRoom isLoading={true} />);
+
     const roomID = nanoid();
     // 1. Create Room in Database - Return RoomID
+
     const result = await createRoom(socket, roomID);
     if (result?.response?.data?.result)
       window.alert(result?.response?.data?.result);

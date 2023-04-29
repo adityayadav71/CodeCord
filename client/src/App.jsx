@@ -26,9 +26,8 @@ function App() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const setLoggedIn = async () => {
+    const loadData = async () => {
       const status = await checkLogInStatus();
-
       if (status.isLoggedIn && socket === null) {
         const socket = io(
           import.meta.env.MODE === "production"
@@ -43,7 +42,7 @@ function App() {
       setIsLoggedIn(status.isLoggedIn);
       setUserData(status.userData);
     };
-    setLoggedIn();
+    loadData();
   }, []);
 
   const handleLogout = async () => {
@@ -67,7 +66,7 @@ function App() {
         setSocket,
       }}
     >
-      {typeof isLoggedIn !== "undefined" && (
+      {typeof isLoggedIn !== "undefined" ? (
         <div className="mx-auto h-full w-full max-w-[2560px] overflow-x-hidden">
           <>
             <Routes>
@@ -112,6 +111,15 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center w-full h-full">
+          <div className="parent-spinner mx-auto">
+            <img className="mb-14" src="./src/assets/svg/logo.svg" alt="logo" />
+            <div className="line mx-auto">
+              <div className="inner"></div>
+            </div>
+          </div>
         </div>
       )}
     </AuthContext.Provider>

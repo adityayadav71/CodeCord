@@ -27,8 +27,9 @@ body {
   height: 100vh;
 }
 
-:fullscreen, ::backdrop {
-  background-color: #1E2023;
+:fullscreen,
+::backdrop {
+  background-color: #1e2023;
 }
 
 ::-webkit-scrollbar {
@@ -82,7 +83,12 @@ button {
 }
 
 .gradient {
-  background: linear-gradient(180deg, rgba(81, 78, 78, 0) 0%, #283647 48.96%, #283647 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(81, 78, 78, 0) 0%,
+    #283647 48.96%,
+    #283647 100%
+  );
 }
 
 @keyframes slideOut {
@@ -153,16 +159,61 @@ button {
 
 /* SPLIT JS STYLES */
 .gutter {
-  background-color: #1E2023;
+  background-color: #1e2023;
   background-repeat: no-repeat;
   background-position: 50%;
 }
 
 .gutter.gutter-horizontal {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==");
   cursor: col-resize;
 }
 .gutter.gutter-vertical {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=");
   cursor: row-resize;
+}
+
+/* Spinner */
+.line{
+  height: 3px;
+  width: 150px;
+  background: #e8e8e8;
+}
+
+.line .inner{
+  width: 100%;
+  height: inherit;
+  background: #0098FA;
+  animation: slide 2s ease-in-out infinite;
+}
+
+@keyframes slide{
+  0%{
+    transform-origin: left;
+    transform: scaleX(0.3);
+  }
+  25%{
+    transform-origin: left;
+    transform: scaleX(1);
+  }
+  26%{
+    transform-origin: right;
+    transform: scaleX(1);
+  }
+  50%{
+    transform-origin: right;
+    transform: scaleX(0.3);
+  }
+  75%{
+    transform-origin: right;
+    transform: scaleX(1);
+  }
+  76%{
+    transform-origin: left;
+    transform: scaleX(1);
+  }
+  100%{
+    transform-origin: left;
+    transform: scaleX(0.3);
+  }
 }

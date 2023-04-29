@@ -11,10 +11,11 @@ import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 import { updateRoomSettings, getRoomData, joinRoom } from "../../api/roomsAPI";
+import RoomModal from "../../skeletons/RoomModal";
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest, roomId, setModal }) => {
+const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData, socket } = useContext(AuthContext);
@@ -70,7 +71,7 @@ const CreateRoom = ({ isContest, roomId, setModal }) => {
       // 2 Save newly joined room in RoomContext
       const room = await getRoomData(roomId);
       setRoomData(room);
-      
+
       //3. Store roomData in localStorage
       localStorage.setItem("room", JSON.stringify(room));
 
@@ -130,80 +131,89 @@ const CreateRoom = ({ isContest, roomId, setModal }) => {
   }, [timeLimit]);
 
   return (
-    <div>
-      <div className="absolute top-0 left-0 h-full w-full z-[9998]"></div>
-      <div className="modal fixed z-[9999] h-[95%] w-[60%] overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6">
-        <div className="flex flex-row gap-x-3 mb-3">
-          <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
-            <div className="flex flex-row gap-x-3 mb-3">
-              <h1 className="text-xl font-bold">Create Room</h1>
-              <RoomVisibility
-                visibility={visibility}
-                setVisibility={setVisibility}
-              />
+    <div className="modal fixed z-[9999] h-[95%] w-[60%] overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6">
+      {isLoading ? (
+        <RoomModal />
+      ) : (
+        <>
+          <div className="flex flex-row gap-x-3 mb-3">
+            <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
+              <div className="flex flex-row gap-x-3 mb-3">
+                <h1 className="text-xl font-bold">Create Room</h1>
+                <RoomVisibility
+                  visibility={visibility}
+                  setVisibility={setVisibility}
+                />
+              </div>
+              <div className="grid grid-cols-2 grid-rows-2 gap-5">
+                <RoomTypeSelector
+                  roomType={roomType}
+                  setRoomType={setRoomType}
+                />
+                <ParticipantLimit
+                  participantLimit={participantLimit}
+                  setParticipantLimit={setParticipantLimit}
+                  isLimitActive={isLimitActive}
+                  setLimitActive={setLimitActive}
+                />
+                <RoomDuration
+                  roomType={roomType}
+                  updateTimeLimit={updateTimeLimit}
+                  hrs={hrs}
+                  mins={mins}
+                />
+                <RoomInviteLink inviteLink={inviteLink} />
+              </div>
             </div>
-            <div className="grid grid-cols-2 grid-rows-2 gap-5">
-              <RoomTypeSelector roomType={roomType} setRoomType={setRoomType} />
-              <ParticipantLimit
-                participantLimit={participantLimit}
-                setParticipantLimit={setParticipantLimit}
-                isLimitActive={isLimitActive}
-                setLimitActive={setLimitActive}
+            <div className="flex flex-col gap-y-3 pl-12 grow-0">
+              <h1 className="text-xl font-bold mb-12">Join Room</h1>
+              <input
+                ref={inviteRef}
+                onChange={handleJoinInviteChange}
+                className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
+                type="text"
+                placeholder="Invite Code"
               />
-              <RoomDuration
-                roomType={roomType}
-                updateTimeLimit={updateTimeLimit}
-                hrs={hrs}
-                mins={mins}
-              />
-              <RoomInviteLink inviteLink={inviteLink} />
+              {isUserJoining ? (
+                <button
+                  onClick={handleJoinRoom}
+                  className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
+                >
+                  JOIN
+                </button>
+              ) : (
+                <button
+                  onClick={handleUpdateRoom}
+                  className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
+                >
+                  CREATE
+                </button>
+              )}
             </div>
           </div>
-          <div className="flex flex-col gap-y-3 pl-12 grow-0">
-            <h1 className="text-xl font-bold mb-12">Join Room</h1>
-            <input
-              ref={inviteRef}
-              onChange={handleJoinInviteChange}
-              className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
-              type="text"
-              placeholder="Invite Code"
-            />
-            {isUserJoining ? (
-              <button
-                onClick={handleJoinRoom}
-                className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
-              >
-                JOIN
-              </button>
-            ) : (
-              <button
-                onClick={handleUpdateRoom}
-                className="w-full p-3 bg-accent1 text-xl font-bold rounded-lg"
-              >
-                CREATE
-              </button>
-            )}
-          </div>
-        </div>
-        <RoomFilterContext.Provider value={{ filterObj, setFilterObj }}>
-          <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
-            <ProblemFilter
-              selected={selected}
-              setSelected={setSelected}
-              filterInsideModal={true}
-            />
-            <div className="grow overflow-y-scroll mb-3">
-              <ProblemList
+          <RoomFilterContext.Provider value={{ filterObj, setFilterObj }}>
+            <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
+              <ProblemFilter
                 selected={selected}
                 setSelected={setSelected}
-                type="select"
+                filterInsideModal={true}
               />
+              <div className="grow overflow-y-scroll mb-3">
+                <ProblemList
+                  selected={selected}
+                  setSelected={setSelected}
+                  type="select"
+                />
+              </div>
+              <Pagination type="select" />
             </div>
-            <Pagination type="select" />
-          </div>
-        </RoomFilterContext.Provider>
-      </div>
+          </RoomFilterContext.Provider>
+        </>
+      )}
     </div>
   );
 };
 export default CreateRoom;
+{
+  /* <div className="absolute top-0 left-0 h-full w-full z-[9998]">hiiiii</div> */
+}
