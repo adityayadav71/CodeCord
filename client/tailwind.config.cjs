@@ -49,6 +49,7 @@ module.exports = {
       modal: "0px 0px 1400px 2560px rgba(0, 0, 0, 0.5);",
     },
     animation: {
+      load: "load 2s ease-in-out infinite",
       fadeIn: "fadeIn 2s ease-out forwards",
       grow: "grow 2s ease-out forwards",
       slideOutDelayed: "slideOut 0.5s 0.1s ease-out forwards",
