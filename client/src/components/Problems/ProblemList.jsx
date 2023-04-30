@@ -6,6 +6,7 @@ import formatStats from "../../utilities/formatStats";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { FaSort, FaCaretDown, FaCaretUp } from "react-icons/fa";
+import Skeleton from "../skeletons/Skeleton";
 
 const ProblemList = ({ selected, setSelected, type }) => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -19,6 +20,7 @@ const ProblemList = ({ selected, setSelected, type }) => {
     acceptance: "default",
     difficulty: "default",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load All Problems when ProblemList component mounts
   useEffect(() => {
@@ -26,6 +28,7 @@ const ProblemList = ({ selected, setSelected, type }) => {
       const data = await getAllProblems(filterObj);
       const problems = data.problems;
       setProblems(problems);
+      setIsLoading(false);
     };
     loadData();
   }, []);
@@ -200,37 +203,41 @@ const ProblemList = ({ selected, setSelected, type }) => {
         )}
         {type === "select" && <div className="w-20">Selected</div>}
       </div>
-      {problems
-        .filter((problem) => {
-          // Add the problem if the filterObj values are initial else match tags and difficulty
-          if (filterObj.tags.length !== 0 || filterObj.difficulty !== "") {
-            // Case when filter difficulty is empty and tags is not
-            const matchDifficulty =
-              filterObj.difficulty === ""
-                ? true
-                : filterObj.difficulty === problem.difficulty;
-            return matchTags(filterObj.tags, problem.tags) && matchDifficulty;
-          } else return true;
-        })
-        .slice(
-          (filterObj.page - 1) * filterObj.limit,
-          (filterObj.page - 1) * filterObj.limit + filterObj.limit
-        )
-        .map((problem) => (
-          <Problem
-            key={problem.number}
-            selected={selected}
-            setSelected={setSelected}
-            number={problem.number}
-            type={type}
-            name={problem.title}
-            acceptance={problem?.stats?.acceptance || 0}
-            difficulty={problem.difficulty}
-            userSubmissions="1"
-            submissions={formatStats(problem?.stats?.submissions) || 0}
-            status="solved"
-          />
-        ))}
+      {isLoading ? (
+        <Skeleton classes="grow" />
+      ) : (
+        problems
+          .filter((problem) => {
+            // Add the problem if the filterObj values are initial else match tags and difficulty
+            if (filterObj.tags.length !== 0 || filterObj.difficulty !== "") {
+              // Case when filter difficulty is empty and tags is not
+              const matchDifficulty =
+                filterObj.difficulty === ""
+                  ? true
+                  : filterObj.difficulty === problem.difficulty;
+              return matchTags(filterObj.tags, problem.tags) && matchDifficulty;
+            } else return true;
+          })
+          .slice(
+            (filterObj.page - 1) * filterObj.limit,
+            (filterObj.page - 1) * filterObj.limit + filterObj.limit
+          )
+          .map((problem) => (
+            <Problem
+              key={problem.number}
+              selected={selected}
+              setSelected={setSelected}
+              number={problem.number}
+              type={type}
+              name={problem.title}
+              acceptance={problem?.stats?.acceptance || 0}
+              difficulty={problem.difficulty}
+              userSubmissions="1"
+              submissions={formatStats(problem?.stats?.submissions) || 0}
+              status="solved"
+            />
+          ))
+      )}
     </div>
   );
 };

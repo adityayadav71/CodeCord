@@ -20,18 +20,31 @@ const HomeNavbar = ({ handleLogout }) => {
   const [searchbarActive, setSearchbarActive] = useState(false);
 
   const openRoomModal = async () => {
-    setModal(<CreateRoom isLoading={true} />);
+    setModal(
+      <CreateRoom
+        isContest={false}
+        roomId={""}
+        setModal={setModal}
+        isLoading={true}
+      />
+    );
 
+    // 1. Create a random unique ID
     const roomID = nanoid();
-    // 1. Create Room in Database - Return RoomID
+    // 2. Create Room in Database - Returns RoomID
+    try {
+      const result = await createRoom(socket, roomID);
 
-    const result = await createRoom(socket, roomID);
-    if (result?.response?.data?.result)
-      window.alert(result?.response?.data?.result);
-    else {
       setModal(
-        <CreateRoom isContest={false} roomId={result.id} setModal={setModal} />
+        <CreateRoom
+          isContest={false}
+          roomId={result.id}
+          setModal={setModal}
+          isLoading={false}
+        />
       );
+    } catch (err) {
+      window.alert(err);
     }
   };
 
