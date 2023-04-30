@@ -56,10 +56,19 @@ module.exports = {
       slideOut: "slideOut 0.5s ease-out forwards",
       slideUp: "slideUp 0.5s ease-out forwards",
       expandBorder: "expandBorder 1s ease-out forwards",
+      pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
     },
     keyframes: {
       grow: { "0%": { height: "0%" }, "100%": { height: "100%" } },
       fadeIn: { "0%": { opacity: 0 }, "100%": { opacity: 1 } },
+      pulse: {
+        "0%, 100%": {
+          opacity: 1,
+        },
+        "50%": {
+          opacity: 0.3,
+        },
+      },
     },
     display: ["group-hover"],
   },
