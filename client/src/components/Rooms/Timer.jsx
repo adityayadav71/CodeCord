@@ -18,6 +18,7 @@ function Timer({ roomData }) {
           if (prevTimer > 0) {
             return prevTimer - 1;
           } else {
+            setRoomEnded(true)
             clearInterval(interval);
             return prevTimer;
           }

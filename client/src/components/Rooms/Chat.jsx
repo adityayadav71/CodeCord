@@ -11,18 +11,17 @@ import {
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../App";
 import { RoomContext, populateParticipants } from "../../layouts/AppLayout";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { leaveRoom } from "../../api/roomsAPI";
 import InviteLinkModal from "./InviteLinkModal";
 import { startRoom } from "../../api/roomsAPI";
 import Timer from "./Timer";
 
-const Chat = () => {
+const Chat = ({ setOpenScoreboard }) => {
   const { userData, socket } = useContext(AuthContext);
   const { roomData, setRoomData } = useContext(RoomContext);
 
   const navigate = useNavigate();
-  const params = useParams();
   const { register, handleSubmit, reset } = useForm();
   const [messageList, setMessageList] = useState([]);
   const [participants, setParticipants] = useState(
@@ -33,6 +32,12 @@ const Chat = () => {
   const sendMessage = async (formData) => {
     if (formData.message !== "") {
       reset(); // reset message input
+      const date = new Date();
+      const timeStamp = date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
       const messageData = {
         type: "chatMessage",
         message: formData.message,
@@ -40,20 +45,22 @@ const Chat = () => {
         avatar:
           userData?.avatar?.image &&
           `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`,
-        timeStamp:
-          new Date(Date.now()).getHours().toString().padStart(2, "0") +
-          ":" +
-          new Date(Date.now()).getMinutes().toString().padStart(2, "0"),
+        timeStamp,
       };
-      await socket.emit("send-message", messageData, params.name);
+      await socket.emit("send-message", messageData, roomData?.roomId);
 
       setMessageList((prevList) => [...prevList, messageData]);
     }
   };
 
   const handleLeaveRoom = async () => {
-    const res = await leaveRoom(userData.username, params.name, socket);
-    navigate("/", { replace: true });
+    try {
+      await leaveRoom(userData.username, roomData?.roomId, socket);
+      localStorage.clear("room");
+      navigate("/", { replace: true });
+    } catch (err) {
+      window.alert(err);
+    }
   };
 
   const handleStartRoom = async () => {
@@ -163,7 +170,10 @@ const Chat = () => {
           </div>
         )}
         <div className="flex flex-row gap-x-3 w-full">
-          <button className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover">
+          <button
+            className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
+            onClick={() => setOpenScoreboard(true)}
+          >
             Scoreboard
           </button>
         </div>
@@ -182,29 +192,27 @@ const Chat = () => {
               </div>
             ) : (
               <div key={i} className="flex flex-col gap-y-3 mb-3">
-                <div className="grid grid-cols-6">
-                  <div className="col-span-1">
-                    <div className="w-8 h-8 flex flex-row items-center justify-center rounded-full bg-grey2">
-                      {messageContent.avatar ? (
-                        <img
-                          className="rounded-full overflow-clip object-cover h-full w-full"
-                          src={messageContent.avatar}
-                          alt="user-profile-picture"
-                        />
-                      ) : (
-                        <FaUserAlt className="text-xl hover:cursor-pointer" />
-                      )}
+                <div className="flex gap-3">
+                  <div className="shrink-0 w-10 h-10 mt-2 flex flex-row items-center justify-center rounded-full bg-grey2">
+                    {messageContent.avatar ? (
+                      <img
+                        className="rounded-full overflow-clip object-cover h-full w-full"
+                        src={messageContent.avatar}
+                        alt="user-profile-picture"
+                      />
+                    ) : (
+                      <FaUserAlt className="text-xl hover:cursor-pointer" />
+                    )}
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div>
+                      <span className="font-bold text-lg">
+                        {messageContent.author}
+                      </span>
+                      <span className="text-sm ml-3 text-grey1">
+                        {messageContent.timeStamp}
+                      </span>
                     </div>
-                  </div>
-                  <div className="col-span-4">
-                    <p>{messageContent.author}</p>
-                  </div>
-                  <div className="col-span-1 justify-self-end text-lightSecondary">
-                    <p className="text-grey1">{messageContent.timeStamp}</p>
-                  </div>
-                </div>
-                <div className="grow grid grid-cols-6">
-                  <div className="row-start-2 col-start-2 col-span-5">
                     <p>{messageContent.message}</p>
                   </div>
                 </div>

@@ -19,7 +19,6 @@ export const populateParticipants = async (room, userData) => {
       }
       return {
         userId: user?.userData?.user,
-        country: user?.userData?.country,
         username: user?.userData?.username,
         avatar: `data:${user.userData?.avatar?.contentType};base64,${user.userData?.avatar?.image}`,
       };

@@ -107,7 +107,7 @@ const Console = ({ isFullScreen }) => {
       <div className="flex flex-row justify-between items-center border-b border-lightSecondary">
         <div>
           <button
-            className={`w-28 p-3 ${
+            className={`w-28 p-3 transition duration-300 ${
               activeTab === "Testcase"
                 ? "border-b-2 border-accent1"
                 : "text-grey1 hover:text-white"
@@ -117,7 +117,7 @@ const Console = ({ isFullScreen }) => {
             Testcase
           </button>
           <button
-            className={`w-28 p-3 ${
+            className={`w-28 p-3 transition duration-300 ${
               activeTab === "Result"
                 ? "border-b-2 border-accent1"
                 : "text-grey1 hover:text-white"

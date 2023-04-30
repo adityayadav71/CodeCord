@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { FaBell, FaSearch, FaCog, FaUserAlt } from "react-icons/fa";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
@@ -13,6 +13,7 @@ const HomeNavbar = ({ handleLogout }) => {
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
   };
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const [modal, setModal] = useState();
   const [imageURL, setImageURL] = useState();
@@ -48,6 +49,12 @@ const HomeNavbar = ({ handleLogout }) => {
     }
   };
 
+  const goToActiveRoom = () => {
+    navigate(`/app/room/${userData?.user?.activeRoom?.roomId}`, {
+      replace: false,
+    });
+  };
+
   useEffect(() => {
     const closeModal = (event) => {
       if (
@@ -79,7 +86,7 @@ const HomeNavbar = ({ handleLogout }) => {
       <Link to="/">
         <img
           className="p-3 hover:cursor-pointer"
-          src="../../../favicon.svg"
+          src="/favicon.svg"
           alt="logo"
         />
       </Link>
@@ -146,12 +153,21 @@ const HomeNavbar = ({ handleLogout }) => {
                 placeholder="Search problems, contests, users..."
               />
             </div>
-            <button
-              className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition-shadow duration-300 hover:shadow-sky-900 bg-accent1 text-white text-base font-bold rounded-xl"
-              onClick={openRoomModal}
-            >
-              Create/Join a Room
-            </button>
+            {JSON.parse(localStorage.getItem("room")) ? (
+              <button
+                className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-xl"
+                onClick={goToActiveRoom}
+              >
+                Go to active Room
+              </button>
+            ) : (
+              <button
+                className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-xl"
+                onClick={openRoomModal}
+              >
+                Create/Join a Room
+              </button>
+            )}
             <FaBell className="text-2xl hover:cursor-pointer" />
             <div className="relative profile">
               <div

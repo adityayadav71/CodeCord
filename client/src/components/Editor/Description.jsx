@@ -6,7 +6,10 @@ import {
   AiOutlineDislike,
 } from "react-icons/ai";
 import { FaUserFriends as UserIcon } from "react-icons/fa";
-import { HiChevronLeft as LeftIcon, HiChevronRight as RightIcon } from "react-icons/hi";
+import {
+  HiChevronLeft as LeftIcon,
+  HiChevronRight as RightIcon,
+} from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { RoomContext } from "../../layouts/AppLayout";
 import { ProblemContext } from "./index";
@@ -185,15 +188,19 @@ const Description = ({ isRoom, handleProblemChange }) => {
                 {roomData?.participants?.length || 0} participants
               </p>
             </div>
-            <button
-              className="switch p-2 text-2xl ml-auto rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
-              data-position="prev"
-              onClick={() => {
-                setShowParticipant((prevState) => !prevState);
-              }}
-            >
-              <IoClose />
-            </button>
+            {roomData?.hasStarted ? (
+              <button
+                className="switch p-2 text-2xl ml-auto rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
+                data-position="prev"
+                onClick={() => {
+                  setShowParticipant((prevState) => !prevState);
+                }}
+              >
+                <IoClose />
+              </button>
+            ) : (
+              <p className="ml-auto mb-auto text-grey1">Waiting for the host to start the room...</p>
+            )}
           </div>
           {roomData?.participants?.map((participant, i) => (
             <User

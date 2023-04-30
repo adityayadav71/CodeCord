@@ -43,11 +43,13 @@ const server = app.listen(port, () => {
 });
 
 function serverTime() {
-  const time =
-    new Date(Date.now()).getHours().toString().padStart(2, "0") +
-    ":" +
-    new Date(Date.now()).getMinutes().toString().padStart(2, "0");
-  return time;
+  const date = new Date();
+  const timeStamp = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+  return timeStamp;
 }
 
 const io = require("socket.io")(server, {
@@ -100,7 +102,7 @@ io.on("connection", (socket) => {
       if (!reloaded) {
         const data = {
           type: "roomMessage",
-          message: `${user?.username} joined the room.`,
+          message: `😄 ${user?.username} joined the room.`,
           timeStamp: serverTime(),
         };
         socket.to(room.roomId).emit("receive-message", data);
@@ -124,7 +126,7 @@ io.on("connection", (socket) => {
       
       const data = {
         type: "roomMessage",
-        message: `${username} left the room.`,
+        message: `👋 ${username} left the room.`,
         timeStamp: serverTime(),
       };
       socket.to(roomId).emit("receive-message", data);
@@ -137,7 +139,7 @@ io.on("connection", (socket) => {
     try {
       const data = {
         type: "roomMessage",
-        message: `${username} was removed.`,
+        message: `❌ ${username} was removed.`,
         timeStamp: serverTime(),
       };
       io.to(roomId).emit("receive-message", data);

@@ -189,7 +189,7 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
             setSelected={setSelected}
             filterInsideModal={true}
           />
-          <div className="grow overflow-y-scroll mb-3">
+          <div className="flex grow overflow-y-scroll mb-3">
             <ProblemList
               selected={selected}
               setSelected={setSelected}
@@ -203,6 +203,3 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
   );
 };
 export default CreateRoom;
-{
-  /* <div className="absolute top-0 left-0 h-full w-full z-[9998]">hiiiii</div> */
-}

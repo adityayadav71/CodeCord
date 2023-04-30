@@ -38,12 +38,7 @@ const Editor = ({ isRoom }) => {
   useEffect(() => {
     if (userData?.user?._id) {
       // Join the user back to stored room
-      socket?.emit(
-        "join-room",
-        userData,
-        roomData,
-        true
-      );
+      socket?.emit("join-room", userData, roomData, true);
       setSocket(socket);
     }
 
@@ -69,6 +64,7 @@ const Editor = ({ isRoom }) => {
   const [problems, setProblems] = useState({});
   const [activeProblem, setActiveProblem] = useState({});
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [openScoreboard, setOpenScoreboard] = useState(false);
   const params = useParams();
   const location = useLocation();
 
@@ -215,8 +211,8 @@ const Editor = ({ isRoom }) => {
                   className="settings peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
                   onClick={handleSettings}
                 />
-                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
-                  Settings
+                <div className="absolute w-max peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                  Editor Settings
                 </div>
               </div>
               <div className="relative">
@@ -280,10 +276,36 @@ const Editor = ({ isRoom }) => {
         </div>
         {isRoom ? (
           <div className="bg-lightAccent3">
-            <Chat />
+            <Chat setOpenScoreboard={setOpenScoreboard} />
           </div>
         ) : null}
       </Split>
+      {openScoreboard && (
+        <div className="settings absolute z-[9999] p-12 shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 bg-secondary rounded-lg">
+          <div className="flex flex-col">
+              <div className="flex flex-row w-full gap-3 p-3 border-b border-grey1 items-center justify-between">
+                <p>Rank</p>
+                <div className="flex gap-3 items-center">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
+                  <p>Two Sum</p>
+                </div>
+                <div className="flex gap-3 items-center">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
+                  <p>Three Sum</p>
+                </div>
+                <div className="flex gap-3 items-center">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
+                  <p>Four Sum</p>
+                </div>
+                <div className="flex gap-3 items-center">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
+                  <p>Five Sum</p>
+                </div>
+                <p>Score</p>
+              </div>
+          </div>
+        </div>
+      )}
       {settingsOpen && (
         <div className="settings absolute z-[9999] p-6 shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 bg-secondary rounded-lg">
           <div className="flex items-center justify-between mb-6">
