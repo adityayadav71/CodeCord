@@ -115,7 +115,7 @@ function App() {
       ) : (
         <div className="flex flex-col items-center justify-center w-full h-full">
           <div className="parent-spinner mx-auto">
-            <img className="mb-14" src="./src/assets/svg/logo.svg" alt="logo" />
+            <img className="mb-14" src="/svg/logo.svg" alt="logo" />
             <div className="line mx-auto">
               <div className="inner"></div>
             </div>

@@ -19,7 +19,6 @@ import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { getRandomProblems } from "../../api/problemDataAPI";
 import { createRoom } from "../../api/roomsAPI";
-import { RoomContext } from "../../layouts/AppLayout";
 import { nanoid } from "nanoid";
 
 const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
@@ -230,7 +229,7 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
         {filterInsideModal ? (
           <>
             <button
-              className="flex flex-row gap-x-3 items-center bg-accent1 px-3 rounded-lg"
+              className="flex flex-row gap-x-3 items-center bg-accent1 hover:bg-lightAccent1 px-3 rounded-lg"
               onClick={handleRandomize}
             >
               <FaRandom />

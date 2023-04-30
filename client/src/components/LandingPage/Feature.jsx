@@ -3,7 +3,7 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
-import editorSvg from "../../assets/svg/feature1.svg";
+import editorSvg from "/svg/feature1.svg";
 import Tags from "../Problems/Tags";
 
 const Feature = ({

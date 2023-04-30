@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import logo from "../../assets/svg/logo.svg";
+import logo from "/svg/logo.svg";
 import { Link } from "react-router-dom";
 import FormErrors from "./FormErrors";
 import FormSuccess from "./FormSuccess";

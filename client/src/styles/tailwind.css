@@ -64,14 +64,14 @@ button {
 }
 
 .swiper-button-prev {
-  background-image: url(../assets/svg/arrow-left.svg);
+  background-image: url(/svg/arrow-left.svg);
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-position: center;
 }
 
 .swiper-button-next {
-  background-image: url(../assets/svg/arrow-right.svg);
+  background-image: url(/svg/arrow-right.svg);
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-position: center;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/svg/logo.svg";
+import logo from "/svg/logo.svg";
 import FormErrors from "./FormErrors";
 import FormSuccess from "./FormSuccess";
 import { resetPassword } from "../../api/authDataAPI";
