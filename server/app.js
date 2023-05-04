@@ -29,15 +29,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: [
-      "https://admin.socket.io",
-      "http://127.0.0.1:5173",
-      "http://localhost:5173",
-      "https://www.codeack.tk",
-      "https://codecord.vercel.app",
-      "https://code-cord-adityayadav71.vercel.app",
-      "https://code-cord-git-main-adityayadav71.vercel.app",
-    ],
+    origin: process.env.ALLOWED_ORIGINS.split(','),
     credentials: true,
   })
 );
