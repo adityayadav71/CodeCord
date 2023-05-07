@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const roomSchema = new mongoose.Schema(
   {
     roomId: { type: String, unique: [true, "Room Name should be unique"] },
 
     owner: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: ObjectId,
       ref: "User",
     },
     participants: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: ObjectId,
         ref: "User",
         unique: [true, "This participant already exists."],
       },

@@ -1,4 +1,4 @@
-import { Outlet, useParams, useLocation } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import Navbar from "../components/HomePage/Navbar";
 import Copyright from "../utilities/Copyright";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -42,42 +42,37 @@ export const populateParticipants = async (room, userData) => {
 
 const AppLayout = ({ handleLogout }) => {
   const params = useParams();
-  const location = useLocation();
   const { userData, socket } = useContext(AuthContext);
-
   const [roomData, setRoomData] = useState(null);
 
   useEffect(() => {
-    if (localStorage.getItem("room")) {
-      const roomId = JSON.parse(localStorage.getItem("room"))?.roomId;
+    let room = userData?.user?.activeRoom;
+    if (room) {
       const loadData = async () => {
-        if (roomId) {
-          const room = await getRoomData(roomId);
+        if (room?.roomId) {
+          room = await getRoomData(room?.roomId);
 
           // If roomData is not undefined
-          if (room) {
-            const populatedRoom = await populateParticipants(room, userData);
-
-            // 3. Update roomData state value with participants, ownerUsername and iAmHost fields
-            setRoomData(populatedRoom);
-          }
+          room && setRoomData(room);
         }
       };
       loadData();
     }
+  }, [userData, socket]);
 
-    socket?.on("updated-room-data", async (data) => {
-      data = await populateParticipants(data, userData);
-      // 2. Check if user is the host and assign iAmHost field value
-      let iAmHost = false;
-      const userId = userData?.user?._id;
-      if (userId === data?.owner) iAmHost = true;
+  socket?.on("updated-room-data", async (data) => {
+    // 1. Check if user is the host and assign iAmHost field value
+    let iAmHost = false;
+    const userId = userData?.user?._id;
+    if (userId === data?.owner) iAmHost = true;
 
-      setRoomData({ ...data, iAmHost });
-      localStorage.setItem("room", JSON.stringify({ ...data, iAmHost }));
-    });
-  }, [location, socket]);
+    setRoomData({ ...data, iAmHost });
+  });
 
+  socket?.on("room-ended", () => {
+    navigate("/", { replace: true });
+  });
+  
   return (
     <RoomContext.Provider value={{ roomData, setRoomData }}>
       <div className={`flex flex-col ${params?.name ? "h-screen" : "h-full"}`}>

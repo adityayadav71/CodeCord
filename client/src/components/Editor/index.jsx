@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Split from "react-split";
 import { TbTerminal2 } from "react-icons/tb";
-import { FaTerminal, FaRegTimesCircle } from "react-icons/fa";
 import Description from "./Description";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
@@ -11,13 +10,12 @@ import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
-import ThemeSelector from "./ThemeSelector";
-import FontSelector from "./FontSelector";
-import KeyBindSelector from "./KeyBindSelector";
-import TabSelector from "./TabSelector";
+
 import { getProblem } from "../../api/problemDataAPI";
 import queryString from "query-string";
 import { FaCog, FaCompress, FaExpand, FaUndo } from "react-icons/fa";
+import Scoreboard from "../Rooms/Scoreboard";
+import EditorSettings from "./EditorSettings";
 
 export const ProblemContext = createContext(null);
 
@@ -27,13 +25,6 @@ const Editor = ({ isRoom }) => {
 
   const { isLoggedIn, userData, socket, setSocket } = useContext(AuthContext);
   let { roomData, setRoomData } = useContext(RoomContext);
-
-  useEffect(() => {
-    if (!roomData) {
-      roomData = JSON.parse(localStorage.getItem("room"));
-      setRoomData(roomData);
-    }
-  }, [roomData]);
 
   useEffect(() => {
     if (userData?.user?._id) {
@@ -274,76 +265,20 @@ const Editor = ({ isRoom }) => {
             </div>
           </div>
         </div>
+        {/* If this is a room add a chat window as third split pane */}
         {isRoom ? (
           <div className="bg-lightAccent3">
             <Chat setOpenScoreboard={setOpenScoreboard} />
           </div>
         ) : null}
       </Split>
-      {openScoreboard && (
-        <div className="settings absolute z-[9999] p-12 shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 bg-secondary rounded-lg">
-          <div className="flex flex-col">
-              <div className="flex flex-row w-full gap-3 p-3 border-b border-grey1 items-center justify-between">
-                <p>Rank</p>
-                <div className="flex gap-3 items-center">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
-                  <p>Two Sum</p>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
-                  <p>Three Sum</p>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
-                  <p>Four Sum</p>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-white bg-secondary">1</div>
-                  <p>Five Sum</p>
-                </div>
-                <p>Score</p>
-              </div>
-          </div>
-        </div>
-      )}
+      {openScoreboard && <Scoreboard setOpenScoreboard={setOpenScoreboard} />}
       {settingsOpen && (
-        <div className="settings absolute z-[9999] p-6 shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 bg-secondary rounded-lg">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold">Settings</h1>
-            <FaRegTimesCircle
-              className="text-2xl font-bold hover:cursor-pointer"
-              onClick={() => setSettingsOpen(!setSettingsOpen)}
-            />
-          </div>
-          <div className="flex items-center justify-between p-3">
-            <h1 className="text-lg">Editor Theme</h1>
-            <ThemeSelector
-              editorSettings={editorSettings}
-              setEditorSettings={setEditorSettings}
-            />
-          </div>
-          <div className="flex items-center justify-between p-3">
-            <h1 className="text-lg">Font Size</h1>
-            <FontSelector
-              editorSettings={editorSettings}
-              setEditorSettings={setEditorSettings}
-            />
-          </div>
-          <div className="flex items-center justify-between p-3">
-            <h1 className="text-lg">Key Bindings</h1>
-            <KeyBindSelector
-              editorSettings={editorSettings}
-              setEditorSettings={setEditorSettings}
-            />
-          </div>
-          <div className="flex items-center justify-between p-3">
-            <h1 className="text-lg">Tab Size</h1>
-            <TabSelector
-              editorSettings={editorSettings}
-              setEditorSettings={setEditorSettings}
-            />
-          </div>
-        </div>
+        <EditorSettings
+          editorSettings={editorSettings}
+          setEditorSettings={setEditorSettings}
+          setSettingsOpen={setSettingsOpen}
+        />
       )}
     </ProblemContext.Provider>
   );

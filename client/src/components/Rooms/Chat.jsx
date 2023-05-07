@@ -10,11 +10,10 @@ import {
 } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../App";
-import { RoomContext, populateParticipants } from "../../layouts/AppLayout";
+import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
-import { leaveRoom } from "../../api/roomsAPI";
 import InviteLinkModal from "./InviteLinkModal";
-import { startRoom } from "../../api/roomsAPI";
+import { startRoom, leaveRoom, endRoom } from "../../api/roomsAPI";
 import Timer from "./Timer";
 
 const Chat = ({ setOpenScoreboard }) => {
@@ -56,17 +55,27 @@ const Chat = ({ setOpenScoreboard }) => {
   const handleLeaveRoom = async () => {
     try {
       await leaveRoom(userData.username, roomData?.roomId, socket);
-      localStorage.clear("room");
       navigate("/", { replace: true });
     } catch (err) {
       window.alert(err);
     }
   };
 
+  const handleEndRoom = async () => {
+    try {
+      await endRoom(roomData?.roomId, socket);
+    } catch (err) {
+      window.alert(err);
+    }
+  };
+
   const handleStartRoom = async () => {
-    const room = await startRoom(roomData?.roomId, socket);
-    const populatedRoom = await populateParticipants(room, userData);
-    setRoomData(populatedRoom);
+    try {
+      const room = await startRoom(roomData?.roomId, socket);
+      setRoomData(room);
+    } catch (err) {
+      window.alert(err);
+    }
   };
 
   useEffect(() => {
@@ -79,7 +88,6 @@ const Chat = ({ setOpenScoreboard }) => {
     });
 
     socket?.on("room-started", (room) => {
-      localStorage.setItem("room", JSON.stringify(room));
       setRoomData(room);
     });
   }, [socket]);
@@ -154,7 +162,10 @@ const Chat = ({ setOpenScoreboard }) => {
                 >
                   Leave Room
                 </button>
-                <button className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400">
+                <button
+                  className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400"
+                  onClick={handleEndRoom}
+                >
                   End Room
                 </button>
               </>

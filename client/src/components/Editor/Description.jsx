@@ -207,7 +207,6 @@ const Description = ({ isRoom, handleProblemChange }) => {
               key={i}
               userId={participant.userId}
               username={participant.username}
-              country={participant.country}
               imageURL={participant.avatar}
             />
           ))}

@@ -226,7 +226,7 @@ exports.isLoggedIn = async (req, res, next) => {
       }
 
       // 4) Get user profile data if user is logged in
-      const currentUserData = await userProfile.findOne({ user: decoded.id }).populate('user');
+      const currentUserData = await User.findById(decoded.id).populate('profile');
 
 
       // THERE IS A LOGGED IN USER

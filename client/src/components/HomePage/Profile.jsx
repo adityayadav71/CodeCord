@@ -26,7 +26,7 @@ const Profile = () => {
   const [imageURL, setImageURL] = useState(null);
   const [tabActive, switchTab] = useState("Recent Submissions");
   const [isMyProfile, setIsMyProfile] = useState(false);
-  const [profileData, setProfileData] = useState({});
+  const [profileData, setProfileData] = useState(userData?.profile);
   const [editing, setEditing] = useState(false);
   const [tags, setTags] = useState([]);
   const [countries, setCountries] = useState([]);

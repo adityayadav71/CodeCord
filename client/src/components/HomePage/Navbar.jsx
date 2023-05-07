@@ -153,7 +153,7 @@ const HomeNavbar = ({ handleLogout }) => {
                 placeholder="Search problems, contests, users..."
               />
             </div>
-            {JSON.parse(localStorage.getItem("room")) ? (
+            {userData?.user?.activeRoom ? (
               <button
                 className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-xl"
                 onClick={goToActiveRoom}

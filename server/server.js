@@ -134,6 +134,16 @@ io.on("connection", (socket) => {
       socket.emit("error", err);
     }
   });
+
+  //Handle End-room event
+  socket.on("end-room", (roomId) => {
+    try {
+      socket.to(roomId).emit("room-ended");
+      io.in(roomId).socketsLeave(roomId);
+    } catch (err) {
+      socket.emit("error", err);
+    }
+  });
   
   socket.on("remove-participant", (username, userId, roomId, room) => {
     try {

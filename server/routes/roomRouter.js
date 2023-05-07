@@ -13,7 +13,21 @@ router
 router.get("/:roomId", roomController.getRoomData);
 router.post("/join", roomController.joinRoom);
 router.patch("/leave", roomController.leaveRoom);
-router.post("/start", roomController.startRoom);
-router.post("/remove", roomController.removeParticipant);
+// Host permissions required
+router.post(
+  "/start",
+  roomController.checkHostPermissions,
+  roomController.startRoom
+);
+router.post(
+  "/end",
+  roomController.checkHostPermissions,
+  roomController.endRoom
+);
+router.post(
+  "/remove",
+  roomController.checkHostPermissions,
+  roomController.removeParticipant
+);
 
 module.exports = router;
