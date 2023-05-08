@@ -197,11 +197,11 @@ exports.endRoom = catchAsync(async (req, res, next) => {
 
 exports.getRoomData = catchAsync(async (req, res, next) => {
   const { roomId } = req.params;
-  let room = await Room.findOne({ roomId: roomId });
+  let room = await Room.findOne({ roomId: roomId }).lean();
   let { participants } = room;
   let ownerUsername = "";
   
-  const data = await Promise?.all(
+  const data = await Promise.all(
     participants?.map(async (id) => {
       const profileData = await UserProfile.findOne({ userId: id }).populate(
         "userId"
@@ -219,14 +219,16 @@ exports.getRoomData = catchAsync(async (req, res, next) => {
   let iAmHost = false;
   if (req.user._id.equals(room.owner)) iAmHost = true;
 
+  room= {
+    ...room,
+    participants: data,
+    iAmHost,
+    ownerUsername
+  };  
+  
   return res.status(200).json({
     status: "success",
-    room: {
-      ...room,
-      participants: data,
-      iAmHost,
-      ownerUsername,
-    },
+    room,
   });
 });
 
@@ -234,7 +236,7 @@ exports.startRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
   const userId = req.user._id;
   const room = await Room.findOne({ roomId });
-
+  
   if (!room) {
     return next(new AppError("No such room exist with that Id", 404));
   }
