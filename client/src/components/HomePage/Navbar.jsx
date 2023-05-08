@@ -76,9 +76,9 @@ const HomeNavbar = ({ handleLogout }) => {
 
   useEffect(() => {
     const imgURL =
-      userData?.avatar &&
-      `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`;
-    setImageURL(imgURL);
+      userData?.profile?.avatar &&
+      `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
+      setImageURL(imgURL);
   }, [userData]);
 
   return (
@@ -174,7 +174,7 @@ const HomeNavbar = ({ handleLogout }) => {
                 className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2"
                 onClick={() => setProfileActive((prev) => !prev)}
               >
-                {userData?.avatar ? (
+                {userData?.profile?.avatar ? (
                   <img
                     src={imageURL}
                     className="w-full h-full object-cover hover:cursor-pointer"

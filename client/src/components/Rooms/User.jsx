@@ -24,7 +24,7 @@ const User = ({ userId, username, imageURL }) => {
       <div className="flex flex-row gap-x-3">
         {imageURL ? (
           <img
-            src={imageURL}
+            src={`data:${imageURL.contentType};base64,${imageURL.image}`}
             className="w-14 h-14 object-cover rounded-full hover:cursor-pointer"
             alt="profile-pic"
           />

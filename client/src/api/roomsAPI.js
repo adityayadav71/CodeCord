@@ -13,7 +13,7 @@ export const updateRoomSettings = async (roomId, settings) => {
     roomId,
     settings,
   });
-  console.error(response);
+
   return response;
 };
 

@@ -30,7 +30,7 @@ const userProfileSchema = new mongoose.Schema({
   friends: [
     {
       type: ObjectId,
-      required: [true, "User ID is required"],
+      // required: [true, "User ID is required"],
       ref: "User",
     },
   ],

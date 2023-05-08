@@ -199,7 +199,9 @@ const Description = ({ isRoom, handleProblemChange }) => {
                 <IoClose />
               </button>
             ) : (
-              <p className="ml-auto mb-auto text-grey1">Waiting for the host to start the room...</p>
+              <p className="ml-auto mb-auto text-grey1">
+                Waiting for the host to start the room...
+              </p>
             )}
           </div>
           {roomData?.participants?.map((participant, i) => (

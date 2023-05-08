@@ -5,38 +5,25 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const catchAsync = require("../utils/catchAsync");
 const userProfile = require("../models/userProfileModel");
+const User = require("../models/userModel");
 
 exports.upload = multer({ storage });
 
-exports.getUserData = catchAsync(async (req, res, next) => {
-  const userData = await userProfile.findOne({ user: req.user._id });
+exports.getUserProfile = catchAsync(async (req, res, next) => {
+  const profileData = await userProfile.findOne({ userId: req.user._id });
   res.status(200).json({
     status: "success",
-    userData,
+    profileData,
   });
 });
 
-exports.getUserById = catchAsync(async (req, res, next) => {
-  const userData = await userProfile.findOne({ user: req.params.id });
+exports.getProfileByUserName = catchAsync(async (req, res, next) => {
+  const profileData = await User.findOne({ username: req.params.username })
+    .populate("profile")
+    .select("profile");
   res.status(200).json({
     status: "success",
-    userData,
-  });
-});
-
-exports.createUserProfile = catchAsync(async (req, res, next) => {
-  const token = req.cookies.jwt;
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-  const userId = decoded.id;
-  const userData = await userProfile.create({
-    user: userId,
-    username: req.query.username,
-  });
-
-  res.status(200).json({
-    status: "success",
-    userData,
+    profileData: profileData.profile,
   });
 });
 
@@ -54,28 +41,26 @@ exports.updateUserProfile = catchAsync(async (req, res, next) => {
       image: Buffer.from(encode_image, "base64"),
     };
     userProfile.findOneAndUpdate(
-      { user: userId },
+      { userId },
       { ...data, avatar: finalImg },
-      (err, userData) => {
+      (err, profileData) => {
         if (err) new AppError("File upload failed!", 400);
 
         return res.status(200).json({
           status: "success",
-          userData,
+          profileData,
         });
       }
     );
   } else {
     // No file uploaded, update user profile without avatar field
-    const userData = await userProfile.findOneAndUpdate(
-      { user: userId },
-      data,
-      { new: true }
-    );
+    const profileData = await userProfile.findOneAndUpdate({ userId }, data, {
+      new: true,
+    });
 
     res.status(200).json({
       status: "success",
-      userData,
+      profileData,
     });
   }
 });

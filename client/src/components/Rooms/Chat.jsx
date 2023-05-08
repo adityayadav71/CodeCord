@@ -42,8 +42,8 @@ const Chat = ({ setOpenScoreboard }) => {
         message: formData.message,
         author: userData?.username,
         avatar:
-          userData?.avatar?.image &&
-          `data:${userData?.avatar?.contentType};base64,${userData?.avatar?.image}`,
+          userData?.profile?.avatar?.image &&
+          `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`,
         timeStamp,
       };
       await socket.emit("send-message", messageData, roomData?.roomId);
@@ -127,7 +127,7 @@ const Chat = ({ setOpenScoreboard }) => {
               />
             </div>
             <div className="relative">
-              {roomData?.owner !== userData?.user?._id ? (
+              {roomData?.owner !== userData?._id ? (
                 <>
                   <button
                     className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
@@ -152,7 +152,8 @@ const Chat = ({ setOpenScoreboard }) => {
             </div>
           </div>
         </div>
-        {roomData?.owner === userData?.user?._id && (
+        {console.log(roomData, userData?._id)}
+        {roomData?.owner === userData?._id && (
           <div className="flex flex-row gap-x-3 w-full mb-2">
             {roomData?.hasStarted ? (
               <>

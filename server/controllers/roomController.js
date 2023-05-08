@@ -176,11 +176,19 @@ exports.endRoom = catchAsync(async (req, res, next) => {
 
   //Remove from user model (delete activeRoom field from userModel)
   const { participants } = room;
-  participants.forEach(async (participantId) => {
-    await User.findByIdAndUpdate(participantId, {
+  // participants.forEach(async (participantId) => {
+  //   await User.findByIdAndUpdate(participantId, {
+  //     $unset: { activeRoom: "" },
+  //   });
+  // });
+  for (let i = 0; i < participants?.length; i++) {
+    const participant = await User.findByIdAndUpdate(participants[i], {
       $unset: { activeRoom: "" },
     });
-  });
+    if (participant) {
+      participantsProfile.push(participant);
+    }
+  }
 
   return res.status(200).json({
     status: "success",
@@ -189,28 +197,36 @@ exports.endRoom = catchAsync(async (req, res, next) => {
 
 exports.getRoomData = catchAsync(async (req, res, next) => {
   const { roomId } = req.params;
-  const room = await Room.findOne({ roomId: roomId });
-  const { participants } = room;
-  const participantsProfile = [];
+  let room = await Room.findOne({ roomId: roomId });
+  let { participants } = room;
+  let ownerUsername = "";
+  
+  const data = await Promise?.all(
+    participants?.map(async (id) => {
+      const profileData = await UserProfile.findOne({ userId: id }).populate(
+        "userId"
+      );
+      if (id.equals(room.owner)) ownerUsername = profileData?.userId?.username;
+      return {
+        userId: profileData?.userId?._id,
+        username: profileData?.userId?.username,
+        avatar: profileData?.avatar,
+      };
+    })
+  );
 
-  // await participants.forEach(async (participantId) => {
-  //   const participant = await UserProfile.findOne({ user: participantId });
-  //   if (participant) {
-  //     participantsProfile.push(participant);
-  //     room.participants = participantsProfile;
-  //   }
-  // });
-  for(let i = 0;i<participants.length;i++){
-    const participant = await UserProfile.findOne({ user: participants[i]});
-    if (participant) {
-      participantsProfile.push(participant);
-    }
-  }
-  room.participants = participantsProfile;
+  // Determine if this user is the host of the room
+  let iAmHost = false;
+  if (req.user._id.equals(room.owner)) iAmHost = true;
 
   return res.status(200).json({
     status: "success",
-    room,
+    room: {
+      ...room,
+      participants: data,
+      iAmHost,
+      ownerUsername,
+    },
   });
 });
 

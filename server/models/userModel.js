@@ -73,8 +73,8 @@ userSchema.pre("save", function (next) {
 });
 
 userSchema.pre("save", async function (next) {
-  console.log(this)
-  await userProfile.create({ userId: this._id, username: this.username });
+  const profile = await userProfile.create({ userId: this._id });
+  this.profile = profile._id 
   next();
 });
 
