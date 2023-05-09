@@ -1,48 +1,97 @@
 # CodeCord
 
-A coding platform with enhanced collaboration and competition features. Create rooms to connect and solve problems together with other coders.
+<p align="center">
+  <img src="/client/public/svg/logo.svg" alt="CodeCord-logo" />
+</p>
+
+A coding platform with enhanced collaboration and competition features. Create rooms to connect and solve problems together with other coders 👨🏻‍💻.
 
 ## Project Description
 
-CodeCord is inspired by **<span>binarysearch.com</span>** (which has been shut down for some reason). It is a web application where users can **solve data structures & algorithm problems, give contests every week, maintain contest rating** and streak of solving problems daily similar to leetcode.
-Apart from the usual leetcode features, it provides the feature to **create a live room where you can invite your friends to code together**. While creating a room, a user can **either create a contest** to solve specific set of problems within a time limit and compete with their friends **or create a normal room** with a shared editor where both users can code simultaneously.
+CodeCord is a web application that draws inspiration from the now-defunct binarysearch.com. It offers a platform for users to engage in **problem-solving** by tackling data structures and algorithm challenges. Additionally, users have the opportunity to participate in weekly contests, track their contest ratings, and maintain a streak of daily problem-solving.
 
-## Installation:
+In addition to the core features found on platforms like leetcode.com, CodeCord introduces a unique capability: the ability to **create live coding rooms**. These rooms enable users to invite their friends and collaborate on coding tasks together. Within a coding room, users have the flexibility to either initiate a contest, where a specific set of problems must be solved within a time limit, allowing for friendly competition among participants, or create a normal room where multiple users can code simultaneously using a shared editor.
+
+CodeCord combines problem-solving, competition, and collaborative coding in a single platform, providing an enriched coding experience for users.
+
+## Installation
 
 **Prerequisites:**
 
-1. Git ([Download from here](https://git-scm.com/downloads))
-2. Node.js ([Download from here](https://nodejs.org/en/download/))
+1. Git: Install Git from [here](https://git-scm.com/downloads).
+2. Node.js: Install Node.js from [here](https://nodejs.org/en/download/).
 
-Step 1: **Fork** the repository
-Step 2: **Clone** it to your desktop using the following command
+Follow the steps below to install and set up CodeCord:
 
-    git clone https://github.com/YOUR-USERNAME/CodeCord.git
+#### Step 1: Fork the repository
 
-Step 3: In the **root** directory run the following **script**:
+- Go to the CodeCord repository on GitHub.
+- Click on the "Fork" button to create a copy of the repository in your GitHub account.
 
-    npm run setup
+#### Step 2: Clone the repository
 
-Step 4: **Create a .env file in the server directory** using the example file given. The server would not start without this file.
+- Open a terminal or command prompt.
+- Run the following command to clone the repository to your desktop:
 
-Step 5: Install MongoDB Compass, connect to localhost:27017, **Create a database named codecord** and add two collections problems and problemtags. Import the problems.json and problemtags.json files from the cloned repository into these collections.
+  ```shell
+  git clone https://github.com/YOUR-USERNAME/CodeCord.git
+  ```
 
-Step 6: After the setup, start **two terminals** each for **client** and **server** subdirectories (in VSCode preferably) and run the following script in both.
+#### Step 3: Install dependencies and set up
 
-    npm run dev
-    
+- Navigate to the root directory of the cloned repository.
+- Run the following commands to install the required dependencies and set up CodeCord:
+
+  ```shell
+  npm install
+  npm run setup
+  ```
+
+#### Step 4: Create a .env file in the server directory
+
+- Navigate to the server directory in the cloned repository.
+- Create a file named `.env`.
+- Use the provided example file as a reference to set up the necessary configuration in the `.env` file. Note that the server won't start without this file.
+
+#### Step 5: Install and configure MongoDB
+
+- Install MongoDB Compass from the official website.
+- Connect to `localhost:27017` using MongoDB Compass.
+- Create a database named "codecord".
+- Add two collections: "problems" and "problemtags".
+- Import the `problems.json` and `problemtags.json` files from the cloned repository into their respective collections.
+
+#### Step 6: Start the development servers
+
+- Open two terminals or command prompts.
+- In one terminal, navigate to the client subdirectory.
+- In the other terminal, navigate to the server subdirectory.
+- Run the following command in both terminals to start the development servers:
+
+  ```shell
+  npm run dev
+  ```
+
+Make sure to follow each step carefully to properly install and run CodeCord 😄.
+
 ## How to use the project:
 
 1. To navigate through the pages of the project make sure you have the .env file setup properly with database collections on MongoDB Compass.
 2. The landing page provides a footer with links to three main components of the project, Contests, Problems and Discussion. You can even click the login/signup button to navigate to the main page.
-3. Currently, you can only use features such as, filtering problems, Creating an Account and Updating your user profile. We are currently working on creating rooms feature.
+3. Currently, you can only use features such as:
+   - filtering problems
+   - creating an Account
+   - updating your user profile
+   - creating and joining rooms
 
 ## ScreenShots:
 
-![Room Design Prototype](/room.png)
-![Problems Page](/problems.jpg)
 ![Contests Page](/contests.jpg)
-![User Profile Page](/problems.jpg)
+![Problems Page](/problems.jpg)
+![Create Room Modal](/create-room.jpg)
+![Room Design Prototype](/room.jpg)
+![Room Participants List](/room-participants.jpg)
+![User Profile Page](/profile.jpg)
 
 ## Links and Resources:
 
