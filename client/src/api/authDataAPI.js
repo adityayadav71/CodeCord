@@ -1,7 +1,6 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
 import { BASE_URL } from "./apiConfig";
-import { createUserProfile } from "./profileDataAPI";
 
 export const checkLogInStatus = async () => {
   const response = await axios.get(`${BASE_URL}/api/v1/users/isLoggedIn`, {
@@ -23,7 +22,6 @@ export const signup = async (formData) => {
       },
     }
   );
-  await createUserProfile(formData.username);
   
   return response.data;
 };

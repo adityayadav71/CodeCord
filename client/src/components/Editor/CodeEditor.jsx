@@ -39,7 +39,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
                   {participant?.avatar ? (
                     <img
                       className="w-8 h-8 overflow-clip object-cover rounded-full"
-                      src={participant?.avatar}
+                      src={`data:${participant?.avatar?.contentType};base64,${participant?.avatar?.image}`}
                       alt="user-profile-picture"
                     />
                   ) : (

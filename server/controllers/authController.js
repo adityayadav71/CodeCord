@@ -5,7 +5,6 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const User = require("../models/userModel");
 const Email = require("../utils/email");
-const userProfile = require("../models/userProfileModel");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -226,7 +225,7 @@ exports.isLoggedIn = async (req, res, next) => {
       }
 
       // 4) Get user profile data if user is logged in
-      const currentUserData = await userProfile.findOne({ user: decoded.id }).populate('user');
+      const currentUserData = await User.findById(decoded.id).populate('profile');
 
 
       // THERE IS A LOGGED IN USER

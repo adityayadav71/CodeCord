@@ -1,5 +1,5 @@
 import { AuthContext } from "../../App";
-import { RoomContext, populateParticipants } from "../../layouts/AppLayout";
+import { RoomContext } from "../../layouts/AppLayout";
 import { useContext } from "react";
 import { removeParticipant } from "../../api/roomsAPI";
 import { FaUserAlt } from "react-icons/fa";
@@ -15,10 +15,8 @@ const User = ({ userId, username, imageURL }) => {
       roomData?.roomId,
       socket
     );
-    room = await populateParticipants(room, userData);
 
     setRoomData(room);
-    localStorage.setItem("room", JSON.stringify(room));
   };
 
   return (
@@ -26,7 +24,7 @@ const User = ({ userId, username, imageURL }) => {
       <div className="flex flex-row gap-x-3">
         {imageURL ? (
           <img
-            src={imageURL}
+            src={`data:${imageURL.contentType};base64,${imageURL.image}`}
             className="w-14 h-14 object-cover rounded-full hover:cursor-pointer"
             alt="profile-pic"
           />

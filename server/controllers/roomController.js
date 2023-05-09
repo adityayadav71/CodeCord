@@ -1,8 +1,25 @@
-const mongoose = require("mongoose");
 const User = require("../models/userModel");
+const UserProfile = require("../models/userProfileModel");
 const Room = require("../models/roomModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+
+exports.checkHostPermissions = async (req, res, next) => {
+  const userId = req.user._id;
+  const { roomId } = req.body;
+
+  const room = await Room.findOne({ roomId });
+  //Check if current user is owner of that room or not
+  if (!room?.owner?.equals(userId)) {
+    return next(
+      new AppError(
+        "Only the host of this room has the requested permissions.",
+        403
+      )
+    );
+  }
+  next();
+};
 
 exports.createRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
@@ -124,7 +141,7 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
   });
 
   if (room?.owner.equals(userId)) {
-    // User is a host of that room so change the host of perticular room
+    // User is a host of that room so change the host of that particular room
     if (room?.participants?.length === 1) {
       // Delete the room
       await Room.findOneAndDelete({ roomId });
@@ -153,11 +170,63 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.endRoom = catchAsync(async (req, res, next) => {
+  const { roomId } = req.body;
+  const room = await Room.findOneAndDelete({ roomId: roomId });
+
+  //Remove from user model (delete activeRoom field from userModel)
+  const { participants } = room;
+  // participants.forEach(async (participantId) => {
+  //   await User.findByIdAndUpdate(participantId, {
+  //     $unset: { activeRoom: "" },
+  //   });
+  // });
+  for (let i = 0; i < participants?.length; i++) {
+    const participant = await User.findByIdAndUpdate(participants[i], {
+      $unset: { activeRoom: "" },
+    });
+    if (participant) {
+      participantsProfile.push(participant);
+    }
+  }
+
+  return res.status(200).json({
+    status: "success",
+  });
+});
+
 exports.getRoomData = catchAsync(async (req, res, next) => {
   const { roomId } = req.params;
-  const room = await Room.findOne({ roomId: roomId });
+  let room = await Room.findOne({ roomId: roomId }).lean();
+  let { participants } = room;
+  let ownerUsername = "";
+  
+  const data = await Promise.all(
+    participants?.map(async (id) => {
+      const profileData = await UserProfile.findOne({ userId: id }).populate(
+        "userId"
+      );
+      if (id.equals(room.owner)) ownerUsername = profileData?.userId?.username;
+      return {
+        userId: profileData?.userId?._id,
+        username: profileData?.userId?.username,
+        avatar: profileData?.avatar,
+      };
+    })
+  );
 
-  res.status(200).json({
+  // Determine if this user is the host of the room
+  let iAmHost = false;
+  if (req.user._id.equals(room.owner)) iAmHost = true;
+
+  room= {
+    ...room,
+    participants: data,
+    iAmHost,
+    ownerUsername
+  };  
+  
+  return res.status(200).json({
     status: "success",
     room,
   });
@@ -167,7 +236,7 @@ exports.startRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
   const userId = req.user._id;
   const room = await Room.findOne({ roomId });
-
+  
   if (!room) {
     return next(new AppError("No such room exist with that Id", 404));
   }
@@ -190,7 +259,6 @@ exports.startRoom = catchAsync(async (req, res, next) => {
 
 exports.removeParticipant = catchAsync(async (req, res, next) => {
   const { userId, roomId } = req.body;
-
   const room = await Room.findOne({ roomId });
 
   if (!room) {

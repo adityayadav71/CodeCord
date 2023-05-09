@@ -13,6 +13,7 @@ export const updateRoomSettings = async (roomId, settings) => {
     roomId,
     settings,
   });
+
   return response;
 };
 
@@ -91,6 +92,17 @@ export const leaveRoom = async (username, roomId, socket) => {
       roomId,
     });
     socket.emit("leave-room", username, response.data.newRoom, roomId);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const endRoom = async (roomId, socket) => {
+  try {
+    await axios.post(`${BASE_URL}/api/v1/rooms/end`, {
+      roomId,
+    });
+    socket.emit("end-room", roomId);
   } catch (error) {
     console.log(error);
   }

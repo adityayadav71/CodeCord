@@ -70,10 +70,7 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
       const room = await getRoomData(roomId);
       setRoomData(room);
 
-      //3. Store roomData in localStorage
-      localStorage.setItem("room", JSON.stringify(room));
-
-      // 4. Navigate user to new room
+      // 3. Navigate user to new room
       navigate(`app/room/${roomId}`, { replace: false });
     } catch (err) {
       window.alert(err.message);
@@ -90,19 +87,17 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
         problems: selected,
       };
       // 1. Update Room with these settings
-      const response = await updateRoomSettings(roomId, settings);
+      await updateRoomSettings(roomId, settings);
 
       // 2 Save newly joined room in RoomContext
       const room = await getRoomData(roomId);
+      console.log('GetRoomData result->',room);
       setRoomData(room);
-
-      //3. Store roomData in localStorage
-      localStorage.setItem("room", JSON.stringify(room));
 
       setModal(null);
       navigate(`/app/room/${roomId}?problems=${selected}`, { replace: false });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       window.alert(err.message);
     }
   };

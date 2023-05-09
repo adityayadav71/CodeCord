@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const userProfileSchema = new mongoose.Schema({
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: [true, "User ID is required"],
     ref: "User",
-  },
-  username: {
-    type: String,
-    required: [true, "Username is required"],
   },
   avatar: {
     type: {
@@ -32,8 +29,8 @@ const userProfileSchema = new mongoose.Schema({
   skills: [String],
   friends: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      required: [true, "User ID is required"],
+      type: ObjectId,
+      // required: [true, "User ID is required"],
       ref: "User",
     },
   ],

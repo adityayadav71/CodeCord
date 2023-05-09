@@ -6,9 +6,8 @@ import {
   FaUserAlt,
 } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCurrentUserData } from "../../api/profileDataAPI";
+import { getUserProfile, updateUserProfile } from "../../api/profileDataAPI";
 import { useEffect, useState, useRef, useContext } from "react";
-import { updateUserProfile } from "../../api/profileDataAPI";
 import { AuthContext } from "../../App";
 import axios from "axios";
 
@@ -52,24 +51,27 @@ const Profile = () => {
           }
         });
       });
-      if (username === userData.username) {
+      if (username === userData?.username) {
         setIsMyProfile(true);
-        setProfileData(userData);
+        setProfileData(userData.profile);
       } else {
-        const response = await getCurrentUserData();
-        if (response.userData) setProfileData(response.userData);
+        const response = await getUserProfile(username);
+        if (response.profileData) setProfileData(response.profileData);
         else navigate("/notfound", { replace: true });
       }
     };
     loadData();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (Object.keys(profileData).length !== 0) {
       setPercentageSolved((prev) =>
         prev.map((_, i) => {
           const total = i === 0 ? totalEasy : i === 1 ? totalMedium : totalHard;
-          return `${(profileData?.numberOfSubmissions[i] * 100) / total}`;
+          return `${
+            profileData.numberOfSubmissions &&
+            (profileData?.numberOfSubmissions[i] * 100) / total
+          }`;
         })
       );
       if (profileData?.avatar) {
@@ -134,7 +136,7 @@ const Profile = () => {
 
       if (response.userData) {
         setUserData(response.userData);
-        setProfileData(response.userData);
+        setProfileData(response.userData.profile);
       }
 
       setModalOpen(false);
@@ -157,13 +159,8 @@ const Profile = () => {
 
     formData.append("data", JSON.stringify(modData));
 
-    await updateUserProfile(formData);
-
-    const response = await getCurrentUserData();
-    if (response.userData) {
-      setUserData(response.userData);
-      setProfileData(response.userData);
-    }
+    const response = await updateUserProfile(formData);
+    if (response.profileData) setProfileData(response.profileData);
   };
 
   const clearPreview = () => {
@@ -203,7 +200,7 @@ const Profile = () => {
               src={preview}
               alt="user-avatar-preview"
             />
-          ) : profileData?.avatar ? (
+          ) : imageURL ? (
             <img
               className="w-full h-full object-cover rounded-lg"
               src={imageURL}
@@ -260,7 +257,7 @@ const Profile = () => {
           }}
           className="modal group absolute flex items-center justify-center w-24 h-24 hover:cursor-pointer rounded-lg overflow-hidden bg-grey2 shadow shadow-heading -top-12 left-1/2 -translate-x-1/2"
         >
-          {profileData?.avatar ? (
+          {imageURL ? (
             <img
               className="w-full h-full object-cover"
               src={imageURL}
@@ -384,23 +381,22 @@ const Profile = () => {
               {editing ? (
                 <div className="flex items-center flex-wrap gap-3 p-3 w-full bg-lightSecondary rounded-lg">
                   {tags &&
-                    tags?.map((tag, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="flex items-center px-3 py-1 bg-primary gap-x-3 rounded-lg"
+                    console.log(tags) &&
+                    tags?.map((tag, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center px-3 py-1 bg-primary gap-x-3 rounded-lg"
+                      >
+                        {tag}
+                        <button
+                          className="hover:text-accent1 hover:cursor-pointer"
+                          data-tagname={tag}
+                          onClick={deleteTag}
                         >
-                          {tag}
-                          <button
-                            className="hover:text-accent1 hover:cursor-pointer"
-                            data-tagname={tag}
-                            onClick={deleteTag}
-                          >
-                            <FaRegTimesCircle />
-                          </button>
-                        </div>
-                      );
-                    })}
+                          <FaRegTimesCircle />
+                        </button>
+                      </div>
+                    ))}
                   <input
                     type="text"
                     placeholder="Press enter to add skill..."
@@ -432,7 +428,7 @@ const Profile = () => {
                     </label>
                     <input
                       name="github_link"
-                      value={profileData?.socials[0]}
+                      defaultValue={profileData?.socials[0]}
                       type="text"
                       placeholder="Link to GitHub Profile"
                       className="profile-data px-3 py-1 w-full rounded-lg bg-lightSecondary focus:outline-none"
@@ -444,7 +440,7 @@ const Profile = () => {
                     </label>
                     <input
                       name="linkedin_link"
-                      value={profileData?.socials[1]}
+                      defaultValue={profileData?.socials[1]}
                       type="text"
                       placeholder="Link to LinkedIn Profile"
                       className="profile-data px-3 py-1 w-full rounded-lg bg-lightSecondary focus:outline-none"

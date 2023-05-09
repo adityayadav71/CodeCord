@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const validator = require("validator");
+const userProfile = require("./userProfileModel");
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -19,6 +20,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["user", "contributer", "moderator", "admin"],
     default: "user",
+  },
+  profile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Profile",
   },
   password: {
     type: String,
@@ -64,6 +69,12 @@ userSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000; // - 1000 ensures that the token is created after the password has changed
+  next();
+});
+
+userSchema.pre("save", async function (next) {
+  const profile = await userProfile.create({ userId: this._id });
+  this.profile = profile._id 
   next();
 });
 

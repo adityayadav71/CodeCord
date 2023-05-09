@@ -1,22 +1,16 @@
 import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 
-export const getCurrentUserData = async () => {
-  const response = await axios.get(
-    `${BASE_URL}/api/v1/users/profile`
-  );
+export const getCurrentUserProfile = async () => {
+  const response = await axios.get(`${BASE_URL}/api/v1/users/profile`);
   return response.data;
 };
 
-export const getUserData = async (userId) => {
+export const getUserProfile = async (username) => {
   const response = await axios.get(
-    `${BASE_URL}/api/v1/users/profile/${userId}`
+    `${BASE_URL}/api/v1/users/profile/${username}`
   );
   return response.data;
-};
-
-export const createUserProfile = async (username) => {
-  await axios.post(`${BASE_URL}/api/v1/users/profile?username=${username}`);
 };
 
 export const updateUserProfile = async (data) => {

@@ -22,13 +22,12 @@ router.patch(
 // User Profile
 router
   .route("/profile")
-  .get(authController.protect, userController.getUserData)
-  .post(userController.createUserProfile)
+  .get(authController.protect, userController.getUserProfile)
   .patch(
     userController.upload.single("file"),
     userController.updateUserProfile
   );
 
-router.get("/profile/:id", userController.getUserById);
+router.get("/profile/:username", userController.getProfileByUserName);
 
 module.exports = router;
