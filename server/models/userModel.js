@@ -74,7 +74,7 @@ userSchema.pre("save", function (next) {
 
 userSchema.pre("save", async function (next) {
   const profile = await userProfile.create({ userId: this._id });
-  this.profile = profile._id 
+  this.profile = profile._id;
   next();
 });
 

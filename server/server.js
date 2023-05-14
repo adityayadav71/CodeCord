@@ -72,6 +72,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-message", (data, roomId) => {
+    console.log(roomId);
     socket.to(roomId).emit("receive-message", data);
   });
 
@@ -123,7 +124,7 @@ io.on("connection", (socket) => {
     try {
       socket.leave(roomId);
       socket.to(roomId).emit("updated-room-data", room);
-      
+
       const data = {
         type: "roomMessage",
         message: `👋 ${username} left the room.`,
@@ -144,7 +145,7 @@ io.on("connection", (socket) => {
       socket.emit("error", err);
     }
   });
-  
+
   socket.on("remove-participant", (username, userId, roomId, room) => {
     try {
       const data = {
