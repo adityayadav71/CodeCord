@@ -16,9 +16,9 @@ const roomSchema = new mongoose.Schema(
         unique: [true, "This participant already exists."],
       },
     ],
-    hasStarted:{
-      type:Boolean,
-      default:false
+    hasStarted: {
+      type: Boolean,
+      default: false,
     },
 
     settings: {
@@ -51,7 +51,13 @@ const roomSchema = new mongoose.Schema(
 );
 
 // Create a TTL index on the `updatedAt` field that expires documents with an empty `participants` array
-roomSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 0, partialFilterExpression: { participants: { $size: 0 } } });
+roomSchema.index(
+  { updatedAt: 1 },
+  {
+    expireAfterSeconds: 0,
+    partialFilterExpression: { participants: { $size: 0 } },
+  }
+);
 
 const Room = mongoose.model("Room", roomSchema);
 

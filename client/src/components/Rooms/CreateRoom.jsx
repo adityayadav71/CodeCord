@@ -87,17 +87,12 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
         problems: selected,
       };
       // 1. Update Room with these settings
-      await updateRoomSettings(roomId, settings);
-
-      // 2 Save newly joined room in RoomContext
-      const room = await getRoomData(roomId);
-      console.log('GetRoomData result->',room);
+      const room = await updateRoomSettings(roomId, settings);
       setRoomData(room);
 
       setModal(null);
       navigate(`/app/room/${roomId}?problems=${selected}`, { replace: false });
     } catch (err) {
-      console.error(err);
       window.alert(err.message);
     }
   };

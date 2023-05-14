@@ -37,7 +37,7 @@ const User = ({ userId, username, imageURL }) => {
         </div>
       </div>
 
-      {roomData?.iAmHost && username !== userData?.user?.username && (
+      {roomData?.owner?._id === userData?._id && username !== userData?.username && (
         <button
           className="px-3 py-2 font-bold text-lg bg-accent1 transition-all duration-300 hover:bg-lightAccent1 text-white rounded-xl"
           onClick={handleRemoveParticipant}

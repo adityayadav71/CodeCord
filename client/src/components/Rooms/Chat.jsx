@@ -64,6 +64,7 @@ const Chat = ({ setOpenScoreboard }) => {
   const handleEndRoom = async () => {
     try {
       await endRoom(roomData?.roomId, socket);
+      navigate("/", { replace: true });
     } catch (err) {
       window.alert(err);
     }
@@ -98,7 +99,7 @@ const Chat = ({ setOpenScoreboard }) => {
         <div className="flex flex-row justify-between gap-x-3 mb-4">
           <div className="flex flex-col">
             <h1 className="text-lg font-bold">
-              {roomData?.ownerUsername}'s Room
+              {roomData?.owner?.username}'s Room
             </h1>
             <p className="text-grey1">{participants} participants</p>
           </div>
@@ -152,8 +153,7 @@ const Chat = ({ setOpenScoreboard }) => {
             </div>
           </div>
         </div>
-        {console.log(roomData, userData?._id)}
-        {roomData?.owner === userData?._id && (
+        {roomData?.owner?._id === userData?._id && (
           <div className="flex flex-row gap-x-3 w-full mb-2">
             {roomData?.hasStarted ? (
               <>

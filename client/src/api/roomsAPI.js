@@ -9,12 +9,15 @@ export const getRoomSettings = async (roomId) => {
 };
 
 export const updateRoomSettings = async (roomId, settings) => {
-  const response = await axios.patch(`${BASE_URL}/api/v1/rooms/`, {
-    roomId,
-    settings,
-  });
-
-  return response;
+  try {
+    const response = await axios.patch(`${BASE_URL}/api/v1/rooms/`, {
+      roomId,
+      settings,
+    });
+    return response.data.room;
+  } catch (err) {
+    return err
+  }
 };
 
 export const getRoomData = async (roomId) => {
@@ -116,7 +119,13 @@ export const removeParticipant = async (username, userId, roomId, socket) => {
     });
 
     if (response.status === 200) {
-      socket.emit("remove-participant", username, userId, roomId, response.data.room);
+      socket.emit(
+        "remove-participant",
+        username,
+        userId,
+        roomId,
+        response.data.room
+      );
       return response.data.room;
     }
   } catch (error) {
