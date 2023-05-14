@@ -182,7 +182,7 @@ const Description = ({ isRoom, handleProblemChange }) => {
           <div className="flex flex-row items-center">
             <div className="flex-col">
               <h1 className="text-2xl font-bold">
-                {roomData?.ownerUsername}'s Room
+                {roomData?.owner?.username}'s Room
               </h1>
               <p className="text-base text-grey1 mb-3">
                 {roomData?.participants?.length || 0} participants
