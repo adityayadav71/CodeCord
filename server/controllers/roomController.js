@@ -4,11 +4,33 @@ const Room = require("../models/roomModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
+const populateRoom = async (roomId) => {
+  // 1. Populate roomData with owner details
+  const room = await Room.findOne({ roomId }).populate("owner").lean();
+  
+  // 2. Populate roomData with participants' details
+  const data = await Promise.all(
+    room?.participants?.map(async (id) => {
+      const profileData = await UserProfile.findOne({ userId: id }).populate(
+        "userId"
+      );
+      return {
+        userId: profileData?.userId?._id,
+        username: profileData?.userId?.username,
+        avatar: profileData?.avatar,
+      };
+    })
+  );
+  room.participants = data;
+
+  return room;
+};
+
 exports.checkHostPermissions = async (req, res, next) => {
   const userId = req.user._id;
   const { roomId } = req.body;
-
   const room = await Room.findOne({ roomId });
+
   //Check if current user is owner of that room or not
   if (!room?.owner?.equals(userId)) {
     return next(
@@ -65,6 +87,18 @@ exports.createRoom = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getRoomData = catchAsync(async (req, res, next) => {
+  const { roomId } = req.params;
+  let room = await Room.findOne({ roomId: roomId });
+
+  room = await populateRoom(room.roomId);
+
+  return res.status(200).json({
+    status: "success",
+    room,
+  });
+});
+
 exports.joinRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
   const userId = req.user._id;
@@ -80,11 +114,12 @@ exports.joinRoom = catchAsync(async (req, res, next) => {
     );
 
   if (room.participants.length < room.settings.participantsLimit) {
-    const room = await Room.findOneAndUpdate(
+    let room = await Room.findOneAndUpdate(
       { roomId: roomId },
       { $push: { participants: userId } },
       { new: true }
     );
+    room = await populateRoom(room.roomId);
     // Get expiresAt from owner
     const owner = await User.findById(room.owner);
     const expiresAt = owner.activeRoom.expiresAt;
@@ -107,13 +142,14 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
 
   // Create a new room
-  const room = await Room.create({
+  let room = await Room.create({
     roomId,
     owner: userId,
     settings: settings,
     participants: [userId],
   });
 
+  room = await populateRoom(room.roomId);
   await User.findByIdAndUpdate(userId, {
     activeRoom: { roomId },
   });
@@ -122,7 +158,7 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
     return next(new AppError("Something went wrong. Please try again", 500));
 
   // 3. Send room details on success
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     room,
   });
@@ -153,6 +189,8 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
         { owner: newOwner, $pull: { participants: userId } },
         { new: true }
       );
+
+      newRoom = await populateRoom(newRoom.roomId);
     }
   } else {
     newRoom = await Room.findOneAndUpdate(
@@ -160,6 +198,7 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
       { $pull: { participants: userId } },
       { new: true }
     );
+    newRoom = await populateRoom(newRoom.roomId);
   }
 
   res.status(200).json({
@@ -172,63 +211,18 @@ exports.leaveRoom = catchAsync(async (req, res, next) => {
 
 exports.endRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
-  const room = await Room.findOneAndDelete({ roomId: roomId });
+  const room = await Room.findOneAndDelete({ roomId });
 
-  //Remove from user model (delete activeRoom field from userModel)
+  // Remove from user model (delete activeRoom field from userModel)
   const { participants } = room;
-  // participants.forEach(async (participantId) => {
-  //   await User.findByIdAndUpdate(participantId, {
-  //     $unset: { activeRoom: "" },
-  //   });
-  // });
-  for (let i = 0; i < participants?.length; i++) {
-    const participant = await User.findByIdAndUpdate(participants[i], {
+  participants.forEach(async (participantId) => {
+    await User.findByIdAndUpdate(participantId, {
       $unset: { activeRoom: "" },
     });
-    if (participant) {
-      participantsProfile.push(participant);
-    }
-  }
-
-  return res.status(200).json({
-    status: "success",
   });
-});
 
-exports.getRoomData = catchAsync(async (req, res, next) => {
-  const { roomId } = req.params;
-  let room = await Room.findOne({ roomId: roomId }).lean();
-  let { participants } = room;
-  let ownerUsername = "";
-  
-  const data = await Promise.all(
-    participants?.map(async (id) => {
-      const profileData = await UserProfile.findOne({ userId: id }).populate(
-        "userId"
-      );
-      if (id.equals(room.owner)) ownerUsername = profileData?.userId?.username;
-      return {
-        userId: profileData?.userId?._id,
-        username: profileData?.userId?.username,
-        avatar: profileData?.avatar,
-      };
-    })
-  );
-
-  // Determine if this user is the host of the room
-  let iAmHost = false;
-  if (req.user._id.equals(room.owner)) iAmHost = true;
-
-  room= {
-    ...room,
-    participants: data,
-    iAmHost,
-    ownerUsername
-  };  
-  
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
-    room,
   });
 });
 
@@ -236,7 +230,7 @@ exports.startRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
   const userId = req.user._id;
   const room = await Room.findOne({ roomId });
-  
+
   if (!room) {
     return next(new AppError("No such room exist with that Id", 404));
   }
@@ -245,11 +239,13 @@ exports.startRoom = catchAsync(async (req, res, next) => {
     return next(new AppError("Only Host can start the room", 404));
   }
   const expiresAt = Date.now() + room?.settings?.timeLimit * 60 * 1000;
-  const updatedRoom = await Room.findOneAndUpdate(
+  let updatedRoom = await Room.findOneAndUpdate(
     { roomId },
     { hasStarted: true, expiresAt },
     { new: true }
   );
+
+  updatedRoom = await populateRoom(updatedRoom.roomId);
 
   res.status(200).json({
     status: "success",
@@ -274,11 +270,13 @@ exports.removeParticipant = catchAsync(async (req, res, next) => {
     $unset: { activeRoom: "" },
   });
 
-  const updatedRoom = await Room.findOneAndUpdate(
+  let updatedRoom = await Room.findOneAndUpdate(
     { roomId },
     { $pull: { participants: userId } },
     { new: true }
   );
+
+  updatedRoom = await populateRoom(updatedRoom.roomId);
 
   res.status(200).json({
     status: "success",
