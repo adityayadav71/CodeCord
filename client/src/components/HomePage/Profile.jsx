@@ -273,7 +273,7 @@ const Profile = () => {
             </>
           )}
         </div>
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold text-xl">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold text-white text-xl">
           {profileData?.username}
         </div>
         <div className="mr-auto flex items-center">

@@ -28,10 +28,7 @@ exports.getProfileByUserName = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUserProfile = catchAsync(async (req, res, next) => {
-  const token = req.cookies.jwt;
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-  const userId = decoded.id;
+  const userId = req.user._id;
   const data = JSON.parse(req.body.data);
 
   if (req.file) {

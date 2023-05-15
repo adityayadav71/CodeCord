@@ -7,6 +7,7 @@ const userProfileSchema = new mongoose.Schema({
     required: [true, "User ID is required"],
     ref: "User",
   },
+  username: String,
   avatar: {
     type: {
       contentType: String,
