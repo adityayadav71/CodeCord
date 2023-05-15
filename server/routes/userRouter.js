@@ -31,4 +31,11 @@ router
 
 router.get("/profile/:username", userController.getProfileByUserName);
 
+// User Submissions
+router.get(
+  "/submissions/:problemId",
+  authController.protect,
+  userController.getUserSubmissions
+);
+
 module.exports = router;

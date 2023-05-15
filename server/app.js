@@ -8,6 +8,8 @@ const hpp = require("hpp");
 const cors = require("cors");
 const path = require("path");
 
+require("./models/submissionModel")
+
 const userRouter = require("./routes/userRouter");
 const problemRouter = require("./routes/problemRouter");
 const roomRouter = require("./routes/roomRouter");

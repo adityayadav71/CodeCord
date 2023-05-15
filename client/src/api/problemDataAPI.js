@@ -37,3 +37,10 @@ export const deleteProblem = async (problemId) => {
   );
   return response.data;
 };
+
+export const getPreviousSubmissions = async (problemId) => {
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/users/submissions/${problemId}`
+  );
+  return response.data.submissions;
+};
