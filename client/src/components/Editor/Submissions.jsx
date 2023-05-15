@@ -3,7 +3,7 @@ import { ProblemContext } from "./index";
 import { FaChevronRight, FaAngleDown, FaCheck } from "react-icons/fa";
 import { getPreviousSubmissions } from "../../api/problemDataAPI";
 
-const Submissions = (props) => {
+const Submissions = ({ handleSubmissionDisplay }) => {
   const { activeProblem } = useContext(ProblemContext);
   const [submissions, setSubmissions] = useState([]);
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -34,6 +34,7 @@ const Submissions = (props) => {
     };
     loadData();
   }, []);
+
   return (
     <div>
       <div className="flex items-center gap-3 p-6">
@@ -221,7 +222,7 @@ const Submissions = (props) => {
 
       {submissions.map((submission) => {
         if (
-          (!filter.status && !filter.language) || 
+          (!filter.status && !filter.language) ||
           (filter.language &&
             filter.status &&
             submission?.language?.description === filter.language &&
@@ -237,6 +238,7 @@ const Submissions = (props) => {
             <div
               key={submission._id}
               className="flex items-center gap-12 px-6 py-6 hover:bg-grey3 hover:cursor-pointer"
+              onClick={() => handleSubmissionDisplay(submission._id)}
             >
               <div className="flex-col">
                 <p
@@ -257,11 +259,11 @@ const Submissions = (props) => {
                 </p>
               </div>
               <div className="flex items-center flex-wrap gap-3">
-                <p className="px-4 rounded-full bg-accent1">
+                <p className="px-4 font-bold rounded-full bg-accent1">
                   {submission?.language?.description}
                 </p>
                 {submission?.tags?.map((tag) => (
-                  <p className="px-4 rounded-full bg-accent1">{tag}</p>
+                  <p className="px-4 font-bold rounded-full bg-accent1">{tag}</p>
                 ))}
               </div>
               <FaChevronRight className="ml-auto" />

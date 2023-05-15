@@ -4,7 +4,12 @@ import Description from "./Description";
 import Submissions from "./Submissions";
 import Solutions from "./Solutions";
 
-const ProblemPanel = ({ isRoom, handleProblemChange }) => {
+const ProblemPanel = ({
+  isRoom,
+  handleSubmissionDisplay,
+  handleProblemChange,
+  setDisplaySubmission,
+}) => {
   const [activeTab, setActiveTab] = useState("Description");
 
   return (
@@ -15,7 +20,10 @@ const ProblemPanel = ({ isRoom, handleProblemChange }) => {
             className={`grow px-6 py-2 ${
               activeTab === "Description" ? "bg-lightSecondary text-white" : ""
             } text-grey2 hover:text-white rounded-lg`}
-            onClick={() => setActiveTab("Description")}
+            onClick={() => {
+              setActiveTab("Description");
+              setDisplaySubmission(false);
+            }}
           >
             Description
           </button>
@@ -23,7 +31,10 @@ const ProblemPanel = ({ isRoom, handleProblemChange }) => {
             className={`grow px-6 py-2 ${
               activeTab === "Solutions" ? "bg-lightSecondary text-white" : ""
             } text-grey2 hover:text-white rounded-lg`}
-            onClick={() => setActiveTab("Solutions")}
+            onClick={() => {
+              setActiveTab("Solutions");
+              setDisplaySubmission(false);
+            }}
           >
             Solutions
           </button>
@@ -43,7 +54,10 @@ const ProblemPanel = ({ isRoom, handleProblemChange }) => {
           handleProblemChange={handleProblemChange}
         />
       ) : activeTab === "Submissions" ? (
-        <Submissions isRoom={isRoom} />
+        <Submissions
+          isRoom={isRoom}
+          handleSubmissionDisplay={handleSubmissionDisplay}
+        />
       ) : (
         <Solutions isRoom={isRoom} />
       )}
