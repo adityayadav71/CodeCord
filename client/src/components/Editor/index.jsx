@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Split from "react-split";
 import { TbTerminal2 } from "react-icons/tb";
-import Description from "./Description";
+import ProblemPanel from "./ProblemPanel";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
 import Chat from "../Rooms/Chat";
@@ -34,10 +34,7 @@ const Editor = ({ isRoom }) => {
     }
 
     socket?.on("participant-removed", (data) => {
-      console.log(userData?.username, data);
-      if (userData?.username === data) {
-        navigate("/", { replace: true });
-      }
+      if (userData?.username === data) navigate("/", { replace: true });
     });
   }, [userData, socket]);
 
@@ -68,11 +65,10 @@ const Editor = ({ isRoom }) => {
 
     const loadProblems = async () => {
       let response;
-      if (isRoom) {
-        response = await getProblem(selectedProblems);
-      } else {
-        response = await getProblem([params.name]);
-      }
+      isRoom
+        ? (response = await getProblem(selectedProblems))
+        : (response = await getProblem([params.name]));
+
       setProblems(response.problems);
       setActiveProblem(response.problems[0]);
     };
@@ -118,19 +114,18 @@ const Editor = ({ isRoom }) => {
 
   const handleActiveProblemChange = (e) => {
     const direction = e.target.closest(".switch").dataset.position;
-    if (direction === "prev") {
+    if (direction === "prev")
       problems.forEach((problem, i) => {
         if (problem._id === activeProblem._id && i - 1 >= 0) {
           setActiveProblem(problems[i - 1]);
         }
       });
-    } else if (direction === "next") {
+    else if (direction === "next")
       problems.forEach((problem, i) => {
         if (problem._id === activeProblem._id && i + 1 < problems.length) {
           setActiveProblem(problems[i + 1]);
         }
       });
-    }
   };
 
   const handleRunCode = () => {};
@@ -147,7 +142,7 @@ const Editor = ({ isRoom }) => {
         snapOffset={[300, 0, 200]}
       >
         <div className="bg-transparentSecondary overflow-x-hidden">
-          <Description
+          <ProblemPanel
             isRoom={isRoom}
             handleProblemChange={handleActiveProblemChange}
           />
