@@ -3,7 +3,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const userProfileSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     required: [true, "User ID is required"],
     ref: "User",
   },
@@ -23,7 +23,15 @@ const userProfileSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
-  submissions: { type: Array, default: [] },
+  submissions: {
+    type: [
+      {
+        type: ObjectId,
+        ref: "Submission",
+      },
+    ],
+    default: [],
+  },
   totalSubmissions: { type: Number, default: 0 },
   numberOfSubmissions: { type: [Number, Number, Number], default: [0, 0, 0] },
   country: String,

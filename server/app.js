@@ -8,9 +8,12 @@ const hpp = require("hpp");
 const cors = require("cors");
 const path = require("path");
 
+require("./models/submissionModel");
+
 const userRouter = require("./routes/userRouter");
 const problemRouter = require("./routes/problemRouter");
 const roomRouter = require("./routes/roomRouter");
+const submissionRouter = require("./routes/submissionRouter");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const cookieParser = require("cookie-parser");
@@ -29,7 +32,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: process.env.ALLOWED_ORIGINS.split(','),
+    origin: process.env.ALLOWED_ORIGINS.split(","),
     credentials: true,
   })
 );
@@ -76,6 +79,7 @@ app.use((req, res, next) => {
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/problems", problemRouter);
 app.use("/api/v1/rooms", roomRouter);
+app.use("/api/v1/submissions", submissionRouter);
 
 // 2 - Routes
 app.all("*", (req, res, next) => {

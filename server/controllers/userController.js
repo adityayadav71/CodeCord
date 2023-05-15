@@ -1,8 +1,6 @@
 const multer = require("multer");
 const AppError = require("../utils/appError");
 const storage = multer.memoryStorage();
-const jwt = require("jsonwebtoken");
-const { promisify } = require("util");
 const catchAsync = require("../utils/catchAsync");
 const userProfile = require("../models/userProfileModel");
 const User = require("../models/userModel");
@@ -60,4 +58,20 @@ exports.updateUserProfile = catchAsync(async (req, res, next) => {
       profileData,
     });
   }
+});
+
+exports.getUserSubmissions = catchAsync(async (req, res, next) => {
+  const { problemId } = req.params;
+
+  const populated = await userProfile
+    .findOne({ userId: req.user._id })
+    .populate({
+      path: "submissions",
+      match: { problemId: problemId },
+    });
+
+  res.status(200).json({
+    status: "success",
+    submissions: populated.submissions,
+  });
 });

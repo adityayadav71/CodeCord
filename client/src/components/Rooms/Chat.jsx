@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, memo } from "react";
+import { useState, useContext, useEffect, useRef, memo } from "react";
 import {
   FaUserPlus,
   FaPhoneAlt,
@@ -92,6 +92,17 @@ const Chat = ({ setOpenScoreboard }) => {
       setRoomData(room);
     });
   }, [socket]);
+
+  const chatPanelRef = useRef(null);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList]);
+
+  const scrollToBottom = () => {
+    if (chatPanelRef.current)
+      chatPanelRef.current.scrollTop = chatPanelRef.current.scrollHeight;
+  };
 
   return (
     <div className="relative flex flex-col h-full">
@@ -192,7 +203,11 @@ const Chat = ({ setOpenScoreboard }) => {
       </div>
       <Timer roomData={roomData} />
       <div className="relative ml-3 mb-14 py-3 overflow-y-hidden">
-        <div className="h-full pr-3 overflow-y-scroll" id="chat-window">
+        <div
+          ref={chatPanelRef}
+          className="h-full pr-3 overflow-y-scroll"
+          id="chat-window"
+        >
           {messageList.map((messageContent, i) => {
             return messageContent?.type === "roomMessage" ? (
               <div

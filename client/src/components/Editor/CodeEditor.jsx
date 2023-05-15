@@ -4,7 +4,7 @@ import "swiper/css";
 import CodeMirror from "@uiw/react-codemirror";
 import { historyField } from "@codemirror/commands";
 import { java } from "@codemirror/lang-java";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { RoomContext } from "../../layouts/AppLayout";
 import { AuthContext } from "../../App";
 

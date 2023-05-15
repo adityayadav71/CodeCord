@@ -1,4 +1,3 @@
-import { useContext, useState } from "react";
 import {
   AiFillLike,
   AiFillDislike,
@@ -11,64 +10,30 @@ import {
   HiChevronRight as RightIcon,
 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
-import { RoomContext } from "../../layouts/AppLayout";
-import { ProblemContext } from "./index";
 import he from "he";
 import formatStats from "../../utilities/formatStats";
 import User from "../Rooms/User";
+import { RoomContext } from "../../layouts/AppLayout";
+import { ProblemContext } from "./index";
+import { useContext, useState } from "react";
 
 const Description = ({ isRoom, handleProblemChange }) => {
   const { activeProblem } = useContext(ProblemContext);
   const { roomData } = useContext(RoomContext);
 
-  const [activeTab, setActiveTab] = useState("Description");
   const [showParticipant, setShowParticipant] = useState(false);
 
   return (
     <div className="p-3">
       {(roomData?.hasStarted && !showParticipant) || !isRoom ? (
         <div className="flex flex-col h-full">
-          {!isRoom && (
-            <nav className="flex items-center justify-between px-3 py-3 border-b border-lightAccent3">
-              <button
-                className={`grow px-6 py-2 ${
-                  activeTab === "Description"
-                    ? "bg-lightSecondary text-white"
-                    : ""
-                } text-grey2 hover:text-white rounded-lg`}
-                onClick={() => setActiveTab("Description")}
-              >
-                Description
-              </button>
-              <button
-                className={`grow px-6 py-2 ${
-                  activeTab === "Submissions"
-                    ? "bg-lightSecondary text-white"
-                    : ""
-                } text-grey2 hover:text-white rounded-lg`}
-                onClick={() => setActiveTab("Submissions")}
-              >
-                Submissions
-              </button>
-              <button
-                className={`grow px-6 py-2 ${
-                  activeTab === "Solutions"
-                    ? "bg-lightSecondary text-white"
-                    : ""
-                } text-grey2 hover:text-white rounded-lg`}
-                onClick={() => setActiveTab("Solutions")}
-              >
-                Solutions
-              </button>
-            </nav>
-          )}
           <div className="overflow-y-scroll px-3 pt-6">
             <div className="flex flex-row justify-between items-center mb-3">
               <div>
                 <h1 className="text-2xl">
                   {activeProblem?.number}. {activeProblem?.title}
                 </h1>
-                <p className="text-grey1">Question 1 of 4 </p>
+                {isRoom && <p className="text-grey1">Question 1 of 4 </p>}
               </div>
               {isRoom && (
                 <div className="flex items-center gap-x-3">
@@ -137,7 +102,7 @@ const Description = ({ isRoom, handleProblemChange }) => {
                   <br />
                   {example?.explanation && (
                     <>
-                      <span className="font-bold">Explanation:</span>
+                      <span className="font-bold">Explanation: </span>
                       {example?.explanation}
                     </>
                   )}
@@ -182,7 +147,6 @@ const Description = ({ isRoom, handleProblemChange }) => {
           <div className="flex flex-row items-center">
             <div className="flex-col">
               <h1 className="text-2xl font-bold">
-                {roomData?.owner.username}'s Room
                 {roomData?.owner?.username}'s Room
               </h1>
               <p className="text-base text-grey1 mb-3">

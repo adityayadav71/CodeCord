@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Split from "react-split";
 import { TbTerminal2 } from "react-icons/tb";
-import Description from "./Description";
+import ProblemPanel from "./ProblemPanel";
+import SubmissionPanel from "./SubmissionPanel";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
 import Chat from "../Rooms/Chat";
@@ -16,6 +17,7 @@ import queryString from "query-string";
 import { FaCog, FaCompress, FaExpand, FaUndo } from "react-icons/fa";
 import Scoreboard from "../Rooms/Scoreboard";
 import EditorSettings from "./EditorSettings";
+import { getSubmissionDetails } from "../../api/submissionDataAPI";
 
 export const ProblemContext = createContext(null);
 
@@ -24,7 +26,7 @@ const Editor = ({ isRoom }) => {
   const navigate = useNavigate();
 
   const { isLoggedIn, userData, socket, setSocket } = useContext(AuthContext);
-  let { roomData, setRoomData } = useContext(RoomContext);
+  let { roomData } = useContext(RoomContext);
 
   useEffect(() => {
     if (userData?.user?._id) {
@@ -34,10 +36,7 @@ const Editor = ({ isRoom }) => {
     }
 
     socket?.on("participant-removed", (data) => {
-      console.log(userData?.username, data);
-      if (userData?.username === data) {
-        navigate("/", { replace: true });
-      }
+      if (userData?.username === data) navigate("/", { replace: true });
     });
   }, [userData, socket]);
 
@@ -56,6 +55,8 @@ const Editor = ({ isRoom }) => {
   const [activeProblem, setActiveProblem] = useState({});
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [openScoreboard, setOpenScoreboard] = useState(false);
+  const [displaySubmission, setDisplaySubmission] = useState(false);
+  const [submissionDetails, setSubmissionDetails] = useState(false);
   const params = useParams();
   const location = useLocation();
 
@@ -68,11 +69,10 @@ const Editor = ({ isRoom }) => {
 
     const loadProblems = async () => {
       let response;
-      if (isRoom) {
-        response = await getProblem(selectedProblems);
-      } else {
-        response = await getProblem([params.name]);
-      }
+      isRoom
+        ? (response = await getProblem(selectedProblems))
+        : (response = await getProblem([params.name]));
+
       setProblems(response.problems);
       setActiveProblem(response.problems[0]);
     };
@@ -118,23 +118,28 @@ const Editor = ({ isRoom }) => {
 
   const handleActiveProblemChange = (e) => {
     const direction = e.target.closest(".switch").dataset.position;
-    if (direction === "prev") {
+    if (direction === "prev")
       problems.forEach((problem, i) => {
         if (problem._id === activeProblem._id && i - 1 >= 0) {
           setActiveProblem(problems[i - 1]);
         }
       });
-    } else if (direction === "next") {
+    else if (direction === "next")
       problems.forEach((problem, i) => {
         if (problem._id === activeProblem._id && i + 1 < problems.length) {
           setActiveProblem(problems[i + 1]);
         }
       });
-    }
   };
 
   const handleRunCode = () => {};
   const handleSubmitCode = () => {};
+  
+  const handleSubmissionDisplay = async (submissionId) => {
+    setDisplaySubmission(true);
+    const submission = await getSubmissionDetails(submissionId);
+    setSubmissionDetails(submission);
+  };
 
   return (
     <ProblemContext.Provider value={{ problems, activeProblem }}>
@@ -147,9 +152,11 @@ const Editor = ({ isRoom }) => {
         snapOffset={[300, 0, 200]}
       >
         <div className="bg-transparentSecondary overflow-x-hidden">
-          <Description
+          <ProblemPanel
             isRoom={isRoom}
+            handleSubmissionDisplay={handleSubmissionDisplay}
             handleProblemChange={handleActiveProblemChange}
+            setDisplaySubmission={setDisplaySubmission}
           />
         </div>
         <div>
@@ -160,13 +167,24 @@ const Editor = ({ isRoom }) => {
             minSize={[260, 0]}
             snapOffset={[0, 100]}
           >
-            <div ref={editorRef} className="z-[-1] h-full bg-primary">
-              <CodeEditor
-                isRoom={isRoom}
-                editorSettings={editorSettings}
-                setEditorSettings={setEditorSettings}
-              />
-            </div>
+            {displaySubmission ? (
+              <div ref={editorRef} className="z-[-1] h-full bg-primary">
+                <SubmissionPanel
+                  isRoom={isRoom}
+                  submissionDetails={submissionDetails}
+                  setSubmissionDetails={setSubmissionDetails}
+                  setDisplaySubmission={setDisplaySubmission}
+                />
+              </div>
+            ) : (
+              <div ref={editorRef} className="z-[-1] h-full bg-primary">
+                <CodeEditor
+                  isRoom={isRoom}
+                  editorSettings={editorSettings}
+                  setEditorSettings={setEditorSettings}
+                />
+              </div>
+            )}
             <div className="bg-lightAccent3 z-10">
               {Object.keys(problems).length > 0 && (
                 <Console
