@@ -27,12 +27,7 @@ const AppLayout = ({ handleLogout }) => {
   }, [userData, socket]);
 
   socket?.on("updated-room-data", async (data) => {
-    // 1. Check if user is the host and assign iAmHost field value
-    let iAmHost = false;
-    const userId = userData?._id;
-    if (userId === data?.owner) iAmHost = true;
-
-    setRoomData({ ...data, iAmHost });
+    setRoomData(data);
   });
 
   socket?.on("room-ended", () => {
