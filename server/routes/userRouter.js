@@ -24,6 +24,7 @@ router
   .route("/profile")
   .get(authController.protect, userController.getUserProfile)
   .patch(
+    authController.protect,
     userController.upload.single("file"),
     userController.updateUserProfile
   );
