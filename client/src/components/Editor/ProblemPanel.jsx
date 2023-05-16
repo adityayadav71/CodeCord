@@ -10,18 +10,18 @@ const ProblemPanel = ({
   handleProblemChange,
   setDisplaySubmission,
 }) => {
-  const [activeTab, setActiveTab] = useState("Description");
+  const [activeTab, setActiveTab] = useState(1);
 
   return (
     <>
       {!isRoom && (
-        <nav className="flex items-center justify-between px-3 py-3 border-b border-lightAccent3">
+        <nav className="flex items-center justify-between gap-3 px-3 py-3 border-b border-lightAccent3">
           <button
             className={`grow px-6 py-2 ${
-              activeTab === "Description" ? "bg-lightSecondary text-white" : ""
-            } text-grey2 hover:text-white rounded-lg`}
+              activeTab === 1 ? "bg-lightSecondary text-white" : ""
+            } text-grey2 font-bold hover:bg-lightAccent3 hover:text-white rounded-lg`}
             onClick={() => {
-              setActiveTab("Description");
+              setActiveTab(1);
               setDisplaySubmission(false);
             }}
           >
@@ -29,10 +29,10 @@ const ProblemPanel = ({
           </button>
           <button
             className={`grow px-6 py-2 ${
-              activeTab === "Solutions" ? "bg-lightSecondary text-white" : ""
-            } text-grey2 hover:text-white rounded-lg`}
+              activeTab === 2 ? "bg-lightSecondary text-white" : ""
+            } text-grey2 font-bold hover:bg-lightAccent3 hover:text-white rounded-lg`}
             onClick={() => {
-              setActiveTab("Solutions");
+              setActiveTab(2);
               setDisplaySubmission(false);
             }}
           >
@@ -40,26 +40,26 @@ const ProblemPanel = ({
           </button>
           <button
             className={`grow px-6 py-2 ${
-              activeTab === "Submissions" ? "bg-lightSecondary text-white" : ""
-            } text-grey2 hover:text-white rounded-lg`}
-            onClick={() => setActiveTab("Submissions")}
+              activeTab === 3 ? "bg-lightSecondary text-white" : ""
+            } text-grey2 font-bold hover:bg-lightAccent3 hover:text-white rounded-lg`}
+            onClick={() => setActiveTab(3)}
           >
             Submissions
           </button>
         </nav>
       )}
-      {activeTab === "Description" ? (
+      {activeTab === 1 ? (
         <Description
           isRoom={isRoom}
           handleProblemChange={handleProblemChange}
         />
-      ) : activeTab === "Submissions" ? (
+      ) : activeTab === 2 ? (
+        <Solutions isRoom={isRoom} />
+      ) : (
         <Submissions
           isRoom={isRoom}
           handleSubmissionDisplay={handleSubmissionDisplay}
         />
-      ) : (
-        <Solutions isRoom={isRoom} />
       )}
     </>
   );
