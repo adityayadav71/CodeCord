@@ -42,6 +42,9 @@ const Editor = ({ isRoom }) => {
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
+  const [editorSizes, setEditorSizes] = useState(
+    consoleOpen ? [70, 30] : [100, 0]
+  );
   const [editorSettings, setEditorSettings] = useState({
     theme: themes.dracula,
     themeName: "default",
@@ -83,6 +86,9 @@ const Editor = ({ isRoom }) => {
     const sizes = JSON.parse(localStorage.getItem("sizes"));
     if ((isRoom && sizes?.length === 3) || (!isRoom && sizes?.length === 2))
       setSizes(sizes);
+
+    const editorSizes = JSON.parse(localStorage.getItem("editorSizes"));
+    setEditorSizes(editorSizes);
   }, []);
 
   useEffect(() => {
@@ -101,6 +107,19 @@ const Editor = ({ isRoom }) => {
     localStorage.setItem("sizes", JSON.stringify(sizes));
     setSizes(sizes);
   };
+
+  const updateEditorSize = (sizes) => {
+    localStorage.setItem("editorSizes", JSON.stringify(sizes));
+    setEditorSizes(sizes);
+  };
+
+  useEffect(() => {
+    setEditorSizes(
+      consoleOpen
+        ? JSON.parse(localStorage.getItem("editorSizes")) || [70, 30]
+        : [100, 0]
+    );
+  }, [consoleOpen]);
 
   const handleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
@@ -134,7 +153,7 @@ const Editor = ({ isRoom }) => {
 
   const handleRunCode = () => {};
   const handleSubmitCode = () => {};
-  
+
   const handleSubmissionDisplay = async (submissionId) => {
     setDisplaySubmission(true);
     const submission = await getSubmissionDetails(submissionId);
@@ -151,7 +170,7 @@ const Editor = ({ isRoom }) => {
         maxSize={[2560, 2560, 250]}
         snapOffset={[300, 0, 200]}
       >
-        <div className="bg-transparentSecondary overflow-x-hidden">
+        <div className="flex flex-col bg-transparentSecondary overflow-x-hidden">
           <ProblemPanel
             isRoom={isRoom}
             handleSubmissionDisplay={handleSubmissionDisplay}
@@ -162,8 +181,9 @@ const Editor = ({ isRoom }) => {
         <div>
           <Split
             style={{ height: "calc(100% - 56px)" }}
+            onDrag={updateEditorSize}
+            sizes={editorSizes}
             direction="vertical"
-            sizes={consoleOpen ? [70, 30] : [100, 0]}
             minSize={[260, 0]}
             snapOffset={[0, 100]}
           >
