@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../App";
-import { FaTimes, FaUserAlt } from "react-icons/fa";
+import { FaTimes, FaRegTimesCircle, FaUserAlt } from "react-icons/fa";
 import CodeMirror from "@uiw/react-codemirror";
 import { java } from "@codemirror/lang-java";
 import * as themes from "@uiw/codemirror-themes-all";
+import { getAllProblemTags } from "../../api/problemDataAPI";
 
 const SubmissionPanel = ({
   isRoom,
@@ -12,8 +13,100 @@ const SubmissionPanel = ({
   setDisplaySubmission,
 }) => {
   const { userData } = useContext(AuthContext);
+  const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
+  const [problemTags, setProblemTags] = useState();
+  const [filteredTags, setFilteredTags] = useState();
+
+  const handleNewTag = (e) => {
+    const input = e.target.value;
+    if (
+      e.key === "Enter" &&
+      submissionDetails?.relatedTags?.length < 5 &&
+      filteredTags[0]?.name?.toLowerCase().startsWith(input.toLowerCase())
+    ) {
+      e.target.value = "";
+      setFilteredTags(problemTags);
+      setSubmissionDetails((prevDetails) => {
+        return {
+          ...prevDetails,
+          relatedTags: [...prevDetails.relatedTags, filteredTags[0]],
+        };
+      });
+      setTagsDropdownOpen(false);
+    } else {
+      setTagsDropdownOpen(true);
+    }
+    setFilteredTags(() =>
+      !input
+        ? problemTags.filter(
+            (tag) =>
+              !submissionDetails?.relatedTags?.some(
+                (relatedTag) => relatedTag._id === tag._id
+              )
+          )
+        : problemTags.filter(
+            (tag) =>
+              tag.name.toLowerCase().includes(input.toLowerCase()) &&
+              !submissionDetails?.relatedTags?.some(
+                (relatedTag) => relatedTag._id === tag._id
+              )
+          )
+    );
+  };
+
+  const addRelatedTag = (e) => {
+    const input = JSON.parse(e.currentTarget.dataset.id);
+
+    setSubmissionDetails((prevDetails) => {
+      return {
+        ...prevDetails,
+        relatedTags: [...prevDetails.relatedTags, input],
+      };
+    });
+  };
+
+  const handleDeleteTag = (e) => {
+    const input = e.currentTarget.dataset.id;
+    setSubmissionDetails((prevDetails) => {
+      return {
+        ...prevDetails,
+        relatedTags: prevDetails.relatedTags.filter((tag) => {
+          return tag._id !== input;
+        }),
+      };
+    });
+  };
+
+  useEffect(() => {
+    const closeDropdown = (event) => {
+      if (!event.target.closest(".tags-dropdown")) {
+        setTagsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("click", closeDropdown);
+    return () => {
+      document.removeEventListener("click", closeDropdown);
+    };
+  }, []);
+
+  useEffect(() => {
+    const loadTags = async () => {
+      const tags = await getAllProblemTags();
+      setProblemTags(tags);
+      setFilteredTags(
+        tags.filter(
+          (tag) =>
+            !submissionDetails?.relatedTags?.some(
+              (relatedTag) => relatedTag._id === tag._id
+            )
+        )
+      );
+    };
+    loadTags();
+  }, [submissionDetails]);
+
   return (
-    <div className="p-6 h-full bg-transparentSecondary overflow-y-scroll transition duration-300">
+    <div className="p-3 h-full bg-transparentSecondary overflow-y-scroll transition duration-300">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2">
@@ -43,13 +136,19 @@ const SubmissionPanel = ({
         </div>
         <div className="flex items-center gap-3">
           <h1
-            className={`font-bold text-xl ${
+            className={`font-bold text-xl text-right ${
               submissionDetails?.result?.description === "Accepted"
                 ? "text-green"
                 : "text-red-600"
             }`}
           >
             {submissionDetails?.result?.description}
+            <p className="text-grey1 text-right text-sm font-light">
+              Runtime{" "}
+              <span className="text-base text-white font-semibold">
+                {submissionDetails?.time} ms
+              </span>
+            </p>
           </h1>
           <FaTimes
             onClick={() => setDisplaySubmission(false)}
@@ -62,8 +161,13 @@ const SubmissionPanel = ({
           <p className="bg-accent1 font-bold rounded-full px-4">
             {submissionDetails?.language?.description}
           </p>
-          {submissionDetails?.tags?.map((tag) => (
-            <p className="px-4 font-bold rounded-full bg-accent1">{tag}</p>
+          {submissionDetails?.relatedTags?.map((tag) => (
+            <p
+              key={tag.slug}
+              className="px-4 font-bold rounded-full bg-accent1"
+            >
+              {tag.name}
+            </p>
           ))}
         </div>
         <CodeMirror
@@ -86,10 +190,60 @@ const SubmissionPanel = ({
         </div>
         <div>
           <h3 className="mb-3">Related Tags</h3>
-          <input
-            placeholder="Select tags"
-            className="w-full h-fit p-3 focus:outline-none focus:ring-1 focus:ring-accent1 bg-secondary rounded-lg resize-none"
-          />
+          <div
+            className={`relative flex items-center flex-wrap gap-3 hover:cursor-text ${
+              tagsDropdownOpen ? "mb-48" : "mb-3"
+            } p-3 focus:ring-1 focus:ring-accent1 bg-secondary rounded-lg`}
+            onClick={() => setTagsDropdownOpen((prevState) => !prevState)}
+          >
+            {submissionDetails?.relatedTags?.map((tag) => (
+              <div
+                key={tag.slug}
+                className="flex flex-row items-center flex-wrap gap-3 px-3 w-max bg-primary rounded-full"
+              >
+                {tag.name}
+                <button
+                  className="hover:text-accent1 hover:cursor-pointer"
+                  data-id={tag._id}
+                  onClick={handleDeleteTag}
+                >
+                  <FaRegTimesCircle />
+                </button>
+              </div>
+            ))}
+            {submissionDetails?.relatedTags?.length < 5 && (
+              <input
+                placeholder="Select tags"
+                onKeyUp={handleNewTag}
+                className="tags-dropdown grow h-fit focus:outline-none bg-secondary"
+              />
+            )}
+            <div
+              className={`tags-dropdown absolute ${
+                tagsDropdownOpen ? "" : "hidden"
+              } p-3 mt-2 top-full left-0 w-full rounded-lg max-h-44 bg-secondary overflow-y-scroll`}
+            >
+              {filteredTags?.length !== 0 ? (
+                filteredTags?.map((tag) => (
+                  <div
+                    key={tag.slug}
+                    data-id={JSON.stringify(tag)}
+                    onClick={addRelatedTag}
+                    className="px-3 py-2 rounded-lg first:bg-lightSecondary hover:cursor-pointer hover:bg-lightSecondary"
+                  >
+                    {tag.name}
+                  </div>
+                ))
+              ) : (
+                <div className="px-3 py-2 rounded-lg text-grey1">
+                  No tags Found
+                </div>
+              )}
+            </div>
+            <p className="ml-auto text-grey1">
+              {submissionDetails?.relatedTags?.length}/5
+            </p>
+          </div>
         </div>
       </div>
     </div>

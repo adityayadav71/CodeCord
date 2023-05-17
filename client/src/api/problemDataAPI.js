@@ -15,6 +15,11 @@ export const getProblem = async (slugs) => {
   return response.data;
 };
 
+export const getAllProblemTags = async () => {
+  const response = await axios.get(`${BASE_URL}/problems/tags`);
+  return response.data.tags;
+};
+
 export const getRandomProblems = async () => {
   const response = await axios.get(`${BASE_URL}/problems/set/four-problems`);
   return response.data;

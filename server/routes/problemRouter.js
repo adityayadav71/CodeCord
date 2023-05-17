@@ -28,6 +28,7 @@ router
     problemController.deleteProblem
   );
 
+router.get("/tags", problemController.getAllProblemTags);
 router.get("/tag/:slug", problemController.getProblemsWithTag);
 
 router.get("/set/four-problems", problemController.get4Problem);
