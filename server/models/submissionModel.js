@@ -34,7 +34,12 @@ const submissionSchema = new mongoose.Schema({
       required: [true, "Result is required"],
     },
   },
-  tags: [String],
+  relatedTags: [
+    {
+      type: ObjectId,
+      ref: "problemTags",
+    },
+  ],
   submittedAt: Date,
 });
 
