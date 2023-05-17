@@ -3,7 +3,9 @@ const Submission = require("../models/submissionModel");
 
 exports.getSubmissionById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const submission = await Submission.findById(id).populate("userId");
+  const submission = await Submission.findById(id).populate(
+    "userId relatedTags"
+  );
 
   res.status(200).json({
     status: "success",

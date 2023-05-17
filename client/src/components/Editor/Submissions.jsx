@@ -262,8 +262,10 @@ const Submissions = ({ handleSubmissionDisplay }) => {
                 <p className="px-4 font-bold rounded-full bg-accent1">
                   {submission?.language?.description}
                 </p>
-                {submission?.tags?.map((tag) => (
-                  <p className="px-4 font-bold rounded-full bg-accent1">{tag}</p>
+                {submission?.relatedTags?.map((tag) => (
+                  <p key={tag.slug} className="px-4 font-bold rounded-full bg-accent1">
+                    {tag.name}
+                  </p>
                 ))}
               </div>
               <FaChevronRight className="ml-auto" />

@@ -68,7 +68,8 @@ exports.getUserSubmissions = catchAsync(async (req, res, next) => {
     .populate({
       path: "submissions",
       match: { problemId: problemId },
-    });
+    })
+    .populate("submissions.relatedTags");
 
   res.status(200).json({
     status: "success",

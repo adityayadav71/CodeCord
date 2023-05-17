@@ -19,6 +19,15 @@ exports.getAllProblems = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getAllProblemTags = catchAsync(async (req, res, next) => {
+  const tags = await ProblemTags.find();
+  console.log(tags);
+  res.status(200).json({
+    status: "success",
+    tags,
+  });
+});
+
 exports.createProblem = catchAsync(async (req, res, next) => {
   if (!req.body.tags) {
     return next(new AppError("Problem should contain atleast 1 tag", 404));
