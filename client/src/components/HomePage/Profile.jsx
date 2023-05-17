@@ -27,7 +27,7 @@ const Profile = () => {
   const [isMyProfile, setIsMyProfile] = useState(false);
   const [profileData, setProfileData] = useState({});
   const [editing, setEditing] = useState(false);
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(userData?.profile?.skills);
   const [countries, setCountries] = useState([]);
 
   const params = useParams();
@@ -381,7 +381,6 @@ const Profile = () => {
               {editing ? (
                 <div className="flex items-center flex-wrap gap-3 p-3 w-full bg-lightSecondary rounded-lg">
                   {tags &&
-                    console.log(tags) &&
                     tags?.map((tag, index) => (
                       <div
                         key={index}
@@ -406,7 +405,9 @@ const Profile = () => {
                 </div>
               ) : profileData?.skills?.length !== 0 ? (
                 profileData?.skills?.map((skill) => (
-                  <span className="px-3 rounded-lg bg-primary">{skill}</span>
+                  <span key={skill} className="px-3 rounded-lg bg-primary">
+                    {skill}
+                  </span>
                 ))
               ) : (
                 <p className="leading-6">
@@ -456,8 +457,11 @@ const Profile = () => {
             </h2>
             {profileData?.friends?.length !== 0 ? (
               <div className="z-[2] grow">
-                {profileData?.friends?.map((friend) => (
-                  <div className="flex flex-row rounded-xl w-full gap-x-3 items-center p-3 hover:bg-hover hover:cursor-pointer">
+                {profileData?.friends?.map((friend, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-row rounded-xl w-full gap-x-3 items-center p-3 hover:bg-hover hover:cursor-pointer"
+                  >
                     <div className="flex flex-row items-center justify-center h-12 w-12 bg-grey2 rounded-full">
                       <FaUserAlt className="text-4xl hover:cursor-pointer" />
                     </div>
