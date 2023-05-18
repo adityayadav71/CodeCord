@@ -72,7 +72,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-message", (data, roomId) => {
-    console.log(roomId);
     socket.to(roomId).emit("receive-message", data);
   });
 
