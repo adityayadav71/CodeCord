@@ -40,6 +40,7 @@ const submissionSchema = new mongoose.Schema({
       ref: "problemTags",
     },
   ],
+  notes: String,
   submittedAt: Date,
 });
 
