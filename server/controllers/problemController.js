@@ -21,7 +21,6 @@ exports.getAllProblems = catchAsync(async (req, res, next) => {
 
 exports.getAllProblemTags = catchAsync(async (req, res, next) => {
   const tags = await ProblemTags.find();
-  console.log(tags);
   res.status(200).json({
     status: "success",
     tags,

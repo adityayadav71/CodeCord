@@ -5,3 +5,13 @@ export const getSubmissionDetails = async (submissionId) => {
   const response = await axios.get(`${BASE_URL}/submissions/${submissionId}`);
   return response.data.submission;
 };
+
+export const updateSubmissionDetails = async (submissionDetails) => {
+  const response = await axios.post(
+    `${BASE_URL}/submissions/${submissionDetails._id}`,
+    {
+      data: submissionDetails,
+    }
+  );
+  return response.data.submission;
+};

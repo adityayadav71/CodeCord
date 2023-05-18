@@ -4,6 +4,7 @@ import { FaTimes, FaRegTimesCircle, FaUserAlt } from "react-icons/fa";
 import CodeMirror from "@uiw/react-codemirror";
 import { java } from "@codemirror/lang-java";
 import * as themes from "@uiw/codemirror-themes-all";
+import { updateSubmissionDetails } from "../../api/submissionDataAPI";
 import { getAllProblemTags } from "../../api/problemDataAPI";
 
 const SubmissionPanel = ({
@@ -77,6 +78,31 @@ const SubmissionPanel = ({
     });
   };
 
+  function debounce(func, timeout = 1000) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(this, args);
+      }, timeout);
+    };
+  }
+
+  async function updateNote(e) {
+    setSubmissionDetails((prevDetails) => {
+      return {
+        ...prevDetails,
+        notes: e.target.value,
+      };
+    });
+    await updateSubmissionDetails({
+      ...submissionDetails,
+      notes: e.target.value,
+    });
+  }
+
+  const handleNoteChange = debounce((e) => updateNote(e));
+
   useEffect(() => {
     const closeDropdown = (event) => {
       if (!event.target.closest(".tags-dropdown")) {
@@ -103,6 +129,17 @@ const SubmissionPanel = ({
       );
     };
     loadTags();
+  }, []);
+
+  useEffect(() => {
+    setFilteredTags(
+      problemTags?.filter(
+        (tag) =>
+          !submissionDetails?.relatedTags?.some(
+            (relatedTag) => relatedTag._id === tag._id
+          )
+      )
+    );
   }, [submissionDetails]);
 
   return (
@@ -184,6 +221,9 @@ const SubmissionPanel = ({
         <div>
           <h3 className="mb-3">Notes</h3>
           <textarea
+            defaultValue={submissionDetails?.notes}
+            maxLength="512"
+            onKeyUp={handleNoteChange}
             placeholder="Write your notes here..."
             className="w-full h-fit p-3 focus:outline-none focus:ring-1 focus:ring-accent1 bg-secondary rounded-lg resize-none"
           ></textarea>
