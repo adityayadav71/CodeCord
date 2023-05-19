@@ -18,7 +18,7 @@ const SubmissionPanel = ({
   const [problemTags, setProblemTags] = useState();
   const [filteredTags, setFilteredTags] = useState();
 
-  const handleNewTag = (e) => {
+  const handleNewTag = async (e) => {
     const input = e.target.value;
     if (
       e.key === "Enter" &&
@@ -55,7 +55,7 @@ const SubmissionPanel = ({
     );
   };
 
-  const addRelatedTag = (e) => {
+  const addRelatedTag = async (e) => {
     const input = JSON.parse(e.currentTarget.dataset.id);
 
     setSubmissionDetails((prevDetails) => {
@@ -66,14 +66,12 @@ const SubmissionPanel = ({
     });
   };
 
-  const handleDeleteTag = (e) => {
+  const handleDeleteTag = async (e) => {
     const input = e.currentTarget.dataset.id;
     setSubmissionDetails((prevDetails) => {
       return {
         ...prevDetails,
-        relatedTags: prevDetails.relatedTags.filter((tag) => {
-          return tag._id !== input;
-        }),
+        relatedTags: prevDetails.relatedTags.filter((tag) => tag._id !== input),
       };
     });
   };
@@ -99,6 +97,10 @@ const SubmissionPanel = ({
       ...submissionDetails,
       notes: e.target.value,
     });
+  }
+
+  async function updateTags() {
+    await updateSubmissionDetails(submissionDetails);
   }
 
   const handleNoteChange = debounce((e) => updateNote(e));
@@ -140,6 +142,7 @@ const SubmissionPanel = ({
           )
       )
     );
+    updateTags();
   }, [submissionDetails]);
 
   return (

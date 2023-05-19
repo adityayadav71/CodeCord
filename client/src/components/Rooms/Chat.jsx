@@ -139,7 +139,7 @@ const Chat = ({ setOpenScoreboard }) => {
               />
             </div>
             <div className="relative">
-              {roomData?.owner !== userData?._id ? (
+              {roomData?.owner?._id !== userData?._id ? (
                 <>
                   <button
                     className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
