@@ -114,10 +114,9 @@ const Editor = ({ isRoom }) => {
   };
 
   useEffect(() => {
+    const editorSizes = JSON.parse(localStorage.getItem("editorSizes"));
     setEditorSizes(
-      consoleOpen
-        ? JSON.parse(localStorage.getItem("editorSizes")) || [70, 30]
-        : [100, 0]
+      consoleOpen ? (editorSizes[0] > 95 ? [70, 30] : editorSizes) : [100, 0]
     );
   }, [consoleOpen]);
 
