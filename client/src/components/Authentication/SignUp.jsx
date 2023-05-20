@@ -7,6 +7,7 @@ import FormErrors from "./FormErrors";
 import { signup, checkLogInStatus } from "../../api/authDataAPI";
 import { AuthContext } from "../../App";
 import { io } from "socket.io-client";
+import toast from "react-hot-toast";
 
 const SignUp = (props) => {
   const navigate = useNavigate();
@@ -39,6 +40,40 @@ const SignUp = (props) => {
         );
         setSocket(socket);
         navigate("/", { replace: true });
+        toast.custom(
+          (t) => (
+            <div
+              className={`${
+                t.visible ? "animate-enter" : "animate-leave"
+              } max-w-xl w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+            >
+              <div className="flex-1 w-0 p-4">
+                <div className="flex items-start">
+                  <div className="ml-3 flex-1">
+                    <p className="text-xl font-bold text-gray-900">
+                      Welcome to the community{" "}
+                      <b>{status?.userData?.username}</b> 🤗
+                    </p>
+                    <p className="mt-1 text-lg text-gray-500">
+                      Find your friends and start a room. Have a great time!
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex border-l border-gray-200">
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-lg font-medium text-accent1 hover:text-lightAccent1 focus:outline-none focus:ring-2 focus:ring-accent1"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            duration: 60000,
+          }
+        );
       }
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);
