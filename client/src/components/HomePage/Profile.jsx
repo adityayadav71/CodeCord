@@ -10,6 +10,7 @@ import { getUserProfile, updateUserProfile } from "../../api/profileDataAPI";
 import { useEffect, useState, useRef, useContext } from "react";
 import { AuthContext } from "../../App";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const { userData, setUserData } = useContext(AuthContext);
@@ -98,7 +99,8 @@ const Profile = () => {
     setModalOpen((prev) => !prev);
   };
 
-  const updateAvatar = () => {
+  const updateAvatar = (e) => {
+    e.preventDefault();
     fileInputRef.current.click();
   };
 
@@ -106,7 +108,7 @@ const Profile = () => {
     const file = e.target.files[0];
     const imageMimeType = /image\/(png|jpg|jpeg)/i;
     if (!file.type.match(imageMimeType)) {
-      alert("Image mime type is not valid");
+      toast.error("Image mime type is not valid");
       return;
     }
     setFile(file);
@@ -132,16 +134,17 @@ const Profile = () => {
       formData.append("file", file);
       formData.append("data", JSON.stringify({ username: username }));
 
-      const response = await updateUserProfile(formData);
-
-      if (response.userData) {
-        setUserData(response.userData);
-        setProfileData(response.userData.profile);
+      try {
+        const response = await updateUserProfile(formData);
+        setProfileData(response.profileData);
+        toast.success("Avatar updated successfully.");
+      } catch (err) {
+        toast.error("Something went wrong! Please try again.");
       }
 
       setModalOpen(false);
     } else {
-      alert("No files uploaded");
+      toast.error("No files uploaded");
     }
   };
 
@@ -159,14 +162,20 @@ const Profile = () => {
 
     formData.append("data", JSON.stringify(modData));
 
-    const response = await updateUserProfile(formData);
-    if (response.profileData) setProfileData(response.profileData);
+    try {
+      const response = await updateUserProfile(formData);
+      setProfileData(response.profileData);
+      toast.success("Profile data updated successfully.");
+    } catch (err) {
+      toast.error("Something went wrong! Please try again.");
+    }
   };
 
-  const clearPreview = () => {
-    setModalOpen(false);
+  const clearPreview = (e) => {
+    e.preventDefault();
     setFile(null);
     setPreview(null);
+    setModalOpen(false);
   };
 
   const addTag = (e) => {
@@ -191,7 +200,7 @@ const Profile = () => {
       <div
         className={`modal 
         ${modalOpen ? "scale-100 opacity-1" : "scale-0 opacity-0"} 
-        fixed z-[9999] h-[60%] w-[40%] transition-all overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col items-center justify-center gap-y-3 rounded-lg p-6`}
+        fixed z-[9999] h-[60%] w-[40%] transition-all duration-300 overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col items-center justify-center gap-y-3 rounded-lg p-6`}
       >
         <div className="rounded-lg w-64 h-64">
           {preview ? (
@@ -222,10 +231,7 @@ const Profile = () => {
             className="w-64 hidden"
           />
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              updateAvatar();
-            }}
+            onClick={(e) => updateAvatar(e)}
             className="flex items-center justify-center w-full gap-x-3 bg-accent1 hover:cursor-pointer hover:bg-lightAccent1 px-6 py-2 font-bold rounded-lg"
           >
             <FaCamera />
@@ -240,10 +246,7 @@ const Profile = () => {
             />
             <button
               className="px-6 py-2 bg-grey1 hover:bg-red-500 rounded-lg text-primary hover:cursor-pointer font-bold"
-              onClick={(e) => {
-                e.preventDefault();
-                clearPreview();
-              }}
+              onClick={(e) => clearPreview(e)}
             >
               Cancel
             </button>
@@ -252,9 +255,7 @@ const Profile = () => {
       </div>
       <div className="relative flex flex-row items-center h-20 w-full rounded-3xl mt-10 p-12 bg-secondary">
         <div
-          onClick={() => {
-            if (isMyProfile) openAvatarModal();
-          }}
+          onClick={() => isMyProfile && openAvatarModal()}
           className="modal group absolute flex items-center justify-center w-24 h-24 hover:cursor-pointer rounded-lg overflow-hidden bg-grey2 shadow shadow-heading -top-12 left-1/2 -translate-x-1/2"
         >
           {imageURL ? (
