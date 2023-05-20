@@ -16,6 +16,7 @@ import { createContext, useState, useEffect } from "react";
 import { logout, checkLogInStatus } from "./api/authDataAPI";
 import Profile from "./components/HomePage/Profile";
 import { io } from "socket.io-client";
+import toast, { Toaster } from "react-hot-toast";
 
 export const AuthContext = createContext(null);
 
@@ -50,6 +51,7 @@ function App() {
       const loggedOut = await logout();
       setIsLoggedIn(!loggedOut);
       navigate("/", { replace: true });
+      toast.success("Logged out successfully!");
     } catch (err) {
       console.log(err);
     }
@@ -122,6 +124,7 @@ function App() {
           </div>
         </div>
       )}
+      <Toaster />
     </AuthContext.Provider>
   );
 }

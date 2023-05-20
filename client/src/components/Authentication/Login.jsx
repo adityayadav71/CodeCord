@@ -7,6 +7,7 @@ import FormErrors from "./FormErrors";
 import { AuthContext } from "../../App";
 import { login, checkLogInStatus } from "../../api/authDataAPI";
 import { io } from "socket.io-client";
+import toast from "react-hot-toast";
 
 const Login = (props) => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const Login = (props) => {
       );
       setSocket(socket);
       navigate("/", { replace: true });
+      toast.success("Logged in successfully!");
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);
     }
