@@ -14,12 +14,17 @@ In addition to the core features found on platforms like leetcode.com, CodeCord 
 
 CodeCord combines problem-solving, competition, and collaborative coding in a single platform, providing an enriched coding experience for users.
 
+## Deployment:
+
+1. [Live-Website](https://codecord.tech)
+2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1)
+
 ## Installation
 
 **Prerequisites:**
 
-1. Git: Install Git from [here](https://git-scm.com/downloads).
-2. Node.js: Install Node.js from [here](https://nodejs.org/en/download/).
+1. Git: Download Git from [here](https://git-scm.com/downloads).
+2. Node.js: Download Node.js from [here](https://nodejs.org/en/download/).
 
 Follow the steps below to install and set up CodeCord:
 
@@ -92,11 +97,6 @@ Make sure to follow each step carefully to properly install and run CodeCord ðŸ˜
 ![Room Design Prototype](/room.jpg)
 ![Room Participants List](/room-participants.jpg)
 ![User Profile Page](/profile.jpg)
-
-## Links and Resources:
-
-1. [Vercel-Deployment](https://www.codecord.vercel.app/)
-2. [Figma Design File](https://www.figma.com/file/8DlxMlZ3GNMAJzfSPmyvxi/CodeCord---Design-File?t=qgqGK3Qh1nPGnsIY-1)
 
 ## Tech Stack
 
