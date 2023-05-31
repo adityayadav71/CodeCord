@@ -55,11 +55,7 @@ function serverTime() {
 const io = require("socket.io")(server, {
   path: "/api/v1/socket.io",
   cors: {
-    origin: [
-      "https://admin.socket.io",
-      "http://localhost:5173",
-      "https://codecord.vercel.app",
-    ],
+    origin: process.env.ALLOWED_ORIGINS.split(","),
     credentials: true,
   },
 });
