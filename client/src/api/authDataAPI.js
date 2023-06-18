@@ -3,7 +3,7 @@ axios.defaults.withCredentials = true;
 import { BASE_URL } from "./apiConfig";
 
 export const checkLogInStatus = async () => {
-const response = await axios.get(`${BASE_URL}/users/isLoggedIn`, {
+  const response = await axios.get(`${BASE_URL}/users/isLoggedIn`, {
     headers: {
       "Access-Control-Allow-Credentials": true,
     },

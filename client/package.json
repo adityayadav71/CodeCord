@@ -8,6 +8,7 @@
     "prod": "vite --mode production",
     "build": "vite build",
     "preview": "vite preview",
+    "serve": "serve -s dist -l 5173",
     "build:tailwind": "tailwindcss build src/styles/tailwind.css -o src/styles/index.css"
   },
   "dependencies": {
