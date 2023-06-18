@@ -8,6 +8,7 @@ import { AuthContext } from "../../App";
 import { login, checkLogInStatus } from "../../api/authDataAPI";
 import { io } from "socket.io-client";
 import toast from "react-hot-toast";
+import { SOCKET_URL } from "../../api/apiConfig";
 
 const Login = (props) => {
   const navigate = useNavigate();
@@ -27,10 +28,7 @@ const Login = (props) => {
       const status = await checkLogInStatus();
       setIsLoggedIn(status.isLoggedIn);
       setUserData(status.userData);
-      const socket = io(
-        import.meta.env.MODE === "production"
-          ? import.meta.env.VITE_API_URL
-          : import.meta.env.DEV_API_URL,
+      const socket = io(SOCKET_URL,
         {
           path: "/api/v1/socket.io",
         }

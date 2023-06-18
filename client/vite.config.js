@@ -14,4 +14,15 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["axios"],
+          shared: ["react", "react-dom"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 });

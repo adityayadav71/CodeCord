@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import NotFound from "./utilities/NotFound";
 import LandingPage from "./components/LandingPage/index";
 import Contest from "./components/Contests/index";
@@ -17,6 +17,7 @@ import { logout, checkLogInStatus } from "./api/authDataAPI";
 import Profile from "./components/HomePage/Profile";
 import { io } from "socket.io-client";
 import toast, { Toaster } from "react-hot-toast";
+import { SOCKET_URL } from "./api/apiConfig";
 
 export const AuthContext = createContext(null);
 
@@ -30,14 +31,9 @@ function App() {
     const loadData = async () => {
       const status = await checkLogInStatus();
       if (status.isLoggedIn && socket === null) {
-        const socket = io(
-          import.meta.env.MODE === "production"
-            ? import.meta.env.VITE_API_URL
-            : import.meta.env.DEV_API_URL,
-          {
-            path: "/api/v1/socket.io",
-          }
-        );
+        const socket = io(SOCKET_URL, {
+          path: "/api/v1/socket.io",
+        });
         setSocket(socket);
       }
       setIsLoggedIn(status.isLoggedIn);

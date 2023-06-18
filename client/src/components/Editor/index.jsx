@@ -83,12 +83,12 @@ const Editor = ({ isRoom }) => {
   }, []);
 
   useEffect(() => {
-    const sizes = JSON.parse(localStorage.getItem("sizes"));
-    if ((isRoom && sizes?.length === 3) || (!isRoom && sizes?.length === 2))
+    const sizes = JSON.parse(localStorage?.getItem("sizes"));
+    if ((isRoom && sizes && sizes?.length === 3) || (!isRoom && sizes && sizes?.length === 2))
       setSizes(sizes);
 
-    const editorSizes = JSON.parse(localStorage.getItem("editorSizes"));
-    setEditorSizes(editorSizes);
+    const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
+    editorSizes && setEditorSizes(editorSizes);
   }, []);
 
   useEffect(() => {
@@ -114,9 +114,9 @@ const Editor = ({ isRoom }) => {
   };
 
   useEffect(() => {
-    const editorSizes = JSON.parse(localStorage.getItem("editorSizes"));
+    const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
     setEditorSizes(
-      consoleOpen ? (editorSizes[0] > 95 ? [70, 30] : editorSizes) : [100, 0]
+      consoleOpen && editorSizes ? (editorSizes[0] > 95 ? [70, 30] : editorSizes) : [100, 0]
     );
   }, [consoleOpen]);
 

@@ -35,7 +35,7 @@ const HomeNavbar = ({ handleLogout }) => {
     // 2. Create Room in Database - Returns RoomID
     try {
       const result = await createRoom(socket, roomID);
-
+      
       setModal(
         <CreateRoom
           isContest={false}
@@ -45,7 +45,7 @@ const HomeNavbar = ({ handleLogout }) => {
         />
       );
     } catch (err) {
-      window.alert(err);
+	window.alert(err);
     }
   };
 

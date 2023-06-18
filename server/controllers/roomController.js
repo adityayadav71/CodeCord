@@ -45,9 +45,10 @@ exports.checkHostPermissions = async (req, res, next) => {
 
 exports.createRoom = catchAsync(async (req, res, next) => {
   const { roomId } = req.body;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   let user = await User.findById(userId);
+
   const currentTimeStamp = Date.now();
 
   //1) User created room but not updated/Joined that room (only opened the modal & closed it)
