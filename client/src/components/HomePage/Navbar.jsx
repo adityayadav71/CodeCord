@@ -6,6 +6,7 @@ import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
 import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
+import { toast } from "react-hot-toast";
 
 const HomeNavbar = ({ handleLogout }) => {
   const { isLoggedIn, userData, socket } = useContext(AuthContext);
@@ -34,8 +35,8 @@ const HomeNavbar = ({ handleLogout }) => {
     const roomID = nanoid();
     // 2. Create Room in Database - Returns RoomID
     try {
-      const result = await createRoom(socket, roomID);
-      
+      const result = await createRoom(socket, roomID, userData?.username);
+
       setModal(
         <CreateRoom
           isContest={false}
@@ -45,14 +46,20 @@ const HomeNavbar = ({ handleLogout }) => {
         />
       );
     } catch (err) {
-	window.alert(err);
+      toast.error("Something went wrong! Please try again.");
     }
   };
 
   const goToActiveRoom = () => {
-    navigate(`/app/room/${userData?.user?.activeRoom?.roomId}`, {
-      replace: false,
-    });
+    if (userData?.activeRoom) {
+      navigate(`/app/room/${userData?.activeRoom?.roomId}`, {
+        replace: false,
+      });
+    } else {
+      toast.error(
+        "User has not joined any room! Please try reloading the page."
+      );
+    }
   };
 
   useEffect(() => {
@@ -78,7 +85,7 @@ const HomeNavbar = ({ handleLogout }) => {
     const imgURL =
       userData?.profile?.avatar &&
       `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
-      setImageURL(imgURL);
+    setImageURL(imgURL);
   }, [userData]);
 
   return (
@@ -153,7 +160,7 @@ const HomeNavbar = ({ handleLogout }) => {
                 placeholder="Search problems, contests, users..."
               />
             </div>
-            {userData?.user?.activeRoom ? (
+            {userData?.activeRoom ? (
               <button
                 className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-xl"
                 onClick={goToActiveRoom}
@@ -188,7 +195,7 @@ const HomeNavbar = ({ handleLogout }) => {
                 className={`${
                   profileActive
                     ? "opacity-1 z-20 top-16 translate-y-0"
-                    : "opacity-0 -z-50 -translate-y-2 top-20"
+                    : "opacity-0 z-0 -translate-y-2 top-20"
                 } absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >
                 <ul className="flex flex-col gap-y-3">

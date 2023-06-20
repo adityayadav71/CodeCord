@@ -20,6 +20,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { SOCKET_URL } from "./api/apiConfig";
 
 export const AuthContext = createContext(null);
+export let loadData;
 
 function App() {
   const navigate = useNavigate();
@@ -27,18 +28,19 @@ function App() {
   const [userData, setUserData] = useState({});
   const [socket, setSocket] = useState(null);
 
+  loadData = async () => {
+    const status = await checkLogInStatus();
+    if (status.isLoggedIn && socket === null) {
+      const socket = io(SOCKET_URL, {
+        path: "/api/v1/socket.io",
+      });
+      setSocket(socket);
+    }
+    setIsLoggedIn(status.isLoggedIn);
+    setUserData(status.userData);
+  };
+
   useEffect(() => {
-    const loadData = async () => {
-      const status = await checkLogInStatus();
-      if (status.isLoggedIn && socket === null) {
-        const socket = io(SOCKET_URL, {
-          path: "/api/v1/socket.io",
-        });
-        setSocket(socket);
-      }
-      setIsLoggedIn(status.isLoggedIn);
-      setUserData(status.userData);
-    };
     loadData();
   }, []);
 
@@ -49,7 +51,7 @@ function App() {
       navigate("/", { replace: true });
       toast.success("Logged out successfully!");
     } catch (err) {
-      console.log(err);
+      toast.error("Something went wrong! Please try again.");
     }
   };
 

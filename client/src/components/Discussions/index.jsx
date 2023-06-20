@@ -1,7 +1,10 @@
 const Discussion = (props) => {
   return (
-    <div className="grow">
-      <h1>Discussion</h1>
+    <div className="grow flex items-center justify-center">
+      <pre className="text-4xl font-sans">
+              🚧
+        Work in progress
+      </pre>
     </div>
   )
 };

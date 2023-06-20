@@ -7,10 +7,11 @@ import RoomDuration from "./RoomDuration";
 import RoomInviteLink from "./RoomInviteLink";
 import RoomVisibility from "./RoomVisibility";
 import ProblemFilter from "../Problems/ProblemFilter";
-import { AuthContext } from "../../App";
+import { AuthContext, loadData } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 import { updateRoomSettings, getRoomData, joinRoom } from "../../api/roomsAPI";
+import { toast } from "react-hot-toast";
 
 export const RoomFilterContext = createContext(null);
 
@@ -61,17 +62,23 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
   const handleJoinRoom = async () => {
     const roomId = inviteRef.current.value;
     try {
-      // 1. Find Room In Database
-      const { roomData } = await joinRoom(userData, socket, roomId);
-      setRoomData(roomData);
-      setModal(null);
+      if (user.activeRoom) {
+        toast.error(
+          "You are already in a room. Leave before joining another one."
+        );
+      } else {
+        // 1. Find Room In Database
+        const { roomData } = await joinRoom(userData, socket, roomId);
+        setRoomData(roomData);
+        setModal(null);
 
-      // 2 Save newly joined room in RoomContext
-      const room = await getRoomData(roomId);
-      setRoomData(room);
+        // 2 Save newly joined room in RoomContext
+        const room = await getRoomData(roomId);
+        setRoomData(room);
 
-      // 3. Navigate user to new room
-      navigate(`app/room/${roomId}`, { replace: false });
+        // 3. Navigate user to new room
+        navigate(`app/room/${roomId}`, { replace: false });
+      }
     } catch (err) {
       window.alert(err.message);
     }
@@ -79,21 +86,29 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
 
   const handleUpdateRoom = async () => {
     try {
-      const settings = {
-        visibility,
-        roomType,
-        participantLimit,
-        timeLimit: roomType === "Default" ? 40 : timeLimit,
-        problems: selected,
-      };
-      // 1. Update Room with these settings
-      const room = await updateRoomSettings(roomId, settings);
-      setRoomData(room);
+      if (selected.length === 0) {
+        toast.error("Please select problems before creating a room.");
+      } else {
+        const settings = {
+          visibility,
+          roomType,
+          participantLimit,
+          timeLimit: roomType === "Default" ? 40 : timeLimit,
+          problems: selected,
+        };
+        // 1. Update Room with these settings
+        const room = await updateRoomSettings(roomId, settings);
+        setRoomData(room);
+        await loadData(); // update user data
 
-      setModal(null);
-      navigate(`/app/room/${roomId}?problems=${selected}`, { replace: false });
+        setModal(null);
+        toast.success("Successfully created a room.");
+        navigate(`/app/room/${roomId}?problems=${selected}`, {
+          replace: false,
+        });
+      }
     } catch (err) {
-      window.alert(err.message);
+      toast.error("Something went wrong! Please try again.");
     }
   };
 
