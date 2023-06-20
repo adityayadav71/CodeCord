@@ -228,26 +228,35 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
         </div>
         {filterInsideModal ? (
           <>
-            <button
-              className="flex flex-row gap-x-3 items-center bg-accent1 hover:bg-lightAccent1 px-3 rounded-lg"
-              onClick={handleRandomize}
-            >
-              <FaRandom />
-              Randomize
-            </button>
+            <div className="relative">
+              <button
+                className="peer h-full flex flex-row gap-x-3 items-center text-xl hover:bg-green bg-greenBackGround px-6 rounded-lg"
+                onClick={handleRandomize}
+              >
+                <FaRandom />
+              </button>
+              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-16 px-3 py-1 bg-white text-primary rounded-lg">
+                Select Random Problems
+              </div>
+            </div>
+            <div className="relative">
+              <button
+                className="peer h-full flex flex-row gap-x-3 items-center text-xl hover:bg-mediumYellow bg-yellowBackGround px-6 rounded-lg"
+                onClick={() => selected.length !== 0 && setSelected([])}
+              >
+                <FaUndo />
+              </button>
+              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-16 px-3 py-1 bg-white text-primary rounded-lg">
+                Unselect all problems
+              </div>
+            </div>
+
             <div className="flex flex-col ml-auto items-end justify-center">
               <p className="ml-auto text-base text-green font-bold">
                 {selected.length !== 0
                   ? `${selected.length}/4 problems selected`
                   : "Select upto 4 problems"}
               </p>
-              <div className="flex flex-row gap-x-3">
-                {selected.map((problem, i) => (
-                  <p key={i} className="text-white px-3 rounded-lg bg-accent1">
-                    {problem}
-                  </p>
-                ))}
-              </div>
             </div>
           </>
         ) : (
