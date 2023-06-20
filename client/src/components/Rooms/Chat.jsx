@@ -9,12 +9,13 @@ import {
   FaDoorClosed as LeaveIcon,
 } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { AuthContext } from "../../App";
+import { AuthContext, loadData } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 import InviteLinkModal from "./InviteLinkModal";
 import { startRoom, leaveRoom, endRoom } from "../../api/roomsAPI";
 import Timer from "./Timer";
+import { toast } from "react-hot-toast";
 
 const Chat = ({ setOpenScoreboard }) => {
   const { userData, socket } = useContext(AuthContext);
@@ -54,19 +55,119 @@ const Chat = ({ setOpenScoreboard }) => {
 
   const handleLeaveRoom = async () => {
     try {
-      await leaveRoom(userData.username, roomData?.roomId, socket);
-      navigate("/", { replace: true });
+      toast(
+        (t) => (
+          <div className="text-lg w-full">
+            <div className="text-xl mb-1 font-semibold">
+              Are you sure you want to leave?
+            </div>
+            <div className="text-md mb-2">
+              You will be removed from the room. You can join back anytime.
+            </div>
+            <div className="flex justify-end gap-3 ml-auto">
+              <button
+                className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300"
+                onClick={() => toast.dismiss(t.id)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-3 py-1 font-medium rounded-lg bg-accent1 hover:bg-lightAccent1 duration-300 text-white hover:lightAccent1"
+                onClick={async () => {
+                  await leaveRoom(
+                    userData.username,
+                    roomData?.roomId,
+                    socket
+                  );
+                  await loadData();
+                  toast.dismiss(t.id);
+                  navigate("/", { replace: true });
+                  toast(
+                    (t) => (
+                      <div className="flex items-center text-lg">
+                        <span className="mr-3 font-semibold">
+                         🚪You left the <b>room</b>
+                        </span>
+                        <button
+                          className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
+                          onClick={() => toast.dismiss(t.id)}
+                        >
+                          Dismiss
+                        </button>
+                      </div>
+                    ),
+                    { duration: Infinity }
+                  );
+                }}
+              >
+                Leave
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          duration: Infinity, // Prevent auto-dismissal
+        }
+      );
     } catch (err) {
-      window.alert(err);
+      toast.error("Something went wrong! Please try again.");
     }
   };
 
   const handleEndRoom = async () => {
     try {
-      await endRoom(roomData?.roomId, socket);
-      navigate("/", { replace: true });
+      toast(
+        (t) => (
+          <div className="text-lg w-full">
+            <div className="text-xl mb-1 font-semibold">
+              Are you sure you want to end?
+            </div>
+            <div className="text-md mb-2">
+              The room will be ended for all the participants.
+            </div>
+            <div className="flex justify-end gap-3 ml-auto">
+              <button
+                className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300"
+                onClick={() => toast.dismiss(t.id)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-3 py-1 font-medium rounded-lg bg-hardRed hover:bg-redBackGround duration-300 text-white hover:lightAccent1"
+                onClick={async () => {
+                  await endRoom(roomData?.roomId, socket);
+                  await loadData();
+                  toast.dismiss(t.id);
+                  navigate("/", { replace: true });
+                  toast(
+                    (t) => (
+                      <div className="flex items-center text-lg">
+                        <span className="mr-3 font-semibold">
+                          🛑 You ended the <b>room</b>
+                        </span>
+                        <button
+                          className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
+                          onClick={() => toast.dismiss(t.id)}
+                        >
+                          Dismiss
+                        </button>
+                      </div>
+                    ),
+                    { duration: Infinity }
+                  );
+                }}
+              >
+                End
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          duration: Infinity, // Prevent auto-dismissal
+        }
+      );
     } catch (err) {
-      window.alert(err);
+      toast.error("Something went wrong! Please try again.");
     }
   };
 
@@ -119,7 +220,7 @@ const Chat = ({ setOpenScoreboard }) => {
               <button className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
                 <FaPhoneAlt className="text-xl" />
               </button>
-              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 px-3 py-1 bg-white text-primary rounded-lg">
+              <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 px-3 py-1 bg-white text-primary rounded-lg">
                 Join Voice Chat
               </div>
             </div>
@@ -130,7 +231,7 @@ const Chat = ({ setOpenScoreboard }) => {
               >
                 <FaUserPlus className="text-xl" />
               </button>
-              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 px-3 py-1 bg-white text-primary rounded-lg">
+              <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 px-3 py-1 bg-white text-primary rounded-lg">
                 Invite Code
               </div>
               <InviteLinkModal
@@ -147,7 +248,7 @@ const Chat = ({ setOpenScoreboard }) => {
                   >
                     <LeaveIcon className="text-xl" />
                   </button>
-                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-14 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                  <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-14 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
                     Leave
                   </div>
                 </>
@@ -156,7 +257,7 @@ const Chat = ({ setOpenScoreboard }) => {
                   <button className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
                     <FaCog className="text-xl" />
                   </button>
-                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-14 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                  <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-14 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
                     Settings
                   </div>
                 </>

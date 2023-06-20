@@ -4,6 +4,7 @@ import Copyright from "../utilities/Copyright";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getRoomData } from "../api/roomsAPI";
 import { AuthContext } from "../App";
+import { toast } from "react-hot-toast";
 
 export const RoomContext = createContext(null);
 
@@ -31,6 +32,22 @@ const AppLayout = ({ handleLogout }) => {
   });
 
   socket?.on("room-ended", () => {
+    toast(
+      (t) => (
+        <div className="flex items-center text-lg">
+          <span className="mr-3 font-semibold">
+            🛑 The <b>room was ended</b> by the host.
+          </span>
+          <button
+            className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Dismiss
+          </button>
+        </div>
+      ),
+      { duration: Infinity }
+    );
     navigate("/", { replace: true });
   });
 

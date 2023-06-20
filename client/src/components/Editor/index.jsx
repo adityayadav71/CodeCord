@@ -11,6 +11,7 @@ import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
+import { toast } from "react-hot-toast";
 
 import { getProblem } from "../../api/problemDataAPI";
 import queryString from "query-string";
@@ -36,7 +37,25 @@ const Editor = ({ isRoom }) => {
     }
 
     socket?.on("participant-removed", (data) => {
-      if (userData?.username === data) navigate("/", { replace: true });
+      if (userData?.username === data) {
+        toast(
+          (t) => (
+            <div className="flex items-center text-lg">
+              <span className="mr-3 font-semibold">
+               🚫 The <b>host removed you</b> from the room.
+              </span>
+              <button
+                className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
+                onClick={() => toast.dismiss(t.id)}
+              >
+                Dismiss
+              </button>
+            </div>
+          ),
+          { duration: Infinity }
+        );
+        navigate("/", { replace: true });
+      }
     });
   }, [userData, socket]);
 
@@ -66,25 +85,30 @@ const Editor = ({ isRoom }) => {
   const values = queryString.parse(location.search);
 
   useEffect(() => {
-    const selectedProblems =
-      values?.problems?.split(",") || // User creating a new room
-      roomData?.settings?.problems; // User joining a new room
+    if (roomData) {
+      const selectedProblems =
+        values?.problems?.split(",") || // User creating a new room
+        roomData?.settings?.problems; // User joining a new room
 
-    const loadProblems = async () => {
-      let response;
-      isRoom
-        ? (response = await getProblem(selectedProblems))
-        : (response = await getProblem([params.name]));
+      const loadProblems = async () => {
+        let response;
+        isRoom
+          ? (response = await getProblem(selectedProblems))
+          : (response = await getProblem([params.name]));
 
-      setProblems(response.problems);
-      setActiveProblem(response.problems[0]);
-    };
-    loadProblems();
-  }, []);
+        setProblems(response.problems);
+        setActiveProblem(response.problems[0]);
+      };
+      loadProblems();
+    }
+  }, [roomData]);
 
   useEffect(() => {
     const sizes = JSON.parse(localStorage?.getItem("sizes"));
-    if ((isRoom && sizes && sizes?.length === 3) || (!isRoom && sizes && sizes?.length === 2))
+    if (
+      (isRoom && sizes && sizes?.length === 3) ||
+      (!isRoom && sizes && sizes?.length === 2)
+    )
       setSizes(sizes);
 
     const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
@@ -116,7 +140,11 @@ const Editor = ({ isRoom }) => {
   useEffect(() => {
     const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
     setEditorSizes(
-      consoleOpen && editorSizes ? (editorSizes[0] > 95 ? [70, 30] : editorSizes) : [100, 0]
+      consoleOpen && editorSizes
+        ? editorSizes[0] > 95
+          ? [70, 30]
+          : editorSizes
+        : [100, 0]
     );
   }, [consoleOpen]);
 
