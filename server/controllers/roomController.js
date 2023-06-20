@@ -7,7 +7,7 @@ const AppError = require("../utils/appError");
 const populateRoom = async (roomId) => {
   // 1. Populate roomData with owner details
   const room = await Room.findOne({ roomId }).populate("owner").lean();
-  
+
   // 2. Populate roomData with participants' details
   const data = await Promise.all(
     room?.participants?.map(async (id) => {
@@ -282,5 +282,19 @@ exports.removeParticipant = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     room: updatedRoom,
+  });
+});
+
+exports.getLiveRooms = catchAsync(async (req, res, next) => {
+  const rooms = await Room.find({ settings: { visibility: "public" } });
+  if (!roooms) {
+    res.status(404).json({
+      status: "error",
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    rooms,
   });
 });

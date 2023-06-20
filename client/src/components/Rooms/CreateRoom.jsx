@@ -62,7 +62,7 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
   const handleJoinRoom = async () => {
     const roomId = inviteRef.current.value;
     try {
-      if (user.activeRoom) {
+      if (userData?.activeRoom) {
         toast.error(
           "You are already in a room. Leave before joining another one."
         );
@@ -75,12 +75,13 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
         // 2 Save newly joined room in RoomContext
         const room = await getRoomData(roomId);
         setRoomData(room);
+        await loadData(); // update user data
 
         // 3. Navigate user to new room
         navigate(`app/room/${roomId}`, { replace: false });
       }
     } catch (err) {
-      window.alert(err.message);
+      toast.error("Something went wrong! Please try again.");
     }
   };
 

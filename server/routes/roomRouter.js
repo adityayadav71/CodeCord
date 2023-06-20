@@ -13,6 +13,7 @@ router
 router.get("/:roomId", roomController.getRoomData);
 router.post("/join", roomController.joinRoom);
 router.patch("/leave", roomController.leaveRoom);
+router.get("/live", roomController.getLiveRooms);
 // Host permissions required
 router.post(
   "/start",

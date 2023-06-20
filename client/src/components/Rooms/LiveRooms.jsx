@@ -1,35 +1,35 @@
 import RoomCard from "./RoomCard";
 import { FaUserAlt } from "react-icons/fa";
 import { AuthContext } from "../../App";
-import { useContext } from "react";
-
+import { useState, useContext, useEffect } from "react";
+import { getPublicRooms } from "../../api/roomsAPI";
 const LiveRooms = (props) => {
   const { isLoggedIn } = useContext(AuthContext);
+  const [rooms, setRooms] = useState([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const rooms = await getPublicRooms();
+      setRooms(rooms);
+    };
+    loadData();
+  }, []);
   return (
     <aside className="relative flex flex-col px-5 py-6 gap-y-4 w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
       <section className="flex flex-col grow h-80">
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
         <div className="flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full">
-          <RoomCard
-            name="Room name"
-            description="Room description"
-            participants="2"
-          />
-          <RoomCard
-            name="Room name"
-            description="Room description"
-            participants="2"
-          />
-          <RoomCard
-            name="Room name"
-            description="Room description"
-            participants="2"
-          />
-          <RoomCard
-            name="Room name"
-            description="Room description"
-            participants="2"
-          />
+          {rooms ? (
+            rooms?.map((room) => (
+              <RoomCard
+                name={room.name}
+                description={room.description}
+                participants={room.participants.length}
+              />
+            ))
+          ) : (
+            <p className="text-grey1">No live rooms found.</p>
+          )}
         </div>
       </section>
       {isLoggedIn && (
