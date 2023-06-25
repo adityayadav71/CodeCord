@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js ENV=DEV",
-    "prod": "nodemon server.js ENV=PROD"
+    "prod": "node server.js ENV=PROD"
   },
   "keywords": [],
   "author": "Aditya Yadav",

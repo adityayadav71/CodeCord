@@ -1,0 +1,29 @@
+version: 0.0
+os: linux
+
+# Hooks define the deployment lifecycle events
+hooks:
+  AferInstall:
+    - location: /scripts/after_install.sh
+      timeout: 60000
+      runas: root
+  ApplicationStart:
+    - location: /scripts/application_start.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: /scripts/application_stop.sh
+      timeout: 300
+      runas: root
+
+# Files section specifies the source and destination files for deployment
+files:
+  - source: /
+    destination: /home/ubuntu/CodeCord 
+
+# Permissions for deployment files and scripts
+permissions:
+  - object: /
+    pattern: "**"
+    owner: root
+    group: root
