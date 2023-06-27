@@ -20,11 +20,17 @@ const LiveRooms = (props) => {
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
         <div className="flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full">
           {rooms ? (
-            rooms?.map((room) => (
+            rooms?.map((room, i) => (
               <RoomCard
+                key={i}
                 name={room.name}
-                description={room.description}
+                id={room.roomId}
+                difficulty={"Hard"}
+                roomType={room.settings.roomType}
+                started={!!room.startedAt}
+                remainingTime={room.remainingTime || room.settings.timeLimit}
                 participants={room.participants.length}
+                participantLimit={room.settings.participantsLimit}
               />
             ))
           ) : (

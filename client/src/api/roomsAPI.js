@@ -139,7 +139,7 @@ export const getPublicRooms = async () => {
     if (response.status === 404) {
       return "No one is live";
     } else {
-      return response.rooms;
+      return response.data.rooms;
     }
   } catch (error) {
     console.log(error);

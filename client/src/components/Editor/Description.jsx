@@ -25,7 +25,7 @@ const Description = ({ isRoom, handleProblemChange }) => {
 
   return (
     <div className="p-3 flex flex-col overflow-y-scroll">
-      {(roomData?.hasStarted && !showParticipant) || !isRoom ? (
+      {(roomData?.startedAt && !showParticipant) || !isRoom ? (
         <div className="flex flex-col grow px-3 pt-6">
           <div className="flex flex-row justify-between items-center mb-3">
             <div>
@@ -150,7 +150,7 @@ const Description = ({ isRoom, handleProblemChange }) => {
                 {roomData?.participants?.length || 0} participants
               </p>
             </div>
-            {roomData?.hasStarted ? (
+            {roomData?.startedAt ? (
               <button
                 className="switch p-2 text-2xl ml-auto rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
                 data-position="prev"

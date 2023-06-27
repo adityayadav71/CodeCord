@@ -483,7 +483,7 @@ const Profile = () => {
                 if (editing) updateProfile();
                 setEditing((prev) => !prev);
               }}
-              className="bg-greenBackGround hover:bg-emerald-800 mb-6 w-full px-3 py-4 rounded-lg text-green font-bold text-xl"
+              className="bg-greenBackGround hover:bg-emerald-800 mb-6 w-full px-3 py-4 rounded-lg text-green-500 font-bold text-xl"
             >
               {editing ? "Done" : "Edit Profile"}
             </button>
@@ -518,7 +518,7 @@ const Profile = () => {
                 <p className="font-bold">{totalEasy}</p>
                 <div className="h-56 w-14 rounded-xl overflow-clip bg-greenBackGround relative">
                   <div
-                    className={`absolute bg-green bottom-0 w-14`}
+                    className={`absolute bg-green-500 bottom-0 w-14`}
                     style={{ height: `${percentageSolved[0]}%` }}
                   ></div>
                   <p className="absolute bottom-3 text-center w-full font-bold text-base">

@@ -14,7 +14,7 @@ const RoomInviteLink = ({ isLoading, inviteLink }) => {
     <div>
       <div className="flex items-center w-full">
         <h1>Copy Invite Code</h1>
-        <p className="text-green text-sm font-bold ml-auto">{message}</p>
+        <p className="text-green-500 text-sm font-bold ml-auto">{message}</p>
       </div>
       {isLoading ? (
         <Skeleton classes="w-full h-14 pr-16 bg-secondary p-3 focus:outline-none rounded-lg" />

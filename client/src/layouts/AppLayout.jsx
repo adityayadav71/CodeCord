@@ -18,7 +18,7 @@ const AppLayout = ({ handleLogout }) => {
     let room = userData?.activeRoom;
     const loadData = async () => {
       if (room?.roomId) {
-        room = await getRoomData(room?.roomId);
+        room = await getRoomData(room.roomId);
         socket.emit("join-room", userData, room, true);
         // If roomData is not undefined
         room && setRoomData(room);

@@ -267,7 +267,7 @@ const Chat = ({ setOpenScoreboard }) => {
         </div>
         {roomData?.owner?._id === userData?._id && (
           <div className="flex flex-row gap-x-3 w-full mb-2">
-            {roomData?.hasStarted ? (
+            {roomData?.startedAt ? (
               <>
                 <button
                   className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
@@ -284,7 +284,7 @@ const Chat = ({ setOpenScoreboard }) => {
               </>
             ) : (
               <button
-                className="flex flex-row items-center justify-center gap-x-3 font-bold py-2 px-4 grow-[5] rounded-lg bg-green hover:bg-easyGreen"
+                className="flex flex-row items-center justify-center gap-x-3 font-bold py-2 px-4 grow-[5] rounded-lg bg-green-500 hover:bg-easyGreen"
                 onClick={handleStartRoom}
               >
                 <EntryIcon className="text-2xl" />

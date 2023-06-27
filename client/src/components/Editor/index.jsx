@@ -320,7 +320,7 @@ const Editor = ({ isRoom }) => {
                     Run
                   </button>
                   <button
-                    className={`px-4 py-1 bg-green hover:bg-easyGreen rounded-lg`}
+                    className={`px-4 py-1 bg-green-500 hover:bg-easyGreen rounded-lg`}
                     onClick={handleSubmitCode}
                   >
                     Submit

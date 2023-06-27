@@ -46,7 +46,7 @@ const Scoreboard = ({ setOpenScoreboard }) => {
           </p>
         </div>
         <p>Score</p>
-        <p className="bg-green w-8 h-8 rounded-lg text-center">1</p>
+        <p className="bg-green-500 w-8 h-8 rounded-lg text-center">1</p>
         <div className="col-span-2 flex items-center gap-3 justify-self-start w-full">
           <img className="w-8 h-8 rounded-lg overflow-hidden" src="" alt="" />
           <p className="text-ellipsis overflow-hidden whitespace-nowrap text-center">

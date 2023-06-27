@@ -244,7 +244,7 @@ const Submissions = ({ handleSubmissionDisplay }) => {
                 <p
                   className={`text-xl mb-2 font-bold ${
                     submission?.result?.description === "Accepted"
-                      ? "text-green"
+                      ? "text-green-500"
                       : "text-red-600"
                   }`}
                 >
