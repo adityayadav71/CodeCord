@@ -68,7 +68,7 @@ const Problem = ({
       <div className="flex flex-row items-center p-3 text-lg">
         <div className="w-20">
           {status === "solved" ? (
-            <FaCheckCircle className="text-green" />
+            <FaCheckCircle className="text-green-500" />
           ) : status === "attempted" ? (
             <RiPulseLine className="text-mediumYellow" />
           ) : (

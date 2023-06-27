@@ -230,7 +230,7 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
           <>
             <div className="relative">
               <button
-                className="peer h-full flex flex-row gap-x-3 items-center text-xl hover:bg-green bg-greenBackGround px-6 rounded-lg"
+                className="peer h-full flex flex-row gap-x-3 items-center text-xl hover:bg-green-500 bg-greenBackGround px-6 rounded-lg"
                 onClick={handleRandomize}
               >
                 <FaRandom />
@@ -252,7 +252,7 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
             </div>
 
             <div className="flex flex-col ml-auto items-end justify-center">
-              <p className="ml-auto text-base text-green font-bold">
+              <p className="ml-auto text-base text-green-500 font-bold">
                 {selected.length !== 0
                   ? `${selected.length}/4 problems selected`
                   : "Select upto 4 problems"}

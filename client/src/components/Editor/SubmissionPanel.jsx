@@ -178,7 +178,7 @@ const SubmissionPanel = ({
           <h1
             className={`font-bold text-xl text-right ${
               submissionDetails?.result?.description === "Accepted"
-                ? "text-green"
+                ? "text-green-500"
                 : "text-red-600"
             }`}
           >

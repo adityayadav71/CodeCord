@@ -242,7 +242,7 @@ exports.startRoom = catchAsync(async (req, res, next) => {
   const expiresAt = Date.now() + room?.settings?.timeLimit * 60 * 1000;
   let updatedRoom = await Room.findOneAndUpdate(
     { roomId },
-    { hasStarted: true, expiresAt },
+    { startedAt: new Date(), expiresAt },
     { new: true }
   );
 
@@ -286,8 +286,8 @@ exports.removeParticipant = catchAsync(async (req, res, next) => {
 });
 
 exports.getLiveRooms = catchAsync(async (req, res, next) => {
-  const rooms = await Room.find({ settings: { visibility: "public" } });
-  if (!roooms) {
+  const rooms = await Room.find({ "settings.visibility": "public" });
+  if (!rooms) {
     res.status(404).json({
       status: "error",
     });

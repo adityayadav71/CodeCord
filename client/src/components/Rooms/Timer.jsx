@@ -8,7 +8,7 @@ function Timer({ roomData }) {
   const [roomEnded, setRoomEnded] = useState(false);
 
   useEffect(() => {
-    if (roomData?.hasStarted) {
+    if (roomData?.startedAt) {
       const timeLeft = (roomData?.expiresAt - Date.now()) / 1000;
       const timeLeftInSeconds =
         timeLeft < Date.now() ? timeLeft : setRoomEnded(true);
