@@ -3,6 +3,8 @@ const UserProfile = require("../models/userProfileModel");
 const Room = require("../models/roomModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const data = require("../data.json");
+const Problem = require("../models/problemModel");
 
 const populateRoom = async (roomId) => {
   // 1. Populate roomData with owner details
@@ -24,6 +26,21 @@ const populateRoom = async (roomId) => {
   room.participants = data;
 
   return room;
+};
+
+const calculateDifficulty = async (problems) => {
+  problems = await Promise.all(
+    problems.map(async (problem) => {
+      const data = await Problem.findOne({ number: problem });
+      return data.difficulty.charAt(0).toUpperCase() + data.difficulty.slice(1);
+    })
+  );
+
+  return problems.includes("Hard")
+    ? "Hard"
+    : problems.filter((value) => value === "Medium").length === 2
+    ? "Medium"
+    : "Easy";
 };
 
 exports.checkHostPermissions = async (req, res, next) => {
@@ -142,8 +159,13 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
   const { roomId, settings } = req.body;
   const userId = req.user._id;
 
+  // Calculate room difficulty
+  if (settings.difficulty === "")
+    settings.difficulty = await calculateDifficulty(settings.problems);
+
   // Create a new room
   let room = await Room.create({
+    name: data.room_names[Math.floor(Math.random() * 1000)],
     roomId,
     owner: userId,
     settings: settings,

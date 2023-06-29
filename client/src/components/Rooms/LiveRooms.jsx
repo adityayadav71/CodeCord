@@ -35,7 +35,7 @@ const LiveRooms = (props) => {
                   key={i}
                   name={room.name}
                   id={room.roomId}
-                  difficulty={"Hard"}
+                  difficulty={room.settings.difficulty}
                   roomType={room.settings.roomType}
                   started={!!room.startedAt}
                   remainingTimeInSeconds={remainingTime}

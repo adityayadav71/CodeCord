@@ -28,6 +28,7 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
   const [roomType, setRoomType] = useState(isContest ? "Contest" : "Default");
   const [visibility, setVisibility] = useState("private");
   const [timeLimit, setTimeLimit] = useState(10);
+  const [difficulty, setDifficulty] = useState("");
   const [hrs, sethrs] = useState("");
   const [mins, setmins] = useState("10 mins");
   const [selected, setSelected] = useState([]);
@@ -78,7 +79,7 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
         await loadData(); // update user data
 
         // 3. Navigate user to new room
-        navigate(`app/room/${roomId}`, { replace: false });
+        navigate(`/app/room/${roomId}`, { replace: false });
       }
     } catch (err) {
       toast.error("Something went wrong! Please try again.");
@@ -93,9 +94,10 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
         const settings = {
           visibility,
           roomType,
-          participantLimit,
+          participantsLimit: participantLimit,
           timeLimit: roomType === "Default" ? 40 : timeLimit,
           problems: selected,
+          difficulty
         };
         // 1. Update Room with these settings
         const room = await updateRoomSettings(roomId, settings);
@@ -193,6 +195,7 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
           <ProblemFilter
             selected={selected}
             setSelected={setSelected}
+            setDifficulty={setDifficulty}
             filterInsideModal={true}
           />
           <div className="flex grow overflow-y-scroll mb-3">

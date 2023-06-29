@@ -3,7 +3,12 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const roomSchema = new mongoose.Schema(
   {
-    roomId: { type: String, unique: [true, "Room Name should be unique"] },
+    name: {
+      type: String,
+      required: [true, "Room name is required"],
+      unique: [true, "Room name should be unique"],
+    },
+    roomId: { type: String, unique: [true, "Room ID should be unique"] },
     owner: {
       type: ObjectId,
       ref: "User",
@@ -42,6 +47,7 @@ const roomSchema = new mongoose.Schema(
         enum: ["public", "private"],
       },
       problems: { type: [Number], default: [1, 2, 3, 4] },
+      difficulty: String,
     },
     expiresAt: Date,
   },

@@ -61,7 +61,7 @@ const RoomCard = ({
         await loadData(); // update user data
 
         // 3. Navigate user to new room
-        navigate(`app/room/${roomId}`, { replace: false });
+        navigate(`/app/room/${roomId}`, { replace: false });
       }
     } catch (err) {
       toast.error("Something went wrong! Please try again.");
@@ -69,9 +69,9 @@ const RoomCard = ({
   };
 
   return (
-    <div className="grid grid-cols-4 grid-rows-2 p-3 bg-accent2 rounded-xl w-full h-32 leading-tight last:mb-24">
-      <div className="col-span-2">
-        <h2 className="text-xl font-bold mb-2">Room Name</h2>
+    <div className="grid grid-cols-4 grid-rows-3 p-3 bg-accent2 rounded-xl w-full leading-tight last:mb-24">
+      <div className="col-span-2 row-span-2">
+        <h2 className="text-lg leading-6 font-bold mb-2">{name}</h2>
         <span
           className={`px-2 py-1 uppercase font-semibold rounded-lg ${
             roomType === "Contest"
@@ -93,7 +93,7 @@ const RoomCard = ({
           {difficulty}
         </span>
       </div>
-      <p className="col-span-2 justify-self-end">
+      <p className="col-span-2 row-span-2 justify-self-end">
         {participants}/{participantLimit} joined
       </p>
       <div className="text-sm col-span-3 flex self-end items-center gap-3">

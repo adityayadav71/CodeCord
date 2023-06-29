@@ -13,6 +13,7 @@ const ActiveRoom = ({
   name,
   participants,
   participantsLimit,
+  difficulty,
   remainingTimeInSeconds,
   startedAt,
   roomId,
@@ -50,8 +51,16 @@ const ActiveRoom = ({
       </td>
       <td className="px-3 py-1">{formatDuration(remainingTime)}</td>
       <td className="px-3 py-1">
-        <p className="px-3 w-fit bg-greenBackGround text-easyGreen rounded-lg uppercase font-semibold">
-          Easy
+        <p
+          className={`px-3 w-fit ${
+            difficulty === "Easy"
+              ? "bg-greenBackGround text-easyGreen"
+              : difficulty === "Medium"
+              ? "bg-yellowBackGround text-mediumYellow"
+              : "bg-redBackGround text-hardRed"
+          } rounded-lg uppercase font-semibold`}
+        >
+          {difficulty}
         </p>
       </td>
       <td className="px-3 py-1">
@@ -159,6 +168,7 @@ const ActiveRooms = () => {
                 name={room.name}
                 participants={room.participants.length}
                 participantsLimit={room.settings.participantsLimit}
+                difficulty={room.settings.difficulty}
                 remainingTimeInSeconds={remainingTime}
                 startedAt={room.startedAt}
                 roomId={room.roomId}
