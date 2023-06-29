@@ -136,11 +136,7 @@ export const removeParticipant = async (username, userId, roomId, socket) => {
 export const getPublicRooms = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/rooms/live`);
-    if (response.status === 404) {
-      return "No one is live";
-    } else {
-      return response.data.rooms;
-    }
+    return response.status === 404 ? "No one is live" : response.data.rooms;
   } catch (error) {
     console.log(error);
   }

@@ -4,7 +4,6 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const roomSchema = new mongoose.Schema(
   {
     roomId: { type: String, unique: [true, "Room Name should be unique"] },
-
     owner: {
       type: ObjectId,
       ref: "User",
@@ -44,21 +43,10 @@ const roomSchema = new mongoose.Schema(
       },
       problems: { type: [Number], default: [1, 2, 3, 4] },
     },
-    expiresAt: String,
+    expiresAt: Date,
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );
-
-roomSchema.virtual("remainingTime").get(function () {
-  if (!this.startedAt) return 0; // Room hasn't started yet
-
-  const currentTime = new Date();
-  const endTime = new Date(
-    this.startedAt.getTime() + this.settings.timeLimit * 1000
-  );
-  const remainingTimeInSeconds = Math.floor((endTime - currentTime) / 1000);
-  return Math.max(0, remainingTimeInSeconds); // Ensures remaining time is never negative
-});
 
 // Create a TTL index on the `updatedAt` field that expires documents with an empty `participants` array
 roomSchema.index(

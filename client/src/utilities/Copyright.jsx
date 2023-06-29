@@ -1,6 +1,6 @@
 const Copyright = (props) => {
   return (
-    <div className="flex flex-row items-center w-full px-9 py-px text-grey1 ">
+    <div className="flex flex-row items-center w-full px-9 py-px mt-auto text-grey1 ">
       <p className="mr-9">Copyright 2023 CodeCord</p>
       <ul className="flex flex-row gap-x-6">
         <li>
