@@ -27,5 +27,4 @@ permissions:
     pattern: "**"
     owner: root
     group: root
-
-file_exists_behaviour: OVERWRITE
+    file_exists_behaviour: OVERWRITE
