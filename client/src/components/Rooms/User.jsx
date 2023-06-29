@@ -29,7 +29,9 @@ const User = ({ userId, username, imageURL }) => {
             alt="profile-pic"
           />
         ) : (
-          <FaUserAlt className="text-xl hover:cursor-pointer" />
+          <div className="flex items-center justify-center bg-grey2 w-14 h-14 rounded-full">
+            <FaUserAlt className="text-3xl hover:cursor-pointer" />
+          </div>
         )}
         <div>
           <h1 className="text-xl font-bold">{username}</h1>
@@ -37,14 +39,15 @@ const User = ({ userId, username, imageURL }) => {
         </div>
       </div>
 
-      {roomData?.owner?._id === userData?._id && username !== userData?.username && (
-        <button
-          className="px-3 py-2 font-bold text-lg bg-accent1 transition-all duration-300 hover:bg-lightAccent1 text-white rounded-xl"
-          onClick={handleRemoveParticipant}
-        >
-          Remove
-        </button>
-      )}
+      {roomData?.owner?._id === userData?._id &&
+        username !== userData?.username && (
+          <button
+            className="px-3 py-2 font-bold text-lg bg-accent1 transition-all duration-300 hover:bg-lightAccent1 text-white rounded-xl"
+            onClick={handleRemoveParticipant}
+          >
+            Remove
+          </button>
+        )}
     </div>
   );
 };

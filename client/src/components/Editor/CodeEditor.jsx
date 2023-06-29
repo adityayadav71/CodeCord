@@ -43,7 +43,9 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
                       alt="user-profile-picture"
                     />
                   ) : (
-                    <FaUserAlt className="text-2xl hover:cursor-pointer" />
+                    <div className="flex items-center justify-center rounded-full bg-grey2 w-8 h-8 text-xl">
+                      <FaUserAlt className="text-xl hover:cursor-pointer" />
+                    </div>
                   )}
                 </div>
                 <p>

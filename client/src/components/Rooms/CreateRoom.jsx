@@ -100,7 +100,7 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
           difficulty
         };
         // 1. Update Room with these settings
-        const room = await updateRoomSettings(roomId, settings);
+        const room = await updateRoomSettings(roomId, settings, socket);
         setRoomData(room);
         await loadData(); // update user data
 

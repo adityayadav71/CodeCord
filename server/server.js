@@ -83,8 +83,16 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("updated-public-room", () => {
+    try {
+      io.emit("live-rooms-update");
+    } catch (err) {
+      socket.emit("error", err);
+    }
+  });
+
   // Handle Join-room event
-  socket.on("join-room", (user, room, reloaded) => {
+  socket.on("join-room", (user, room, isPublic, reloaded) => {
     try {
       socket.join(room.roomId, () => {
         console.log(
@@ -93,6 +101,7 @@ io.on("connection", (socket) => {
       });
       io.to(room.roomId).emit("room-joined", room.roomId);
       socket.to(room.roomId).emit("updated-room-data", room);
+      if (isPublic) io.emit("live-rooms-update");
 
       // If user has joined back don't broadcast message
       if (!reloaded) {
@@ -115,7 +124,7 @@ io.on("connection", (socket) => {
   });
 
   //Handle Leave-room event
-  socket.on("leave-room", (username, room, roomId) => {
+  socket.on("leave-room", (username, room, isPublic, roomId) => {
     try {
       socket.leave(roomId);
       socket.to(roomId).emit("updated-room-data", room);
@@ -126,16 +135,18 @@ io.on("connection", (socket) => {
         timeStamp: serverTime(),
       };
       socket.to(roomId).emit("receive-message", data);
+      if (isPublic) io.emit("live-rooms-update");
     } catch (err) {
       socket.emit("error", err);
     }
   });
 
   //Handle End-room event
-  socket.on("end-room", (roomId) => {
+  socket.on("end-room", (isPublic, roomId) => {
     try {
       socket.to(roomId).emit("room-ended");
       io.in(roomId).socketsLeave(roomId);
+      if (isPublic) io.emit("live-rooms-update");
     } catch (err) {
       socket.emit("error", err);
     }

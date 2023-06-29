@@ -42,7 +42,7 @@ const RoomCard = ({
         clearInterval(interval);
       };
     }
-  }, []);
+  }, [remainingTime, started]);
 
   const handleJoinRoom = async (roomId) => {
     try {
