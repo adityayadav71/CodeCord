@@ -12,6 +12,7 @@ import PasswordReset from "./components/Authentication/PasswordReset";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
 import Login from "./components/Authentication/Login";
 import SignUp from "./components/Authentication/SignUp";
+import ActiveRooms from "./components/Rooms/ActiveRooms";
 import { createContext, useState, useEffect } from "react";
 import { logout, checkLogInStatus } from "./api/authDataAPI";
 import Profile from "./components/HomePage/Profile";
@@ -98,6 +99,7 @@ function App() {
                   <Route index element={<Problem />} />
                   <Route path=":name" element={<Editor isRoom={true} />} />
                 </Route>
+                <Route path="rooms" element={<ActiveRooms/>} />
                 <Route path="discussion" element={<Discussion />} />
                 <Route path="user/:username" element={<Profile />} />
                 <Route path="auth">

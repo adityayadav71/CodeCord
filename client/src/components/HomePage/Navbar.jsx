@@ -125,14 +125,14 @@ const HomeNavbar = ({ handleLogout }) => {
         </li>
         <li className="flex">
           <NavLink
-            to="/app/discussion"
+            to="/app/rooms"
             className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
-              isActive(pathname, "/app/discussion")
+              isActive(pathname, "/app/rooms")
                 ? "border-b-2 border-b-accent1"
                 : ""
             }`}
           >
-            Discussions
+            Rooms
           </NavLink>
         </li>
       </ul>

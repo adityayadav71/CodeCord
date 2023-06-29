@@ -3,6 +3,8 @@ import { FaUserAlt } from "react-icons/fa";
 import { AuthContext } from "../../App";
 import { useState, useContext, useEffect } from "react";
 import { getPublicRooms } from "../../api/roomsAPI";
+import { Link } from "react-router-dom";
+
 const LiveRooms = (props) => {
   const { isLoggedIn } = useContext(AuthContext);
   const [rooms, setRooms] = useState([]);
@@ -20,19 +22,28 @@ const LiveRooms = (props) => {
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
         <div className="flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full">
           {rooms ? (
-            rooms?.map((room, i) => (
-              <RoomCard
-                key={i}
-                name={room.name}
-                id={room.roomId}
-                difficulty={"Hard"}
-                roomType={room.settings.roomType}
-                started={!!room.startedAt}
-                remainingTime={room.remainingTime || room.settings.timeLimit}
-                participants={room.participants.length}
-                participantLimit={room.settings.participantsLimit}
-              />
-            ))
+            rooms?.map((room, i) => {
+              const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
+              const remainingTime = room.startedAt
+                ? expiresAt > 0
+                  ? expiresAt / 1000
+                  : 0
+                : room.settings.timeLimit * 60;
+
+              return (
+                <RoomCard
+                  key={i}
+                  name={room.name}
+                  id={room.roomId}
+                  difficulty={room.settings.difficulty}
+                  roomType={room.settings.roomType}
+                  started={!!room.startedAt}
+                  remainingTimeInSeconds={remainingTime}
+                  participants={room.participants.length}
+                  participantLimit={room.settings.participantsLimit}
+                />
+              );
+            })
           ) : (
             <p className="text-grey1">No live rooms found.</p>
           )}
@@ -41,9 +52,12 @@ const LiveRooms = (props) => {
       {isLoggedIn && (
         <>
           <section className="absolute z-[1] top-1/2 left-0 -translate-y-1/2 flex flex-row items-center justify-center gradient w-full h-40">
-            <a href="#" className="hover:text-accent1 hover:cursor-pointer">
+            <Link
+              to="/app/rooms"
+              className="hover:text-accent1 hover:cursor-pointer"
+            >
               Browse more rooms
-            </a>
+            </Link>
           </section>
           <section className="z-[2] grow">
             <h2 className="text-2xl font-bold mb-3">Friends</h2>

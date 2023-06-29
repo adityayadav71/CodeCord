@@ -20,8 +20,9 @@ import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { getRandomProblems } from "../../api/problemDataAPI";
 import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
+import { toast } from "react-hot-toast";
 
-const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
+const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal }) => {
   useEffect(() => {
     const closeDropdown = (event) => {
       if (
@@ -68,6 +69,7 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
   const handleRandomize = async () => {
     const data = await getRandomProblems();
     data.problems = data.problems.map((problem) => problem.number);
+    setDifficulty("Medium");
     setSelected(data.problems);
   };
 
@@ -171,13 +173,13 @@ const ProblemFilter = ({ selected, setSelected, filterInsideModal }) => {
 
   const [modal, setModal] = useState();
   const openRoomModal = async () => {
-    const roomID = nanoid();
-    // 1. Create Room in Database - Return RoomID
-    const result = await createRoom(userData?.userId, roomID);
-    if (result?.response?.data?.result)
-      window.alert(result?.response?.data?.result);
-    else {
+    try {
+      const roomID = nanoid();
+      // 1. Create Room in Database - Return RoomID
+      const result = await createRoom(userData?.userId, roomID);
       setModal(<CreateRoom isContest={true} roomId={result.id} />);
+    } catch (err) {
+      toast.error("Something went wrong! Please try again.");
     }
   };
 

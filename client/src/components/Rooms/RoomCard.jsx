@@ -8,7 +8,7 @@ import { loadData } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { toast } from "react-hot-toast";
 
 const RoomCard = ({
@@ -17,17 +17,32 @@ const RoomCard = ({
   roomType,
   difficulty,
   started,
-  remainingTime,
+  remainingTimeInSeconds,
   participants,
   participantLimit,
 }) => {
   const navigate = useNavigate();
-  const formatDuration = (minutes) =>
-    `${Math.floor(minutes / 60) ? `${Math.floor(minutes / 60)} hr` : ""} ${
-      minutes % 60 ? ` ${minutes % 60} min` : ""
-    }`;
+  const formatDuration = (seconds) =>
+    `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)} h` : ""} ${
+      Math.floor((seconds % 3600) / 60)
+        ? `${Math.floor((seconds % 3600) / 60)} m`
+        : ""
+    } ${Math.floor(seconds % 60) ? `${Math.floor(seconds % 60)} s` : "0 s"}`;
   const { userData } = useContext(AuthContext);
   const { socket, setRoomData } = useContext(RoomContext);
+  const [remainingTime, setRemainingTime] = useState(remainingTimeInSeconds);
+
+  useEffect(() => {
+    if (remainingTime && started) {
+      const interval = setInterval(() => {
+        setRemainingTime((prevTime) => prevTime - 1);
+      }, 1000); // Update every second
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, []);
 
   const handleJoinRoom = async (roomId) => {
     try {
@@ -38,7 +53,6 @@ const RoomCard = ({
       } else {
         // 1. Find Room In Database
         const { roomData } = await joinRoom(userData, socket, roomId);
-        console.log(roomData);
         setRoomData(roomData);
 
         // 2 Save newly joined room in RoomContext
@@ -47,18 +61,17 @@ const RoomCard = ({
         await loadData(); // update user data
 
         // 3. Navigate user to new room
-        navigate(`app/room/${roomId}`, { replace: false });
+        navigate(`/app/room/${roomId}`, { replace: false });
       }
     } catch (err) {
-      console.log(err)
       toast.error("Something went wrong! Please try again.");
     }
   };
 
   return (
-    <div className="grid grid-cols-4 grid-rows-2 p-3 bg-accent2 rounded-xl w-full h-32 leading-tight last:mb-24">
-      <div className="col-span-2">
-        <h2 className="text-xl font-bold mb-2">Room Name</h2>
+    <div className="grid grid-cols-4 grid-rows-3 p-3 bg-accent2 rounded-xl w-full leading-tight last:mb-24">
+      <div className="col-span-2 row-span-2">
+        <h2 className="text-lg leading-6 font-bold mb-2">{name}</h2>
         <span
           className={`px-2 py-1 uppercase font-semibold rounded-lg ${
             roomType === "Contest"
@@ -80,7 +93,7 @@ const RoomCard = ({
           {difficulty}
         </span>
       </div>
-      <p className="col-span-2 justify-self-end">
+      <p className="col-span-2 row-span-2 justify-self-end">
         {participants}/{participantLimit} joined
       </p>
       <div className="text-sm col-span-3 flex self-end items-center gap-3">
@@ -95,10 +108,14 @@ const RoomCard = ({
         <p className="flex items-center gap-2">
           <FaInfoCircle
             className={`inline ${
-              started ? "text-green-500" : "text-yellow-400"
+              remainingTime > 0
+                ? started
+                  ? "text-green-500"
+                  : "text-yellow-500"
+                : "text-red-500"
             }`}
           />
-          {started ? "Live" : "Yet to start"}
+          {remainingTime > 0 ? (started ? "Live" : "Yet to start") : "Ended"}
         </p>
       </div>
       <button
