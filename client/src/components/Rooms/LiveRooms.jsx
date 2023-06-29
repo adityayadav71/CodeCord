@@ -4,9 +4,10 @@ import { AuthContext } from "../../App";
 import { useState, useContext, useEffect } from "react";
 import { getPublicRooms } from "../../api/roomsAPI";
 import { Link } from "react-router-dom";
+import { TbDoorOff } from "react-icons/tb";
 
-const LiveRooms = (props) => {
-  const { isLoggedIn } = useContext(AuthContext);
+const LiveRooms = () => {
+  const { isLoggedIn, socket } = useContext(AuthContext);
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
@@ -15,13 +16,15 @@ const LiveRooms = (props) => {
       setRooms(rooms);
     };
     loadData();
-  }, []);
+    socket?.on("live-rooms-update", () => loadData());
+  }, [socket]);
+
   return (
     <aside className="relative flex flex-col px-5 py-6 gap-y-4 w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
       <section className="flex flex-col grow h-80">
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
         <div className="flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full">
-          {rooms ? (
+          {rooms.length > 0 ? (
             rooms?.map((room, i) => {
               const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
               const remainingTime = room.startedAt
@@ -45,19 +48,24 @@ const LiveRooms = (props) => {
               );
             })
           ) : (
-            <p className="text-grey1">No live rooms found.</p>
+            <div className="flex flex-col gap-3 my-auto items-center justify-center">
+              <TbDoorOff className="text-9xl text-grey1" />
+              <p className="text-grey1">No one is online ☹️</p>
+            </div>
           )}
         </div>
       </section>
       {isLoggedIn && (
         <>
           <section className="absolute z-[1] top-1/2 left-0 -translate-y-1/2 flex flex-row items-center justify-center gradient w-full h-40">
-            <Link
-              to="/app/rooms"
-              className="hover:text-accent1 hover:cursor-pointer"
-            >
-              Browse more rooms
-            </Link>
+            {rooms.length > 0 && (
+              <Link
+                to="/app/rooms"
+                className="hover:text-accent1 hover:cursor-pointer"
+              >
+                Browse more rooms
+              </Link>
+            )}
           </section>
           <section className="z-[2] grow">
             <h2 className="text-2xl font-bold mb-3">Friends</h2>

@@ -8,12 +8,14 @@ export const getRoomSettings = async (roomId) => {
   return response.data.settings;
 };
 
-export const updateRoomSettings = async (roomId, settings) => {
+export const updateRoomSettings = async (roomId, settings, socket) => {
   try {
     const response = await axios.patch(`${BASE_URL}/rooms/`, {
       roomId,
       settings,
     });
+    if (settings.visibility === "public") socket.emit("updated-public-room");
+
     return response.data.room;
   } catch (err) {
     return err;
@@ -30,7 +32,11 @@ export const startRoom = async (roomId, socket) => {
     const response = await axios.post(`${BASE_URL}/rooms/start/`, {
       roomId,
     });
-    if (response.status === 200) socket.emit("start-room", response.data.room);
+    if (response.status === 200) {
+      socket.emit("start-room", response.data.room);
+      if (response.data.room.settings.visibility === "public")
+        socket.emit("updated-public-room");
+    }
     return response.data.room;
   } catch (err) {
     return err;
@@ -44,7 +50,13 @@ export const joinRoom = async (userData, socket, roomId) => {
     });
     if (response.status === 200) {
       // emit the create-room event
-      socket.emit("join-room", userData, response.data.room, false);
+      socket.emit(
+        "join-room",
+        userData,
+        response.data.room,
+        !!(response.data.room.settings.visibility === "public"),
+        false
+      );
 
       return new Promise((resolve, reject) => {
         // listen for the room-created event
@@ -94,7 +106,13 @@ export const leaveRoom = async (username, roomId, socket) => {
     const response = await axios.patch(`${BASE_URL}/rooms/leave`, {
       roomId,
     });
-    socket.emit("leave-room", username, response.data.newRoom, roomId);
+    socket.emit(
+      "leave-room",
+      username,
+      response.data.newRoom,
+      !!(response.data.newRoom.settings.visibility === "public"),
+      roomId
+    );
   } catch (error) {
     console.log(error);
   }
@@ -102,10 +120,14 @@ export const leaveRoom = async (username, roomId, socket) => {
 
 export const endRoom = async (roomId, socket) => {
   try {
-    await axios.post(`${BASE_URL}/rooms/end`, {
+    const response = await axios.post(`${BASE_URL}/rooms/end`, {
       roomId,
     });
-    socket.emit("end-room", roomId);
+    socket.emit(
+      "end-room",
+      !!(response.data.room.settings.visibility === "public"),
+      roomId
+    );
   } catch (error) {
     console.log(error);
   }

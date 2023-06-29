@@ -8,6 +8,7 @@ import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useContext } from "react";
 import { toast } from "react-hot-toast";
+import { TbDoorOff } from "react-icons/tb";
 
 const ActiveRoom = ({
   name,
@@ -41,7 +42,7 @@ const ActiveRoom = ({
         clearInterval(interval);
       };
     }
-  }, []);
+  }, [remainingTime, startedAt]);
 
   return (
     <tr className="odd:bg-hover">
@@ -93,7 +94,7 @@ const ActiveRoom = ({
       </td>
       <td>
         <FaRegClipboard
-          onClick={handleCopyInviteLink}
+          onClick={() => handleCopyInviteLink(roomId)}
           className="text-xl hover:text-accent1 hover:cursor-pointer"
         />
       </td>
@@ -103,8 +104,8 @@ const ActiveRoom = ({
 const ActiveRooms = () => {
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
-  const { userData } = useContext(AuthContext);
-  const { socket, setRoomData } = useContext(RoomContext);
+  const { userData, socket } = useContext(AuthContext);
+  const { setRoomData } = useContext(RoomContext);
 
   useEffect(() => {
     const loadData = async () => {
@@ -112,7 +113,8 @@ const ActiveRooms = () => {
       setRooms(rooms);
     };
     loadData();
-  }, []);
+    socket?.on("live-rooms-update", () => loadData());
+  }, [socket]);
 
   const handleJoinRoom = async (roomId) => {
     try {
@@ -137,9 +139,12 @@ const ActiveRooms = () => {
       toast.error("Something went wrong! Please try again.");
     }
   };
-  const handleCopyInviteLink = () => {};
+  const handleCopyInviteLink = (roomId) => {
+    navigator.clipboard.writeText(roomId);
+    toast.success("Invite Code copied to clipboard!");
+  };
 
-  return (
+  return rooms.length > 0 ? (
     <table className="mx-48 mt-12 text-lg">
       <thead>
         <tr>
@@ -149,41 +154,40 @@ const ActiveRooms = () => {
           <td className="p-3">Difficulty</td>
           <td className="p-3">Status</td>
           <td className="p-3">Action</td>
-          <td className="p-3">Invite Link</td>
+          <td className="p-3">Invite Code</td>
         </tr>
       </thead>
       <tbody>
-        {rooms ? (
-          rooms?.map((room, i) => {
-            const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
-            const remainingTime = room.startedAt
-              ? expiresAt > 0
-                ? expiresAt / 1000
-                : 0
-              : room.settings.timeLimit * 60;
+        {rooms?.map((room, i) => {
+          const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
+          const remainingTime = room.startedAt
+            ? expiresAt > 0
+              ? expiresAt / 1000
+              : 0
+            : room.settings.timeLimit * 60;
 
-            return (
-              <ActiveRoom
-                key={i}
-                name={room.name}
-                participants={room.participants.length}
-                participantsLimit={room.settings.participantsLimit}
-                difficulty={room.settings.difficulty}
-                remainingTimeInSeconds={remainingTime}
-                startedAt={room.startedAt}
-                roomId={room.roomId}
-                handleJoinRoom={handleJoinRoom}
-                handleCopyInviteLink={handleCopyInviteLink}
-              />
-            );
-          })
-        ) : (
-          <tr>
-            <td className="text-grey1">No live rooms found.</td>
-          </tr>
-        )}
+          return (
+            <ActiveRoom
+              key={i}
+              name={room.name}
+              participants={room.participants.length}
+              participantsLimit={room.settings.participantsLimit}
+              difficulty={room.settings.difficulty}
+              remainingTimeInSeconds={remainingTime}
+              startedAt={room.startedAt}
+              roomId={room.roomId}
+              handleJoinRoom={handleJoinRoom}
+              handleCopyInviteLink={handleCopyInviteLink}
+            />
+          );
+        })}
       </tbody>
     </table>
+  ) : (
+    <div className="flex flex-col gap-3 items-center justify-center h-full w-full">
+      <TbDoorOff className="text-9xl text-grey1" />
+      <p className="text-grey1 text-xl">No rooms found ☹️</p>
+    </div>
   );
 };
 

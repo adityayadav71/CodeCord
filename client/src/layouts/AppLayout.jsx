@@ -25,31 +25,31 @@ const AppLayout = ({ handleLogout }) => {
       }
     };
     room && loadData();
+    socket?.on("updated-room-data", async (data) => {
+      setRoomData(data);
+    });
+
+    socket?.on("room-ended", () => {
+      toast(
+        (t) => (
+          <div className="flex items-center text-lg">
+            <span className="mr-3 font-semibold">
+              🛑 The <b>room was ended</b> by the host.
+            </span>
+            <button
+              className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              Dismiss
+            </button>
+          </div>
+        ),
+        { duration: Infinity }
+      );
+      setRoomData(null);
+      navigate("/", { replace: true });
+    });
   }, [userData, socket]);
-
-  socket?.on("updated-room-data", async (data) => {
-    setRoomData(data);
-  });
-
-  socket?.on("room-ended", () => {
-    toast(
-      (t) => (
-        <div className="flex items-center text-lg">
-          <span className="mr-3 font-semibold">
-            🛑 The <b>room was ended</b> by the host.
-          </span>
-          <button
-            className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
-            onClick={() => toast.dismiss(t.id)}
-          >
-            Dismiss
-          </button>
-        </div>
-      ),
-      { duration: Infinity }
-    );
-    navigate("/", { replace: true });
-  });
 
   return (
     <RoomContext.Provider value={{ roomData, setRoomData }}>

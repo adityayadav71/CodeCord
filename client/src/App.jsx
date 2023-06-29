@@ -43,7 +43,10 @@ function App() {
 
   useEffect(() => {
     loadData();
-  }, []);
+    socket?.on("room-ended", () => {
+      loadData();
+    });
+  }, [socket]);
 
   const handleLogout = async () => {
     try {
@@ -99,7 +102,7 @@ function App() {
                   <Route index element={<Problem />} />
                   <Route path=":name" element={<Editor isRoom={true} />} />
                 </Route>
-                <Route path="rooms" element={<ActiveRooms/>} />
+                <Route path="rooms" element={<ActiveRooms />} />
                 <Route path="discussion" element={<Discussion />} />
                 <Route path="user/:username" element={<Profile />} />
                 <Route path="auth">
