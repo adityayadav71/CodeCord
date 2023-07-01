@@ -14,6 +14,7 @@ const userRouter = require("./routes/userRouter");
 const problemRouter = require("./routes/problemRouter");
 const roomRouter = require("./routes/roomRouter");
 const submissionRouter = require("./routes/submissionRouter");
+const codeExecutionRouter = require("./routes/codeExecutionRouter");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const cookieParser = require("cookie-parser");
@@ -80,6 +81,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/problems", problemRouter);
 app.use("/api/v1/rooms", roomRouter);
 app.use("/api/v1/submissions", submissionRouter);
+app.use("/api/v1/execute", codeExecutionRouter);
 
 // 2 - Routes
 app.all("*", (req, res, next) => {

@@ -65,6 +65,8 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
         height="100%"
         basicSetup={{
           tabSize: editorSettings.tabSize,
+          highlightActiveLine: false,
+          autoIndent: true,
         }}
         initialState={
           serializedState
@@ -76,7 +78,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
         }
         onChange={(value, viewUpdate) => {
           setEditorSettings((prevSettings) => {
-            return { ...prevSettings, value: value };
+            return { ...prevSettings, value };
           });
           localStorage.setItem("editorValue", value);
 
@@ -84,6 +86,9 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
           localStorage.setItem("myEditorState", JSON.stringify(state));
         }}
         extensions={[java()]}
+        options={{
+          styleActiveLine: false, // Disable highlighting the current line
+        }}
       />
     </div>
   );
