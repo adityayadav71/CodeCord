@@ -12,6 +12,7 @@ import { RoomContext } from "../../layouts/AppLayout";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import * as themes from "@uiw/codemirror-themes-all";
 import { toast } from "react-hot-toast";
+import he from "he";
 
 import { getProblem } from "../../api/problemDataAPI";
 import queryString from "query-string";
@@ -19,6 +20,7 @@ import { FaCog, FaCompress, FaExpand, FaUndo } from "react-icons/fa";
 import Scoreboard from "../Rooms/Scoreboard";
 import EditorSettings from "./EditorSettings";
 import { getSubmissionDetails } from "../../api/submissionDataAPI";
+import { runCode, getResult } from "../../api/codeExecutionAPI";
 
 export const ProblemContext = createContext(null);
 
@@ -42,7 +44,7 @@ const Editor = ({ isRoom }) => {
           (t) => (
             <div className="flex items-center text-lg">
               <span className="mr-3 font-semibold">
-               🚫 The <b>host removed you</b> from the room.
+                🚫 The <b>host removed you</b> from the room.
               </span>
               <button
                 className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
@@ -62,7 +64,7 @@ const Editor = ({ isRoom }) => {
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
   const [editorSizes, setEditorSizes] = useState(
-    consoleOpen ? [70, 30] : [100, 0]
+    consoleOpen ? [60, 40] : [100, 0]
   );
   const [editorSettings, setEditorSettings] = useState({
     theme: themes.dracula,
@@ -79,28 +81,29 @@ const Editor = ({ isRoom }) => {
   const [openScoreboard, setOpenScoreboard] = useState(false);
   const [displaySubmission, setDisplaySubmission] = useState(false);
   const [submissionDetails, setSubmissionDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState("Testcase");
+  const [output, setOutput] = useState(null);
+  const [runningCode, setRunningCode] = useState(false);
   const params = useParams();
   const location = useLocation();
 
   const values = queryString.parse(location.search);
 
   useEffect(() => {
-    if (roomData) {
-      const selectedProblems =
-        values?.problems?.split(",") || // User creating a new room
-        roomData?.settings?.problems; // User joining a new room
+    const selectedProblems =
+      values?.problems?.split(",") || // User creating a new room
+      roomData?.settings?.problems; // User joining a new room
 
-      const loadProblems = async () => {
-        let response;
-        isRoom
-          ? (response = await getProblem(selectedProblems))
-          : (response = await getProblem([params.name]));
+    const loadProblems = async () => {
+      let response;
+      isRoom
+        ? (response = await getProblem(selectedProblems))
+        : (response = await getProblem([params.name]));
 
-        setProblems(response.problems);
-        setActiveProblem(response.problems[0]);
-      };
-      loadProblems();
-    }
+      setProblems(response.problems);
+      setActiveProblem(response.problems[0]);
+    };
+    loadProblems();
   }, [roomData]);
 
   useEffect(() => {
@@ -142,7 +145,7 @@ const Editor = ({ isRoom }) => {
     setEditorSizes(
       consoleOpen && editorSizes
         ? editorSizes[0] > 95
-          ? [70, 30]
+          ? [60, 40]
           : editorSizes
         : [100, 0]
     );
@@ -178,7 +181,40 @@ const Editor = ({ isRoom }) => {
       });
   };
 
-  const handleRunCode = () => {};
+  const handleRunCode = async () => {
+    const data = {
+      source_code: encodeURIComponent(he.decode(editorSettings.value)),
+      language_id: 4,
+      stdin: "[2,7,11,15]\n9",
+    };
+    console.log(data);
+    setActiveTab("Result");
+    setRunningCode(true);
+    const response = await runCode(data);
+    const submissionToken = response.token;
+    const result = await checkSubmissionStatus(submissionToken);
+    if (result) setOutput(result);
+    setRunningCode(false);
+  };
+
+  const checkSubmissionStatus = async (token) => {
+    const response = await getResult(token);
+    const { status } = response;
+    if (
+      status.description === "In Queue" ||
+      status.description === "Processing"
+    ) {
+      return new Promise((resolve) => {
+        setTimeout(async () => {
+          const result = await checkSubmissionStatus(token);
+          resolve(result);
+        }, 1000);
+      });
+    } else {
+      return response;
+    }
+  };
+
   const handleSubmitCode = () => {};
 
   const handleSubmissionDisplay = async (submissionId) => {
@@ -235,9 +271,12 @@ const Editor = ({ isRoom }) => {
             <div className="bg-lightAccent3 z-10">
               {Object.keys(problems).length > 0 && (
                 <Console
+                  isRoom={isRoom}
                   isFullScreen={isFullScreen}
-                  editorSettings={editorSettings}
-                  problems={activeProblem}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  output={output}
+                  runningCode={runningCode}
                 />
               )}
             </div>
@@ -314,13 +353,15 @@ const Editor = ({ isRoom }) => {
               ) : (
                 <>
                   <button
-                    className={`px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}
+                    disabled={isRoom && !roomData?.startedAt}
+                    className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}
                     onClick={handleRunCode}
                   >
                     Run
                   </button>
                   <button
-                    className={`px-4 py-1 bg-green-500 hover:bg-easyGreen rounded-lg`}
+                    disabled={isRoom && !roomData?.startedAt}
+                    className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-green-500 hover:bg-easyGreen rounded-lg`}
                     onClick={handleSubmitCode}
                   >
                     Submit

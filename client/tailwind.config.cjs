@@ -21,7 +21,7 @@ module.exports = {
         mediumYellow: "#E2BC1E",
         yellowBackGround: "#5E4E26",
         hardRed: "#FF0000",
-        redBackGround: "#5A302F",
+        redBackGround: "#5a302f81",
         graphicLightBlue: "#0064FA",
         graphicDarkBlue: "#0E5BCE",
         grey1: "#A1ACBD",
