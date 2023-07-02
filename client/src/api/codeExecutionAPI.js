@@ -1,11 +1,12 @@
 import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 
-export const runCode = async (data) => {
+export const runCode = async (data, setRunningCode) => {
   try {
     const response = await axios.post(`${BASE_URL}/execute/run`, data);
     return response.data;
   } catch (err) {
+    setRunningCode(false)
     console.log("Something went wrong! Please try again.");
   }
 };

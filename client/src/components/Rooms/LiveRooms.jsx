@@ -5,15 +5,19 @@ import { useState, useContext, useEffect } from "react";
 import { getPublicRooms } from "../../api/roomsAPI";
 import { Link } from "react-router-dom";
 import { TbDoorOff } from "react-icons/tb";
+import Skeleton from "../skeletons/LiveRoomsSkeleton";
 
 const LiveRooms = () => {
   const { isLoggedIn, socket } = useContext(AuthContext);
   const [rooms, setRooms] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       const rooms = await getPublicRooms();
       setRooms(rooms);
+      setIsLoading(false);
     };
     loadData();
     socket?.on("live-rooms-update", () => loadData());
@@ -23,37 +27,46 @@ const LiveRooms = () => {
     <aside className="relative flex flex-col px-5 py-6 gap-y-4 w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
       <section className="flex flex-col grow h-80">
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
-        <div className="flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full">
-          {rooms.length > 0 ? (
-            rooms?.map((room, i) => {
-              const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
-              const remainingTime = room.startedAt
-                ? expiresAt > 0
-                  ? expiresAt / 1000
-                  : 0
-                : room.settings.timeLimit * 60;
+        {isLoading ? (
+          <Skeleton />
+        ) : (
+          <div
+            className={`flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full ${
+              rooms.length > 0 ? "fade-in visible" : ""
+            }`}
+          >
+            {rooms.length > 0 ? (
+              rooms?.map((room, i) => {
+                const expiresAt =
+                  new Date(room.expiresAt).getTime() - Date.now();
+                const remainingTime = room.startedAt
+                  ? expiresAt > 0
+                    ? expiresAt / 1000
+                    : 0
+                  : room.settings.timeLimit * 60;
 
-              return (
-                <RoomCard
-                  key={i}
-                  name={room.name}
-                  id={room.roomId}
-                  difficulty={room.settings.difficulty}
-                  roomType={room.settings.roomType}
-                  started={!!room.startedAt}
-                  remainingTimeInSeconds={remainingTime}
-                  participants={room.participants.length}
-                  participantLimit={room.settings.participantsLimit}
-                />
-              );
-            })
-          ) : (
-            <div className="flex flex-col gap-3 my-auto items-center justify-center">
-              <TbDoorOff className="text-9xl text-grey1" />
-              <p className="text-grey1">No one is online ☹️</p>
-            </div>
-          )}
-        </div>
+                return (
+                  <RoomCard
+                    key={i}
+                    name={room.name}
+                    id={room.roomId}
+                    difficulty={room.settings.difficulty}
+                    roomType={room.settings.roomType}
+                    started={!!room.startedAt}
+                    remainingTimeInSeconds={remainingTime}
+                    participants={room.participants.length}
+                    participantLimit={room.settings.participantsLimit}
+                  />
+                );
+              })
+            ) : (
+              <div className="flex flex-col gap-3 my-auto items-center justify-center">
+                <TbDoorOff className="text-9xl text-grey1" />
+                <p className="text-grey1">No one is online ☹️</p>
+              </div>
+            )}
+          </div>
+        )}
       </section>
       {isLoggedIn && (
         <>

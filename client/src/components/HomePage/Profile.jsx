@@ -11,6 +11,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { AuthContext } from "../../App";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Skeleton from "../skeletons/ProfileSkeleton"
 
 const Profile = () => {
   const { userData, setUserData } = useContext(AuthContext);
@@ -30,6 +31,7 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [tags, setTags] = useState(userData?.profile?.skills);
   const [countries, setCountries] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const params = useParams();
   const username = params.username;
@@ -37,6 +39,7 @@ const Profile = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       const countryData = await axios.get("https://restcountries.com/v3.1/all");
       setCountries(() => {
         const names = countryData.data.map((country) => {
@@ -60,6 +63,7 @@ const Profile = () => {
         if (response.profileData) setProfileData(response.profileData);
         else navigate("/notfound", { replace: true });
       }
+      setIsLoading(false);
     };
     loadData();
   }, [navigate]);
@@ -195,7 +199,9 @@ const Profile = () => {
     setTags((prevTags) => prevTags.filter((element) => element !== removeEl));
   };
 
-  return (
+  return isLoading ? (
+    <Skeleton />
+  ) : (
     <div className="flex flex-col w-full px-6 py-4 gap-x-6 grow">
       <div
         className={`modal 

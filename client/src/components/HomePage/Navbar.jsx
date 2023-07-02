@@ -7,9 +7,10 @@ import CreateRoom from "../Rooms/CreateRoom";
 import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
 import { toast } from "react-hot-toast";
+import Skeleton from "../skeletons/NavbarProfileSkeleton";
 
 const HomeNavbar = ({ handleLogout }) => {
-  const { isLoggedIn, userData, socket } = useContext(AuthContext);
+  const { isLoggedIn, isLoading, userData, socket } = useContext(AuthContext);
 
   const isActive = (pathname, to) => {
     return pathname.startsWith(to);
@@ -181,7 +182,9 @@ const HomeNavbar = ({ handleLogout }) => {
                 className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2"
                 onClick={() => setProfileActive((prev) => !prev)}
               >
-                {userData?.profile?.avatar ? (
+                {isLoading ? (
+                  <Skeleton />
+                ) : userData?.profile?.avatar ? (
                   <img
                     src={imageURL}
                     className="w-full h-full object-cover hover:cursor-pointer"

@@ -16,16 +16,24 @@ import User from "../Rooms/User";
 import { RoomContext } from "../../layouts/AppLayout";
 import { ProblemContext } from "./index";
 import { useContext, useState } from "react";
+import Skeleton from "../skeletons/DescriptionSkeleton";
 
 const Description = ({ isRoom, handleProblemChange }) => {
-  const { activeProblem } = useContext(ProblemContext);
+  const { activeProblem, isLoading } = useContext(ProblemContext);
   const { roomData } = useContext(RoomContext);
 
   const [showParticipant, setShowParticipant] = useState(false);
 
   return (
     <div className="p-3 flex flex-col overflow-y-scroll">
-      {(roomData?.startedAt && !showParticipant) || !isRoom ? (
+      {isLoading ? (
+        <Skeleton
+          isRoom={isRoom}
+          isParticipantList={
+            !((roomData?.startedAt && !showParticipant) || !isRoom)
+          }
+        />
+      ) : (roomData?.startedAt && !showParticipant) || !isRoom ? (
         <div className="flex flex-col grow px-3 pt-6">
           <div className="flex flex-row justify-between items-center mb-3">
             <div>
