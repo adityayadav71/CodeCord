@@ -28,6 +28,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(undefined);
   const [userData, setUserData] = useState({});
   const [socket, setSocket] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   loadData = async () => {
     const status = await checkLogInStatus();
@@ -42,7 +43,9 @@ function App() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     loadData();
+    setIsLoading(false);
     socket?.on("room-ended", () => {
       loadData();
     });
@@ -68,6 +71,8 @@ function App() {
         setUserData,
         socket,
         setSocket,
+        isLoading,
+        setIsLoading,
       }}
     >
       {typeof isLoggedIn !== "undefined" ? (

@@ -9,6 +9,7 @@ import { RoomContext } from "../../layouts/AppLayout";
 import { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { TbDoorOff } from "react-icons/tb";
+import Skeleton from "../skeletons/ActiveRoomsSkeleton"
 
 const ActiveRoom = ({
   name,
@@ -104,6 +105,7 @@ const ActiveRoom = ({
 const ActiveRooms = () => {
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { userData, socket } = useContext(AuthContext);
   const { setRoomData } = useContext(RoomContext);
 
@@ -112,7 +114,9 @@ const ActiveRooms = () => {
       const rooms = await getPublicRooms();
       setRooms(rooms);
     };
+    setIsLoading(true);
     loadData();
+    setIsLoading(false);
     socket?.on("live-rooms-update", () => loadData());
   }, [socket]);
 
@@ -144,7 +148,9 @@ const ActiveRooms = () => {
     toast.success("Invite Code copied to clipboard!");
   };
 
-  return rooms.length > 0 ? (
+  return isLoading ? (
+    <Skeleton />
+  ) : rooms.length > 0 ? (
     <table className="mx-48 mt-12 text-lg">
       <thead>
         <tr>

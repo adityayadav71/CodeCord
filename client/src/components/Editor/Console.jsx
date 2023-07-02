@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { nanoid } from "nanoid";
 import Skeleton from "../skeletons/ConsoleRunningSkeleton";
+import ConsoleSkeleton from "../skeletons/TestCaseLoadingSkeleton";
 
 const Console = ({
   isRoom,
@@ -14,7 +15,7 @@ const Console = ({
   output,
   runningCode,
 }) => {
-  const { activeProblem } = useContext(ProblemContext);
+  const { activeProblem, isLoading } = useContext(ProblemContext);
   let { roomData } = useContext(RoomContext);
 
   const [testcases, setTestcases] = useState([]);
@@ -112,31 +113,31 @@ const Console = ({
 
   return (
     <div className="relative flex flex-col justify-content-end h-full p-3 overflow-hidden">
-      <div className="flex flex-row justify-between items-center border-b border-lightSecondary">
-        <div>
-          <button
-            className={`w-28 p-3 transition duration-300 ${
-              activeTab === "Testcase"
-                ? "border-b-2 border-accent1"
-                : "text-grey1 hover:text-white"
-            }`}
-            onClick={() => setActiveTab("Testcase")}
-          >
-            Testcase
-          </button>
-          <button
-            className={`w-28 p-3 transition duration-300 ${
-              activeTab === "Result"
-                ? "border-b-2 border-accent1"
-                : "text-grey1 hover:text-white"
-            }`}
-            onClick={() => setActiveTab("Result")}
-          >
-            Result
-          </button>
-        </div>
+      <div className="flex flex-row items-center border-b border-lightSecondary">
+        <button
+          className={`box-border w-28 p-3 transition duration-300 ${
+            activeTab === "Testcase"
+              ? "border-b-2 border-accent1"
+              : "text-grey1 hover:text-white"
+          }`}
+          onClick={() => setActiveTab("Testcase")}
+        >
+          Testcase
+        </button>
+        <button
+          className={`box-border w-28 p-3 transition duration-300 ${
+            activeTab === "Result"
+              ? "border-b-2 border-accent1"
+              : "text-grey1 hover:text-white"
+          }`}
+          onClick={() => setActiveTab("Result")}
+        >
+          Result
+        </button>
       </div>
-      {roomData?.startedAt || !isRoom ? (
+      {isLoading ? (
+        <ConsoleSkeleton />
+      ) : roomData?.startedAt || !isRoom ? (
         <div className="grow flex flex-col py-3 px-4 overflow-y-scroll">
           <div className="flex flex-row items-center gap-x-3 mb-3">
             {activeTab === "Testcase"

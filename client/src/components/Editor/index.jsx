@@ -84,6 +84,8 @@ const Editor = ({ isRoom }) => {
   const [activeTab, setActiveTab] = useState("Testcase");
   const [output, setOutput] = useState(null);
   const [runningCode, setRunningCode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const params = useParams();
   const location = useLocation();
 
@@ -95,13 +97,15 @@ const Editor = ({ isRoom }) => {
       roomData?.settings?.problems; // User joining a new room
 
     const loadProblems = async () => {
+      setIsLoading(true);
       let response;
       isRoom
-        ? (response = await getProblem(selectedProblems))
-        : (response = await getProblem([params.name]));
-
+      ? (response = await getProblem(selectedProblems))
+      : (response = await getProblem([params.name]));
+      
       setProblems(response.problems);
       setActiveProblem(response.problems[0]);
+      setIsLoading(false);
     };
     loadProblems();
   }, [roomData]);
@@ -187,10 +191,9 @@ const Editor = ({ isRoom }) => {
       language_id: 4,
       stdin: "[2,7,11,15]\n9",
     };
-    console.log(data);
     setActiveTab("Result");
     setRunningCode(true);
-    const response = await runCode(data);
+    const response = await runCode(data, setRunningCode);
     const submissionToken = response.token;
     const result = await checkSubmissionStatus(submissionToken);
     if (result) setOutput(result);
@@ -224,7 +227,7 @@ const Editor = ({ isRoom }) => {
   };
 
   return (
-    <ProblemContext.Provider value={{ problems, activeProblem }}>
+    <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
       <Split
         className="editor flex flex-row grow overflow-hidden h-full"
         onDrag={updateSize}
