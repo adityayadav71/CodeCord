@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Change to the server directory
 cd /home/ubuntu/CodeCord/server
 

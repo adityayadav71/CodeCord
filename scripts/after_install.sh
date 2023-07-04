@@ -1,8 +1,4 @@
-#!/bin/bash
 cd /home/ubuntu/CodeCord/server
-npm install
-npm audit fix --force
 
-cd ../client
+cp ../../config.env ./config.env
 npm install
-npm audit fix --force

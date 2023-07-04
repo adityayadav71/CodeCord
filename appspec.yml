@@ -3,7 +3,11 @@ os: linux
 
 # Hooks define the deployment lifecycle events
 hooks:
-  AferInstall:
+  BeforeInstall:
+    - location: /scripts/before_install.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
     - location: /scripts/after_install.sh
       timeout: 60000
       runas: root
