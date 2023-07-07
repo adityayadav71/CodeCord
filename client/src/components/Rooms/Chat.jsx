@@ -16,10 +16,11 @@ import InviteLinkModal from "./InviteLinkModal";
 import { startRoom, leaveRoom, endRoom } from "../../api/roomsAPI";
 import Timer from "./Timer";
 import { toast } from "react-hot-toast";
+import Skeleton from "../skeletons/ChatSkeleton"
 
 const Chat = ({ setOpenScoreboard }) => {
   const { userData, socket } = useContext(AuthContext);
-  const { roomData, setRoomData } = useContext(RoomContext);
+  const { roomData, setRoomData, isLoading } = useContext(RoomContext);
 
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
@@ -74,11 +75,7 @@ const Chat = ({ setOpenScoreboard }) => {
               <button
                 className="px-3 py-1 font-medium rounded-lg bg-accent1 hover:bg-lightAccent1 duration-300 text-white hover:lightAccent1"
                 onClick={async () => {
-                  await leaveRoom(
-                    userData.username,
-                    roomData?.roomId,
-                    socket
-                  );
+                  await leaveRoom(userData.username, roomData?.roomId, socket);
                   await loadData();
                   toast.dismiss(t.id);
                   navigate("/", { replace: true });
@@ -86,7 +83,7 @@ const Chat = ({ setOpenScoreboard }) => {
                     (t) => (
                       <div className="flex items-center text-lg">
                         <span className="mr-3 font-semibold">
-                         🚪You left the <b>room</b>
+                          🚪You left the <b>room</b>
                         </span>
                         <button
                           className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
@@ -209,12 +206,14 @@ const Chat = ({ setOpenScoreboard }) => {
     <div className="relative flex flex-col h-full">
       <div className="w-full p-3 border-b border-lightSecondary">
         <div className="flex flex-row justify-between gap-x-3 mb-4">
-          <div className="flex flex-col">
-            <h1 className="text-lg font-bold">
-              {roomData?.name}
-            </h1>
-            <p className="text-grey1">{participants} participants</p>
-          </div>
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            <div className="flex flex-col">
+              <h1 className="text-lg font-bold">{roomData?.name}</h1>
+              <p className="text-grey1">{participants} participants</p>
+            </div>
+          )}
           <div className="flex flex-row items-center gap-x-1">
             <div className="relative">
               <button className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover">
