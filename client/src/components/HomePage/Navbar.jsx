@@ -140,11 +140,7 @@ const HomeNavbar = ({ handleLogout }) => {
       <div className="flex flex-row items-center gap-x-6 ml-auto mr-3">
         {isLoggedIn ? (
           <>
-            <div
-              className={
-                "searchbar relative flex flex-row items-center right-5"
-              }
-            >
+            <div className="searchbar relative flex flex-row items-center right-5">
               <FaSearch
                 className={`absolute ${
                   searchbarActive ? "" : "text-2xl translate-x-64"
@@ -156,27 +152,27 @@ const HomeNavbar = ({ handleLogout }) => {
                   searchbarActive
                     ? "scale-x-1 opacity-1"
                     : "scale-x-0 opacity-0"
-                } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-full transition-all duration-300`}
+                } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-lg transition-all duration-300`}
                 type="text"
                 placeholder="Search problems, contests, users..."
               />
             </div>
             {userData?.activeRoom ? (
               <button
-                className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-xl"
+                className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-lg"
                 onClick={goToActiveRoom}
               >
                 Go to active Room
               </button>
             ) : (
               <button
-                className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-xl"
+                className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-lg"
                 onClick={openRoomModal}
               >
                 Create/Join a Room
               </button>
             )}
-            <FaBell className="text-2xl hover:cursor-pointer" />
+            <FaBell className="text-2xl hover:cursor-pointer hover:text-accent1" />
             <div className="relative profile">
               <div
                 className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2"
@@ -197,7 +193,7 @@ const HomeNavbar = ({ handleLogout }) => {
               <div
                 className={`${
                   profileActive
-                    ? "opacity-1 z-20 top-16 translate-y-0"
+                    ? "opacity-1 z-20 top-14 translate-y-0"
                     : "opacity-0 z-0 -translate-y-2 top-20"
                 } absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >

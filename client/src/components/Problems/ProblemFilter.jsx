@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   FaSearch,
   FaCheckCircle,
@@ -13,7 +13,6 @@ import Difficulty from "./Difficulty";
 import Status from "./Status";
 import Tags from "./Tags";
 import CreateRoom from "../Rooms/CreateRoom";
-import { useContext } from "react";
 import { AuthContext } from "../../App";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
@@ -262,7 +261,7 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
             </div>
           </>
         ) : (
-          isLoggedIn && (
+          isLoggedIn && !userData?.activeRoom && (
             <button
               className="open-modal flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg"
               onClick={openRoomModal}

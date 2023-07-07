@@ -3,12 +3,12 @@ import { FaChevronLeft, FaChevronRight, FaAngleDown } from "react-icons/fa";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
 
-const pagination = ({ type }) => {
+const pagination = ({ filterInsideModal }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPageLimit, setPerPageLimit] = useState(20);
   const [isLimitChangerActive, setLimitChangerActive] = useState();
   const { filterObj, setFilterObj } = useContext(
-    type === "select" ? RoomFilterContext : FilterContext
+    filterInsideModal ? RoomFilterContext : FilterContext
   );
 
   const setLimit = (e) => {

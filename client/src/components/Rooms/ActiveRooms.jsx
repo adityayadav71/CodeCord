@@ -9,7 +9,7 @@ import { RoomContext } from "../../layouts/AppLayout";
 import { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { TbDoorOff } from "react-icons/tb";
-import Skeleton from "../skeletons/ActiveRoomsSkeleton"
+import Skeleton from "../skeletons/ActiveRoomsSkeleton";
 
 const ActiveRoom = ({
   name,
@@ -22,14 +22,15 @@ const ActiveRoom = ({
   handleJoinRoom,
   handleCopyInviteLink,
 }) => {
-  const formatDuration = (seconds) =>
-    `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)} hr` : ""} ${
-      Math.floor((seconds % 3600) / 60)
-        ? `${Math.floor((seconds % 3600) / 60)} min`
-        : ""
-    } ${
-      Math.floor(seconds % 60) ? `${Math.floor(seconds % 60)} sec` : "0 sec"
-    }`;
+  const formatDuration = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds - hours * 3600) / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+    const hoursString = hours.toString().padStart(2, "0");
+    const minutesString = minutes.toString().padStart(2, "0");
+    const secondsString = seconds.toString().padStart(2, "0");
+    return `${hoursString}:${minutesString}:${secondsString}`;
+  };
 
   const [remainingTime, setRemainingTime] = useState(remainingTimeInSeconds);
 

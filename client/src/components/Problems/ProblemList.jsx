@@ -8,10 +8,10 @@ import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { FaSort, FaCaretDown, FaCaretUp } from "react-icons/fa";
 import Skeleton from "../skeletons/Skeleton";
 
-const ProblemList = ({ selected, setSelected, type }) => {
+const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
   const { isLoggedIn } = useContext(AuthContext);
   const { filterObj } = useContext(
-    type === "select" ? RoomFilterContext : FilterContext
+    filterInsideModal ? RoomFilterContext : FilterContext
   );
   const [problems, setProblems] = useState([]);
   const [order, setOrder] = useState({
@@ -20,25 +20,27 @@ const ProblemList = ({ selected, setSelected, type }) => {
     acceptance: "default",
     difficulty: "default",
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load All Problems when ProblemList component mounts
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       const data = await getAllProblems(filterObj);
       const problems = data.problems;
       setProblems(problems);
       setIsLoading(false);
     };
     loadData();
-  }, []);
+  }, [filterObj]);
 
   // Function to check if the problem has all the selected topic filter tags
   const matchTags = (selectedTags, problemTags) => {
-    for (const tag of selectedTags) {
-      if (!problemTags.includes(tag)) return false;
-    }
-    return true;
+    problemTags = problemTags.map((tag) =>
+      tag.toLowerCase().replace(/\s/g, "-")
+    );
+    for (const tag of selectedTags) return problemTags.includes(tag);
+    return false;
   };
 
   const handleHeaderClick = async (e) => {
@@ -198,16 +200,17 @@ const ProblemList = ({ selected, setSelected, type }) => {
             />
           </div>
         </div>
-        {isLoggedIn && type !== "select" && (
+        {isLoggedIn && !filterInsideModal && (
           <div className="w-40">Your Submissions</div>
         )}
-        {type === "select" && <div className="w-20">Selected</div>}
+        {filterInsideModal && <div className="w-20">Selected</div>}
       </div>
       {isLoading ? (
         <Skeleton classes="grow" />
       ) : (
         problems
           .filter((problem) => {
+            console.log(filterObj, problem);
             // Add the problem if the filterObj values are initial else match tags and difficulty
             if (filterObj.tags.length !== 0 || filterObj.difficulty !== "") {
               // Case when filter difficulty is empty and tags is not
@@ -228,7 +231,7 @@ const ProblemList = ({ selected, setSelected, type }) => {
               selected={selected}
               setSelected={setSelected}
               number={problem.number}
-              type={type}
+              filterInsideModal={filterInsideModal}
               name={problem.title}
               acceptance={problem?.stats?.acceptance || 0}
               difficulty={problem.difficulty}

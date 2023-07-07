@@ -16,7 +16,7 @@ const Problem = ({
   submissions,
   userSubmissions,
   status,
-  type,
+  filterInsideModal,
 }) => {
   const { isLoggedIn } = useContext(AuthContext);
   const loadSubmissions = () => {
@@ -98,7 +98,7 @@ const Problem = ({
         <p className="hideScrollbar w-40 flex flex-row gap-x-3">
           {submissions}
         </p>
-        {isLoggedIn && type !== "select" && (
+        {isLoggedIn && !filterInsideModal && (
           <Swiper
             className="hideScrollbar w-40 flex flex-row gap-x-3"
             spaceBetween={12}
@@ -107,7 +107,7 @@ const Problem = ({
             {loadSubmissions()}
           </Swiper>
         )}
-        {type === "select" && (
+        {filterInsideModal && (
           <input
             type="checkbox"
             onClick={handleSelectProblem}
