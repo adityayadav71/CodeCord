@@ -9,32 +9,25 @@ const TagButton = ({
   setActiveTags,
 }) => {
   useEffect(() => {
-    if (activeTags.length === 0) {
-      setIsActive(false);
-    }
+    activeTags.length === 0 && setIsActive(false);
   }, [activeTags]);
   const [isActive, setIsActive] = useState(false);
 
   const activateTag = (event) => {
     const target = event.target.textContent;
+    const tagName = target.toLowerCase().replace(/\s/g, "-");
     setActiveFilters((prevFilter) =>
-      prevFilter?.topics?.includes(target.toLowerCase().replace(/\s/g, "-"))
+      prevFilter?.topics?.includes(tagName)
         ? {
             ...prevFilter,
-            topics: prevFilter.topics.filter(
-              (topic) => topic !== target.toLowerCase().replace(/\s/g, "-")
-            ),
+            topics: prevFilter.topics.filter((topic) => topic !== tagName),
           }
         : {
             ...prevFilter,
-            topics: [
-              ...prevFilter.topics,
-              target.toLowerCase().replace(/\s/g, "-"),
-            ],
+            topics: [...prevFilter.topics, tagName],
           }
     );
     setIsActive((prev) => !prev);
-    const tagName = target.toLowerCase().replace(/\s/g, "-");
     const tag = (
       <div className="flex flex-row items-center gap-x-2 h-fit w-fit px-3 bg-accent4 rounded-xl">
         {target}

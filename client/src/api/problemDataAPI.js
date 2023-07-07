@@ -15,8 +15,8 @@ export const getProblem = async (slugs) => {
   return response.data;
 };
 
-export const getAllProblemTags = async () => {
-  const response = await axios.get(`${BASE_URL}/problems/tags`);
+export const getAllProblemTags = async (fields) => {
+  const response = await axios.get(`${BASE_URL}/problems/tags?fields=${fields}`);
   return response.data.tags;
 };
 
