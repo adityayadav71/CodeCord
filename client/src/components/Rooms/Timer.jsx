@@ -6,27 +6,43 @@ function Timer({ roomData }) {
     roomData?.settings?.timeLimit * 60 || 40 * 60
   );
   const [roomEnded, setRoomEnded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (roomData?.startedAt) {
-      const timeLeft =
-        (new Date(roomData.expiresAt).getTime() - Date.now()) / 1000;
-      const timeLeftInSeconds =
-        timeLeft < Date.now() ? timeLeft : setRoomEnded(true);
-      setTimer(timeLeftInSeconds);
-      const interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer > 0) {
-            return prevTimer - 1;
-          } else {
-            setRoomEnded(true);
-            clearInterval(interval);
-            return prevTimer;
-          }
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
+    let interval;
+
+    const handleTimer = () => {
+      if (roomData.startedAt) {
+        if (new Date(roomData.expiresAt) < new Date()) {
+          setRoomEnded(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const timeLeftInSeconds = Math.floor(
+          (new Date(roomData.expiresAt) - Date.now()) / 1000
+        );
+        setTimer(timeLeftInSeconds);
+
+        interval = setInterval(() => {
+          setTimer((prevTimer) => {
+            if (prevTimer > 1) {
+              return prevTimer - 1;
+            } else {
+              setRoomEnded(true);
+              clearInterval(interval);
+              return prevTimer;
+            }
+          });
+        }, 1000);
+
+        setIsLoading(false);
+      } else setIsLoading(false);
+    };
+
+    roomData && handleTimer();
+
+    return () => clearInterval(interval);
   }, [roomData]);
 
   function formatTime(totalSeconds) {
@@ -39,10 +55,12 @@ function Timer({ roomData }) {
     return `${hoursString}:${minutesString}:${secondsString}`;
   }
 
-  return !roomEnded ? (
+  return isLoading ? (
+    <div className="w-full p-6 bg-grey1 animate-pulse"></div>
+  ) : !roomEnded ? (
     <h1 className="flex flex-row items-center gap-x-3 bg-lightSecondary px-6 py-2 mb-3">
       <BiAlarm className="text-xl" />
-      Round ends in
+      Room ends in
       <span className="bg-accent1 rounded-lg px-3 font-bold">
         {formatTime(timer)}
       </span>
@@ -50,7 +68,7 @@ function Timer({ roomData }) {
   ) : (
     <h1 className="flex flex-row items-center gap-x-3 bg-hardRed px-6 py-2 mb-3">
       <BiAlarm className="text-xl" />
-      Round has ended.
+      Room has ended.
     </h1>
   );
 }
