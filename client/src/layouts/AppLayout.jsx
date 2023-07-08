@@ -13,18 +13,22 @@ const AppLayout = ({ handleLogout }) => {
   const navigate = useNavigate();
   const { userData, socket } = useContext(AuthContext);
   const [roomData, setRoomData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let room = userData?.activeRoom;
     const loadData = async () => {
+      setIsLoading(true)
       if (room?.roomId) {
         room = await getRoomData(room.roomId);
         socket.emit("join-room", userData, room, true);
         // If roomData is not undefined
         room && setRoomData(room);
       }
+      setIsLoading(false)
     };
     room && loadData();
+
     socket?.on("updated-room-data", async (data) => {
       setRoomData(data);
     });
@@ -52,7 +56,7 @@ const AppLayout = ({ handleLogout }) => {
   }, [userData, socket]);
 
   return (
-    <RoomContext.Provider value={{ roomData, setRoomData }}>
+    <RoomContext.Provider value={{ roomData, setRoomData, isLoading }}>
       <div className={`flex flex-col ${params?.name ? "h-screen" : "h-full"}`}>
         <Navbar handleLogout={handleLogout} />
         <Outlet />

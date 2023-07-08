@@ -20,7 +20,13 @@ exports.getAllProblems = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllProblemTags = catchAsync(async (req, res, next) => {
-  const tags = await ProblemTags.find();
+  const features = new APIFeatures(ProblemTags, req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+    
+  const tags = await features.query;
   res.status(200).json({
     status: "success",
     tags,

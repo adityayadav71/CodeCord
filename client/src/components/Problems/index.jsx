@@ -14,18 +14,19 @@ const Problems = (props) => {
     limit: 20,
     totalPages: 1,
     difficulty: "",
-    sort: ""
+    sort: "",
   });
+  
   return (
     <FilterContext.Provider value={{ filterObj, setFilterObj }}>
-      <div className="flex flex-row w-full px-6 py-4 gap-x-6 grow">
-        <div className="flex flex-col grow">
+      <div className="grid grid-cols-4 w-full px-6 py-4 gap-x-6">
+        <div className="col-span-3 flex flex-col">
           <TopicFilter />
           <ProblemFilter filterInsideModal={false} />
-          <ProblemList type="" />
-          <Pagination type="" />
+          <ProblemList filterInsideModal={false} />
+          <Pagination filterInsideModal={false} />
         </div>
-        <LiveRooms />
+        <LiveRooms className="col-span-1" />
       </div>
     </FilterContext.Provider>
   );

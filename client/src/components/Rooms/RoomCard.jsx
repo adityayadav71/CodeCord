@@ -69,7 +69,7 @@ const RoomCard = ({
   };
 
   return (
-    <div className="grid grid-cols-4 grid-rows-3 p-3 bg-accent2 rounded-xl w-full leading-tight last:mb-24">
+    <div className="grid grid-cols-4 grid-rows-3 p-3 bg-accent2 border border-[#8496A3] rounded-xl w-full leading-tight last:mb-24">
       <div className="col-span-2 row-span-2">
         <h2 className="text-lg leading-6 font-bold mb-2">{name}</h2>
         <span

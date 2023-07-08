@@ -202,10 +202,10 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
             <ProblemList
               selected={selected}
               setSelected={setSelected}
-              type="select"
+              filterInsideModal={true}
             />
           </div>
-          <Pagination type="select" />
+          <Pagination filterInsideModal={true} />
         </div>
       </RoomFilterContext.Provider>
     </div>

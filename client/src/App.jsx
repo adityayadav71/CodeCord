@@ -13,6 +13,7 @@ import ForgotPassword from "./components/Authentication/ForgotPassword";
 import Login from "./components/Authentication/Login";
 import SignUp from "./components/Authentication/SignUp";
 import ActiveRooms from "./components/Rooms/ActiveRooms";
+import ProblemTagList from "./components/Problems/ProblemTagList"
 import { createContext, useState, useEffect } from "react";
 import { logout, checkLogInStatus } from "./api/authDataAPI";
 import Profile from "./components/HomePage/Profile";
@@ -109,6 +110,7 @@ function App() {
                 </Route>
                 <Route path="rooms" element={<ActiveRooms />} />
                 <Route path="discussion" element={<Discussion />} />
+                <Route path="tag/:tagname" element={<ProblemTagList />} />
                 <Route path="user/:username" element={<Profile />} />
                 <Route path="auth">
                   <Route path="signup" element={<SignUp />} />

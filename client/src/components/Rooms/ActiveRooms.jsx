@@ -9,7 +9,7 @@ import { RoomContext } from "../../layouts/AppLayout";
 import { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { TbDoorOff } from "react-icons/tb";
-import Skeleton from "../skeletons/ActiveRoomsSkeleton"
+import Skeleton from "../skeletons/ActiveRoomsSkeleton";
 
 const ActiveRoom = ({
   name,
@@ -22,14 +22,15 @@ const ActiveRoom = ({
   handleJoinRoom,
   handleCopyInviteLink,
 }) => {
-  const formatDuration = (seconds) =>
-    `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)} hr` : ""} ${
-      Math.floor((seconds % 3600) / 60)
-        ? `${Math.floor((seconds % 3600) / 60)} min`
-        : ""
-    } ${
-      Math.floor(seconds % 60) ? `${Math.floor(seconds % 60)} sec` : "0 sec"
-    }`;
+  const formatDuration = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds - hours * 3600) / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+    const hoursString = hours.toString().padStart(2, "0");
+    const minutesString = minutes.toString().padStart(2, "0");
+    const secondsString = seconds.toString().padStart(2, "0");
+    return `${hoursString}:${minutesString}:${secondsString}`;
+  };
 
   const [remainingTime, setRemainingTime] = useState(remainingTimeInSeconds);
 
@@ -105,18 +106,18 @@ const ActiveRoom = ({
 const ActiveRooms = () => {
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { userData, socket } = useContext(AuthContext);
   const { setRoomData } = useContext(RoomContext);
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       const rooms = await getPublicRooms();
       setRooms(rooms);
+      setIsLoading(false);
     };
-    setIsLoading(true);
     loadData();
-    setIsLoading(false);
     socket?.on("live-rooms-update", () => loadData());
   }, [socket]);
 
@@ -150,45 +151,49 @@ const ActiveRooms = () => {
 
   return isLoading ? (
     <Skeleton />
-  ) : rooms.length > 0 ? (
-    <table className="mx-48 mt-12 text-lg">
-      <thead>
-        <tr>
-          <td className="p-3">Room Name</td>
-          <td className="p-3">Participants</td>
-          <td className="p-3">Time Left</td>
-          <td className="p-3">Difficulty</td>
-          <td className="p-3">Status</td>
-          <td className="p-3">Action</td>
-          <td className="p-3">Invite Code</td>
-        </tr>
-      </thead>
-      <tbody>
-        {rooms?.map((room, i) => {
-          const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
-          const remainingTime = room.startedAt
-            ? expiresAt > 0
-              ? expiresAt / 1000
-              : 0
-            : room.settings.timeLimit * 60;
+  ) : rooms && rooms.length > 0 ? (
+    <div className="mx-48 mt-12 drop-shadow-xl">
+      <div className="rounded-xl overflow-hidden">
+        <table className="w-full h-full text-lg">
+          <thead className="bg-secondary">
+            <tr>
+              <td className="p-3">Room Name</td>
+              <td className="p-3">Participants</td>
+              <td className="p-3">Time Left</td>
+              <td className="p-3">Difficulty</td>
+              <td className="p-3">Status</td>
+              <td className="p-3">Action</td>
+              <td className="p-3">Invite Code</td>
+            </tr>
+          </thead>
+          <tbody>
+            {rooms?.map((room, i) => {
+              const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
+              const remainingTime = room.startedAt
+                ? expiresAt > 0
+                  ? expiresAt / 1000
+                  : 0
+                : room.settings.timeLimit * 60;
 
-          return (
-            <ActiveRoom
-              key={i}
-              name={room.name}
-              participants={room.participants.length}
-              participantsLimit={room.settings.participantsLimit}
-              difficulty={room.settings.difficulty}
-              remainingTimeInSeconds={remainingTime}
-              startedAt={room.startedAt}
-              roomId={room.roomId}
-              handleJoinRoom={handleJoinRoom}
-              handleCopyInviteLink={handleCopyInviteLink}
-            />
-          );
-        })}
-      </tbody>
-    </table>
+              return (
+                <ActiveRoom
+                  key={i}
+                  name={room.name}
+                  participants={room.participants.length}
+                  participantsLimit={room.settings.participantsLimit}
+                  difficulty={room.settings.difficulty}
+                  remainingTimeInSeconds={remainingTime}
+                  startedAt={room.startedAt}
+                  roomId={room.roomId}
+                  handleJoinRoom={handleJoinRoom}
+                  handleCopyInviteLink={handleCopyInviteLink}
+                />
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   ) : (
     <div className="flex flex-col gap-3 items-center justify-center h-full w-full">
       <TbDoorOff className="text-9xl text-grey1" />

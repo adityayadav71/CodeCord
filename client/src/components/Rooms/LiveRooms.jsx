@@ -24,7 +24,7 @@ const LiveRooms = () => {
   }, [socket]);
 
   return (
-    <aside className="relative flex flex-col px-5 py-6 gap-y-4 w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
+    <aside className="relative flex flex-col px-5 py-6 gap-y-4 ml-auto  min-w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
       <section className="flex flex-col grow h-80">
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
         {isLoading ? (

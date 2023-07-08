@@ -16,7 +16,7 @@ const Problem = ({
   submissions,
   userSubmissions,
   status,
-  type,
+  filterInsideModal,
 }) => {
   const { isLoggedIn } = useContext(AuthContext);
   const loadSubmissions = () => {
@@ -64,7 +64,7 @@ const Problem = ({
   }, [selected]);
 
   return (
-    <div className="odd:bg-hover" key={number}>
+    <div className="odd:bg-hover">
       <div className="flex flex-row items-center p-3 text-lg">
         <div className="w-20">
           {status === "solved" ? (
@@ -98,7 +98,7 @@ const Problem = ({
         <p className="hideScrollbar w-40 flex flex-row gap-x-3">
           {submissions}
         </p>
-        {isLoggedIn && type !== "select" && (
+        {isLoggedIn && !filterInsideModal && (
           <Swiper
             className="hideScrollbar w-40 flex flex-row gap-x-3"
             spaceBetween={12}
@@ -107,7 +107,7 @@ const Problem = ({
             {loadSubmissions()}
           </Swiper>
         )}
-        {type === "select" && (
+        {filterInsideModal && (
           <input
             type="checkbox"
             onClick={handleSelectProblem}

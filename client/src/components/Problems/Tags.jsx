@@ -2,7 +2,14 @@ import { React } from "react";
 import TagsFilter from "./TagsFilter";
 import { FaAngleDown, FaHandPointer } from "react-icons/fa";
 
-const Tags = ({ isTagsActive, setActiveFilters, activeTags, setActiveTags, handleClick, disableEvents }) => {
+const Tags = ({
+  isTagsActive,
+  setActiveFilters,
+  activeTags,
+  setActiveTags,
+  handleClick,
+  disableEvents,
+}) => {
   return (
     <div className="dropdown relative" data-value="Tags">
       <div
@@ -12,10 +19,22 @@ const Tags = ({ isTagsActive, setActiveFilters, activeTags, setActiveTags, handl
         onClick={handleClick}
       >
         Tags
-        {isTagsActive ? <FaAngleDown className="rotate-180 transition-all duration-300" /> : <FaAngleDown className="transition-all duration-300" />}
-        {disableEvents && <FaHandPointer className="absolute bottom-0 left-16" />}
+        <FaAngleDown
+          className={`${
+            isTagsActive ? "rotate-180" : ""
+          } transition-all duration-300`}
+        />
+        {disableEvents && (
+          <FaHandPointer className="absolute bottom-0 left-16" />
+        )}
       </div>
-      <TagsFilter disableEvents={disableEvents} setActiveFilters={setActiveFilters} activeTags={activeTags} setActiveTags={setActiveTags} isTagsActive={isTagsActive} />
+      <TagsFilter
+        disableEvents={disableEvents}
+        setActiveFilters={setActiveFilters}
+        activeTags={activeTags}
+        setActiveTags={setActiveTags}
+        isTagsActive={isTagsActive}
+      />
     </div>
   );
 };
