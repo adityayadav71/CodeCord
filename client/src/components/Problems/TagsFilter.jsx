@@ -37,14 +37,6 @@ const TagsFilter = ({
     loadData();
   }, []);
 
-  const toggleTopics = () => {
-    setTopicsExpanded((prev) => !prev);
-  };
-
-  const toggleCompanies = () => {
-    setCompaniesExpanded((prev) => !prev);
-  };
-
   return (
     <div
       className={`TagsFilter ${
@@ -72,8 +64,9 @@ const TagsFilter = ({
             topicsExpanded ? "h-52 overflow-y-scroll" : "h-20 overflow-y-hidden"
           }`}
         >
-          {tags?.map((tag) => (
+          {tags?.map((tag, i) => (
             <TagButton
+              key={i}
               tagName={tag.name}
               setActiveFilters={setActiveFilters}
               activeTags={activeTags}
@@ -82,7 +75,10 @@ const TagsFilter = ({
           ))}
         </div>
       </div>
-      <button className="ml-1 mb-3 text-accent1" onClick={toggleTopics}>
+      <button
+        className="ml-1 mb-3 text-accent1"
+        onClick={() => setTopicsExpanded((prev) => !prev)}
+      >
         {topicsExpanded ? "Collapse" : "Expand"}
       </button>
       <div className="flex flex-col items-start justify-start gap-y-4 h-full">
@@ -148,7 +144,10 @@ const TagsFilter = ({
           />
         </div>
       </div>
-      <button className="ml-1 text-accent1" onClick={toggleCompanies}>
+      <button
+        className="ml-1 text-accent1"
+        onClick={() => setCompaniesExpanded((prev) => !prev)}
+      >
         {companiesExpanded ? "Collapse" : "Expand"}
       </button>
     </div>

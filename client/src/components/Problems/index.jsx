@@ -3,7 +3,7 @@ import Pagination from "./Pagination";
 import ProblemList from "./ProblemList";
 import TopicFilter from "./TopicFilter";
 import ProblemFilter from "./ProblemFilter";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 export const FilterContext = createContext(null);
 
