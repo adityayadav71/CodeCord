@@ -21,7 +21,12 @@ import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
 import { toast } from "react-hot-toast";
 
-const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal }) => {
+const ProblemFilter = ({
+  selected,
+  setSelected,
+  setDifficulty,
+  filterInsideModal,
+}) => {
   useEffect(() => {
     const closeDropdown = (event) => {
       if (
@@ -42,8 +47,8 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
   const [isDifficultyActive, setDifficultyActive] = useState(false);
   const [isStatusActive, setStatusActive] = useState(false);
   const [isTagsActive, setTagsActive] = useState(false);
-  const [activeDifficulty, setActiveDifficulty] = useState([]);
-  const [activeStatus, setActiveStatus] = useState([]);
+  const [activeDifficulty, setActiveDifficulty] = useState("");
+  const [activeStatus, setActiveStatus] = useState("");
   const [activeTags, setActiveTags] = useState([]);
   const [activeFilters, setActiveFilters] = useState({
     difficulty: "",
@@ -96,7 +101,7 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
       target.contains("medium") ||
       target.contains("hard")
     ) {
-      setActiveDifficulty([]);
+      setActiveDifficulty("");
       setActiveFilters((prevFilter) => {
         return {
           ...prevFilter,
@@ -157,7 +162,7 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
     );
     setStatusActive(false);
     setDifficultyActive(false);
-    isDifficulty ? setActiveDifficulty([tag]) : setActiveStatus([tag]);
+    isDifficulty ? setActiveDifficulty(tag) : setActiveStatus(tag);
   };
 
   const resetFilters = () => {
@@ -165,8 +170,8 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
       difficulty: "",
       topics: [],
     });
-    setActiveDifficulty(() => []);
-    setActiveStatus(() => []);
+    setActiveDifficulty(() => "");
+    setActiveStatus(() => "");
     setActiveTags(() => []);
   };
 
@@ -196,6 +201,19 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
       document.removeEventListener("click", closeModal);
     };
   }, []);
+
+  const deActivateTag = (event) => {
+    const target = event.currentTarget.dataset.target;
+    setActiveTags((prevTags) => prevTags.filter((tag) => tag !== target));
+    setActiveFilters((prevFilter) => {
+      const newTopics = prevFilter.topics.filter((topic) => topic !== target);
+      return {
+        ...prevFilter,
+        topics: newTopics,
+      };
+    });
+    setIsActive((prev) => !prev);
+  };
 
   return (
     <div>
@@ -261,7 +279,8 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
             </div>
           </>
         ) : (
-          isLoggedIn && !userData?.activeRoom && (
+          isLoggedIn &&
+          !userData?.activeRoom && (
             <button
               className="open-modal flex flex-row gap-x-3 items-center h-fit w-fit ml-auto p-3 text-accent1 hover:text-lightAccent1 rounded-lg"
               onClick={openRoomModal}
@@ -278,7 +297,19 @@ const ProblemFilter = ({ selected, setSelected, setDifficulty, filterInsideModal
         <div className="relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
           {activeDifficulty}
           {activeStatus}
-          {activeTags}
+          {activeTags.map((tag, i) => {
+            return (
+              <div
+                key={i}
+                className="flex flex-row items-center gap-x-2 h-fit w-fit px-3 bg-accent4 rounded-xl"
+              >
+                {tag}
+                <button data-target={tag} onClick={deActivateTag}>
+                  <FaRegTimesCircle className="hover:text-accent1" />
+                </button>
+              </div>
+            );
+          })}
         </div>
         {activeDifficulty.length === 0 &&
         activeStatus.length === 0 &&

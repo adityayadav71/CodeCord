@@ -36,9 +36,7 @@ const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
 
   // Function to check if the problem has all the selected topic filter tags
   const matchTags = (selectedTags, problemTags) => {
-    problemTags = problemTags.map((tag) =>
-      tag.toLowerCase().replace(/\s/g, "-")
-    );
+    if (selectedTags.length === 0) return true;
     for (const tag of selectedTags) return problemTags.includes(tag);
     return false;
   };
@@ -210,7 +208,6 @@ const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
       ) : (
         problems
           .filter((problem) => {
-            console.log(filterObj, problem);
             // Add the problem if the filterObj values are initial else match tags and difficulty
             if (filterObj.tags.length !== 0 || filterObj.difficulty !== "") {
               // Case when filter difficulty is empty and tags is not
@@ -225,9 +222,9 @@ const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
             (filterObj.page - 1) * filterObj.limit,
             (filterObj.page - 1) * filterObj.limit + filterObj.limit
           )
-          .map((problem) => (
+          .map((problem, i) => (
             <Problem
-              key={problem.number}
+              key={i}
               selected={selected}
               setSelected={setSelected}
               number={problem.number}

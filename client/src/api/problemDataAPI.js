@@ -1,8 +1,10 @@
 import axios from "axios";
 import { BASE_URL } from "./apiConfig";
 
-export const getAllProblems = async (filter) => {
-  const queryString = `fields=number,title,difficulty,tags,stats.acceptance,stats.submissions`;
+export const getAllProblems = async (filters) => {
+  let queryString = `fields=number,title,difficulty,tags,stats.acceptance,stats.submissions${
+    filters.tags.length !== 0 ? `&tags=${filters.tags}` : ""
+  }${filters.difficulty ? `&difficulty=${filters.difficulty}` : ""}`;
   const response = await axios.get(`${BASE_URL}/problems?${queryString}`);
   return response.data;
 };
@@ -16,7 +18,9 @@ export const getProblem = async (slugs) => {
 };
 
 export const getAllProblemTags = async (fields) => {
-  const response = await axios.get(`${BASE_URL}/problems/tags?fields=${fields}`);
+  const response = await axios.get(
+    `${BASE_URL}/problems/tags?fields=${fields}`
+  );
   return response.data.tags;
 };
 
