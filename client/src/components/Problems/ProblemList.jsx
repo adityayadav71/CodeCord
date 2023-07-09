@@ -28,6 +28,7 @@ const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
       setIsLoading(true);
       const data = await getAllProblems(filterObj);
       const problems = data.problems;
+      console.log(problems)
       setProblems(problems);
       setIsLoading(false);
     };
@@ -99,7 +100,7 @@ const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
   };
 
   return (
-    <div className="flex flex-col bg-secondary rounded-xl mb-3 grow overflow-clip">
+    <div className="flex flex-col bg-secondary rounded-xl mb-3 grow">
       <div className="flex flex-row items-center p-3 text-md border-b-[1px] border-hover">
         <p className="w-20">Status</p>
         <div

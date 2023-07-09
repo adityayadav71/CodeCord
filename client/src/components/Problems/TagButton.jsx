@@ -7,7 +7,6 @@ const TagButton = ({
   setActiveTags,
 }) => {
   useEffect(() => {
-    // Disable active tag when deactivated from filter list
     !activeTags.includes(tagName) && setIsActive(false);
   }, [activeTags]);
 

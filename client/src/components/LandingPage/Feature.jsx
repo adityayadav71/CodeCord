@@ -186,10 +186,10 @@ const Feature = ({
                     <div className="relative w-1/2 h-1/2">
                       <Tags
                         disableEvents={true}
-                        isTagsActive={() => null}
-                        activeTags={() => null}
-                        setActiveTags={() => null}
-                        handleClick={() => null}
+                        isTagsActive={null}
+                        activeTags={[]}
+                        setActiveTags={() => {}}
+                        handleClick={() => {}}
                       />
                     </div>
                   </div>
