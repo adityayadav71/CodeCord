@@ -1,12 +1,11 @@
 import { FaRegClipboard } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext} from "react";
 import { getPublicRooms } from "../../api/roomsAPI";
 import { getRoomData, joinRoom } from "../../api/roomsAPI";
 import { loadData } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { TbDoorOff } from "react-icons/tb";
 import Skeleton from "../skeletons/ActiveRoomsSkeleton";
@@ -31,7 +30,8 @@ const ActiveRoom = ({
     const secondsString = seconds.toString().padStart(2, "0");
     return `${hoursString}:${minutesString}:${secondsString}`;
   };
-
+  
+  const { isLoggedIn } = useContext(AuthContext);
   const [remainingTime, setRemainingTime] = useState(remainingTimeInSeconds);
 
   useEffect(() => {
@@ -87,12 +87,18 @@ const ActiveRoom = ({
         </p>
       </td>
       <td className="px-3 py-1">
-        <button
-          onClick={() => handleJoinRoom(roomId)}
-          className="px-6 py-3 border rounded-lg border-accent1 hover:bg-accent1"
-        >
+        <div className="relative">
+          <button
+            onClick={() => handleJoinRoom(roomId)}
+            disabled={!isLoggedIn}
+            className="peer px-6 py-3 border rounded-lg border-accent1 hover:bg-accent1 disabled:cursor-not-allowed"
+          >
           Join
-        </button>
+          </button>
+          <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-16 px-3 py-1 bg-white text-primary rounded-lg">
+              Login to join this room
+          </div>
+        </div>
       </td>
       <td>
         <FaRegClipboard
@@ -107,7 +113,7 @@ const ActiveRooms = () => {
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { userData, socket } = useContext(AuthContext);
+  const { isLoggedIn, userData, socket } = useContext(AuthContext);
   const { setRoomData } = useContext(RoomContext);
 
   useEffect(() => {
@@ -153,7 +159,8 @@ const ActiveRooms = () => {
     <Skeleton />
   ) : rooms && rooms.length > 0 ? (
     <div className="mx-48 mt-12 drop-shadow-xl">
-      <div className="rounded-xl overflow-hidden">
+      {!isLoggedIn && <div className="bg-yellowBackGround border border-mediumYellow text-md font-semibold px-3 py-1 mb-3 rounded-lg">Login to join rooms</div>}
+      <div className="rounded-xl">
         <table className="w-full h-full text-lg">
           <thead className="bg-secondary">
             <tr>

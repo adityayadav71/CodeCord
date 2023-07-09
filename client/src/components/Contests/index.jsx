@@ -10,7 +10,6 @@ import { AuthContext } from "../../App";
 
 const Contest = () => {
   const { isLoggedIn } = useContext(AuthContext);
-  const { userData } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("past-contests");
 
   return (

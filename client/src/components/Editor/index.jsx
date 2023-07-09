@@ -98,10 +98,7 @@ const Editor = ({ isRoom }) => {
 
     const loadProblems = async () => {
       setIsLoading(true);
-      let response;
-      isRoom
-      ? (response = await getProblem(selectedProblems))
-      : (response = await getProblem([params.name]));
+      const response = await getProblem(isRoom ? selectedProblems : [params.name]);
       
       setProblems(response.problems);
       setActiveProblem(response.problems[0]);
@@ -344,13 +341,13 @@ const Editor = ({ isRoom }) => {
             <div className="flex flex-row items-center gap-x-3">
               {!isLoggedIn ? (
                 <p>
-                  Please
+                  Please{" "}
                   <Link
                     to="/app/auth/login"
                     className="text-blue-500 font-bold hover:underline"
                   >
-                    Log in/Signup
-                  </Link>
+                    Login/Signup
+                  </Link>{" "}
                   to run or submit your code
                 </p>
               ) : (

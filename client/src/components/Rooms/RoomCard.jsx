@@ -28,7 +28,7 @@ const RoomCard = ({
         ? `${Math.floor((seconds % 3600) / 60)} m`
         : ""
     } ${Math.floor(seconds % 60) ? `${Math.floor(seconds % 60)} s` : "0 s"}`;
-  const { userData } = useContext(AuthContext);
+  const { userData, isLoggedIn } = useContext(AuthContext);
   const { socket, setRoomData } = useContext(RoomContext);
   const [remainingTime, setRemainingTime] = useState(remainingTimeInSeconds);
 
@@ -118,12 +118,19 @@ const RoomCard = ({
           {remainingTime > 0 ? (started ? "Live" : "Yet to start") : "Ended"}
         </p>
       </div>
-      <button
-        onClick={() => handleJoinRoom(id)}
-        className="bg-accent1 hover:bg-lightAccent1 transition-all duration-300 p-1 w-20 rounded-lg text-lg text-white font-bold"
-      >
-        JOIN
-      </button>
+      <div className="relative">
+        <button
+          onClick={() => handleJoinRoom(id)}
+          disabled={!isLoggedIn}
+          className="peer bg-accent1 hover:bg-lightAccent1 disabled:cursor-not-allowed transition-all duration-300 p-1 w-20 rounded-lg text-lg text-white font-bold"
+        >
+          JOIN
+        </button>
+          <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 right-0 px-3 py-1 bg-white text-primary rounded-lg">
+              Login to join this room
+          </div>
+        </div>
+      
     </div>
   );
 };
