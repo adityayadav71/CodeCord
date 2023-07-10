@@ -28,7 +28,6 @@ const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
       setIsLoading(true);
       const data = await getAllProblems(filterObj);
       const problems = data.problems;
-      console.log(problems)
       setProblems(problems);
       setIsLoading(false);
     };

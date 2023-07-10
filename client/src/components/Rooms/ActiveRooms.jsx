@@ -1,5 +1,5 @@
 import { FaRegClipboard } from "react-icons/fa";
-import { useState, useEffect, useContext} from "react";
+import { useState, useEffect, useContext } from "react";
 import { getPublicRooms } from "../../api/roomsAPI";
 import { getRoomData, joinRoom } from "../../api/roomsAPI";
 import { loadData } from "../../App";
@@ -10,17 +10,7 @@ import { toast } from "react-hot-toast";
 import { TbDoorOff } from "react-icons/tb";
 import Skeleton from "../skeletons/ActiveRoomsSkeleton";
 
-const ActiveRoom = ({
-  name,
-  participants,
-  participantsLimit,
-  difficulty,
-  remainingTimeInSeconds,
-  startedAt,
-  roomId,
-  handleJoinRoom,
-  handleCopyInviteLink,
-}) => {
+const ActiveRoom = ({ name, participants, participantsLimit, difficulty, remainingTimeInSeconds, startedAt, roomId, handleJoinRoom, handleCopyInviteLink }) => {
   const formatDuration = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds - hours * 3600) / 60);
@@ -30,7 +20,7 @@ const ActiveRoom = ({
     const secondsString = seconds.toString().padStart(2, "0");
     return `${hoursString}:${minutesString}:${secondsString}`;
   };
-  
+
   const { isLoggedIn } = useContext(AuthContext);
   const [remainingTime, setRemainingTime] = useState(remainingTimeInSeconds);
 
@@ -56,11 +46,7 @@ const ActiveRoom = ({
       <td className="px-3 py-1">
         <p
           className={`px-3 w-fit ${
-            difficulty === "Easy"
-              ? "bg-greenBackGround text-easyGreen"
-              : difficulty === "Medium"
-              ? "bg-yellowBackGround text-mediumYellow"
-              : "bg-redBackGround text-hardRed"
+            difficulty === "Easy" ? "bg-greenBackGround text-easyGreen" : difficulty === "Medium" ? "bg-yellowBackGround text-mediumYellow" : "bg-redBackGround text-hardRed"
           } rounded-lg uppercase font-semibold`}
         >
           {difficulty}
@@ -68,43 +54,24 @@ const ActiveRoom = ({
       </td>
       <td className="px-3 py-1">
         <p className="flex items-center">
-          <span
-            className={`inline-block w-3 h-3 rounded-full mr-2 ${
-              remainingTime > 0
-                ? startedAt
-                  ? "bg-green-500"
-                  : "bg-yellow-500"
-                : "bg-red-500"
-            }`}
-          ></span>
-          <span>
-            {remainingTime > 0
-              ? startedAt
-                ? "Live"
-                : "Yet to start"
-              : "Ended"}
-          </span>
+          <span className={`inline-block w-3 h-3 rounded-full mr-2 ${remainingTime > 0 ? (startedAt ? "bg-green-500" : "bg-yellow-500") : "bg-red-500"}`}></span>
+          <span>{remainingTime > 0 ? (startedAt ? "Live" : "Yet to start") : "Ended"}</span>
         </p>
       </td>
       <td className="px-3 py-1">
         <div className="relative">
-          <button
-            onClick={() => handleJoinRoom(roomId)}
-            disabled={!isLoggedIn}
-            className="peer px-6 py-3 border rounded-lg border-accent1 hover:bg-accent1 disabled:cursor-not-allowed"
-          >
-          Join
+          <button onClick={() => handleJoinRoom(roomId)} disabled={!isLoggedIn} className="peer px-6 py-3 border rounded-lg border-accent1 hover:bg-accent1 disabled:cursor-not-allowed">
+            Join
           </button>
-          <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-16 px-3 py-1 bg-white text-primary rounded-lg">
+          {!isLoggedIn && (
+            <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-16 px-3 py-1 bg-white text-primary rounded-lg">
               Login to join this room
-          </div>
+            </div>
+          )}
         </div>
       </td>
       <td>
-        <FaRegClipboard
-          onClick={() => handleCopyInviteLink(roomId)}
-          className="text-xl hover:text-accent1 hover:cursor-pointer"
-        />
+        <FaRegClipboard onClick={() => handleCopyInviteLink(roomId)} className="text-xl hover:text-accent1 hover:cursor-pointer" />
       </td>
     </tr>
   );
@@ -130,9 +97,7 @@ const ActiveRooms = () => {
   const handleJoinRoom = async (roomId) => {
     try {
       if (userData?.activeRoom) {
-        toast.error(
-          "You are already in a room. Leave before joining another one."
-        );
+        toast.error("You are already in a room. Leave before joining another one.");
       } else {
         // 1. Find Room In Database
         const { roomData } = await joinRoom(userData, socket, roomId);
@@ -176,11 +141,7 @@ const ActiveRooms = () => {
           <tbody>
             {rooms?.map((room, i) => {
               const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
-              const remainingTime = room.startedAt
-                ? expiresAt > 0
-                  ? expiresAt / 1000
-                  : 0
-                : room.settings.timeLimit * 60;
+              const remainingTime = room.startedAt ? (expiresAt > 0 ? expiresAt / 1000 : 0) : room.settings.timeLimit * 60;
 
               return (
                 <ActiveRoom
