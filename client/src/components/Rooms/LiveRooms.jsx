@@ -1,7 +1,7 @@
 import RoomCard from "./RoomCard";
 import { FaUserAlt } from "react-icons/fa";
 import { AuthContext } from "../../App";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, memo } from "react";
 import { getPublicRooms } from "../../api/roomsAPI";
 import { Link } from "react-router-dom";
 import { TbDoorOff } from "react-icons/tb";
@@ -24,9 +24,10 @@ const LiveRooms = () => {
   }, [socket]);
 
   return (
-    <aside className="relative flex flex-col px-5 py-6 gap-y-4 ml-auto  min-w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
+    <aside className="relative flex flex-col px-5 py-6 gap-y-4 ml-auto w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
       <section className="flex flex-col grow h-80">
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
+        {!isLoggedIn && <div className="bg-yellowBackGround border border-mediumYellow text-md font-semibold px-3 py-1 mb-3 rounded-lg">Login to create and join rooms</div>}
         {isLoading ? (
           <Skeleton />
         ) : (
@@ -116,4 +117,4 @@ const LiveRooms = () => {
   );
 };
 
-export default LiveRooms;
+export default memo(LiveRooms);

@@ -46,10 +46,7 @@ const Editor = ({ isRoom }) => {
               <span className="mr-3 font-semibold">
                 🚫 The <b>host removed you</b> from the room.
               </span>
-              <button
-                className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
-                onClick={() => toast.dismiss(t.id)}
-              >
+              <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
                 Dismiss
               </button>
             </div>
@@ -63,9 +60,7 @@ const Editor = ({ isRoom }) => {
 
   const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
   const [consoleOpen, setConsoleOpen] = useState(true);
-  const [editorSizes, setEditorSizes] = useState(
-    consoleOpen ? [60, 40] : [100, 0]
-  );
+  const [editorSizes, setEditorSizes] = useState(consoleOpen ? [60, 40] : [100, 0]);
   const [editorSettings, setEditorSettings] = useState({
     theme: themes.dracula,
     themeName: "default",
@@ -92,31 +87,26 @@ const Editor = ({ isRoom }) => {
   const values = queryString.parse(location.search);
 
   useEffect(() => {
-    const selectedProblems =
-      values?.problems?.split(",") || // User creating a new room
-      roomData?.settings?.problems; // User joining a new room
+    if (roomData) {
+      const selectedProblems =
+        values?.problems?.split(",") || // User creating a new room
+        roomData?.settings?.problems; // User joining a new room
 
-    const loadProblems = async () => {
-      setIsLoading(true);
-      let response;
-      isRoom
-      ? (response = await getProblem(selectedProblems))
-      : (response = await getProblem([params.name]));
-      
-      setProblems(response.problems);
-      setActiveProblem(response.problems[0]);
-      setIsLoading(false);
-    };
-    loadProblems();
+      const loadProblems = async () => {
+        setIsLoading(true);
+        const response = await getProblem(isRoom ? selectedProblems : [params.name]);
+
+        setProblems(response.problems);
+        setActiveProblem(response.problems[0]);
+        setIsLoading(false);
+      };
+      loadProblems();
+    }
   }, [roomData]);
 
   useEffect(() => {
     const sizes = JSON.parse(localStorage?.getItem("sizes"));
-    if (
-      (isRoom && sizes && sizes?.length === 3) ||
-      (!isRoom && sizes && sizes?.length === 2)
-    )
-      setSizes(sizes);
+    if ((isRoom && sizes && sizes?.length === 3) || (!isRoom && sizes && sizes?.length === 2)) setSizes(sizes);
 
     const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
     editorSizes && setEditorSizes(editorSizes);
@@ -146,13 +136,7 @@ const Editor = ({ isRoom }) => {
 
   useEffect(() => {
     const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
-    setEditorSizes(
-      consoleOpen && editorSizes
-        ? editorSizes[0] > 95
-          ? [60, 40]
-          : editorSizes
-        : [100, 0]
-    );
+    setEditorSizes(consoleOpen && editorSizes ? (editorSizes[0] > 95 ? [60, 40] : editorSizes) : [100, 0]);
   }, [consoleOpen]);
 
   const handleFullScreen = () => {
@@ -203,10 +187,7 @@ const Editor = ({ isRoom }) => {
   const checkSubmissionStatus = async (token) => {
     const response = await getResult(token);
     const { status } = response;
-    if (
-      status.description === "In Queue" ||
-      status.description === "Processing"
-    ) {
+    if (status.description === "In Queue" || status.description === "Processing") {
       return new Promise((resolve) => {
         setTimeout(async () => {
           const result = await checkSubmissionStatus(token);
@@ -228,87 +209,41 @@ const Editor = ({ isRoom }) => {
 
   return (
     <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
-      <Split
-        className="editor flex flex-row grow overflow-hidden h-full"
-        onDrag={updateSize}
-        sizes={sizes}
-        minSize={[0, 500, 0]}
-        maxSize={[2560, 2560, 250]}
-        snapOffset={[300, 0, 200]}
-      >
+      <Split className="editor flex flex-row grow overflow-hidden h-full" onDrag={updateSize} sizes={sizes} minSize={[0, 500, 0]} maxSize={[2560, 2560, 250]} snapOffset={[300, 0, 200]}>
         <div className="flex flex-col bg-transparentSecondary overflow-x-hidden">
-          <ProblemPanel
-            isRoom={isRoom}
-            handleSubmissionDisplay={handleSubmissionDisplay}
-            handleProblemChange={handleActiveProblemChange}
-            setDisplaySubmission={setDisplaySubmission}
-          />
+          <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} />
         </div>
         <div>
-          <Split
-            style={{ height: "calc(100% - 56px)" }}
-            onDrag={updateEditorSize}
-            sizes={editorSizes}
-            direction="vertical"
-            minSize={[260, 0]}
-            snapOffset={[0, 100]}
-          >
+          <Split style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
             {displaySubmission ? (
               <div ref={editorRef} className="z-[-1] h-full bg-primary">
-                <SubmissionPanel
-                  isRoom={isRoom}
-                  submissionDetails={submissionDetails}
-                  setSubmissionDetails={setSubmissionDetails}
-                  setDisplaySubmission={setDisplaySubmission}
-                />
+                <SubmissionPanel isRoom={isRoom} submissionDetails={submissionDetails} setSubmissionDetails={setSubmissionDetails} setDisplaySubmission={setDisplaySubmission} />
               </div>
             ) : (
               <div ref={editorRef} className="z-[-1] h-full bg-primary">
-                <CodeEditor
-                  isRoom={isRoom}
-                  editorSettings={editorSettings}
-                  setEditorSettings={setEditorSettings}
-                />
+                <CodeEditor isRoom={isRoom} editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
               </div>
             )}
             <div className="bg-lightAccent3 z-10">
-              {Object.keys(problems).length > 0 && (
-                <Console
-                  isRoom={isRoom}
-                  isFullScreen={isFullScreen}
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                  output={output}
-                  runningCode={runningCode}
-                />
-              )}
+              {Object.keys(problems).length > 0 && <Console isRoom={isRoom} isFullScreen={isFullScreen} activeTab={activeTab} setActiveTab={setActiveTab} output={output} runningCode={runningCode} />}
             </div>
           </Split>
           <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
             <div className="flex flex-row items-center ml-3 gap-x-6">
               <div className="relative">
-                <TbTerminal2
-                  className="peer text-2xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-                  onClick={() => setConsoleOpen((prev) => !prev)}
-                />
+                <TbTerminal2 className="peer text-2xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={() => setConsoleOpen((prev) => !prev)} />
                 <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
                   Console
                 </div>
               </div>
               <div className="relative">
-                <FaUndo
-                  className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-                  onClick={handleClearEditor}
-                />
+                <FaUndo className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleClearEditor} />
                 <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
                   Reset
                 </div>
               </div>
               <div className="relative">
-                <FaCog
-                  className="settings peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-                  onClick={handleSettings}
-                />
+                <FaCog className="settings peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
                 <div className="absolute w-max peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
                   Editor Settings
                 </div>
@@ -316,41 +251,29 @@ const Editor = ({ isRoom }) => {
               <div className="relative">
                 {isFullScreen ? (
                   <>
-                    <FaCompress
-                      className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-                      onClick={handleFullScreen}
-                    />
+                    <FaCompress className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
                     <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
                       Minimize
                     </div>
                   </>
                 ) : (
                   <>
-                    <FaExpand
-                      className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer"
-                      onClick={handleFullScreen}
-                    />
+                    <FaExpand className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
                     <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
                       FullScreen
                     </div>
                   </>
                 )}
               </div>
-              <LanguageSelector
-                editorSettings={editorSettings}
-                setEditorSettings={setEditorSettings}
-              />
+              <LanguageSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
             </div>
             <div className="flex flex-row items-center gap-x-3">
               {!isLoggedIn ? (
                 <p>
-                  Please
-                  <Link
-                    to="/app/auth/login"
-                    className="text-blue-500 font-bold hover:underline"
-                  >
-                    Log in/Signup
-                  </Link>
+                  Please{" "}
+                  <Link to="/app/auth/login" className="text-blue-500 font-bold hover:underline">
+                    Login/Signup
+                  </Link>{" "}
                   to run or submit your code
                 </p>
               ) : (
@@ -382,13 +305,7 @@ const Editor = ({ isRoom }) => {
         ) : null}
       </Split>
       {openScoreboard && <Scoreboard setOpenScoreboard={setOpenScoreboard} />}
-      {settingsOpen && (
-        <EditorSettings
-          editorSettings={editorSettings}
-          setEditorSettings={setEditorSettings}
-          setSettingsOpen={setSettingsOpen}
-        />
-      )}
+      {settingsOpen && <EditorSettings editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
     </ProblemContext.Provider>
   );
 };

@@ -3,7 +3,7 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import ContestCard from "../Contests/UpcomingContest";
-import editorSvg from "/svg/feature1.svg";
+import editorSvg from "/feature1.png";
 import Tags from "../Problems/Tags";
 
 const Feature = ({
@@ -186,7 +186,7 @@ const Feature = ({
                     <div className="relative w-1/2 h-1/2">
                       <Tags
                         disableEvents={true}
-                        isTagsActive={null}
+                        isTagsActive={true}
                         activeTags={[]}
                         setActiveTags={() => {}}
                         handleClick={() => {}}

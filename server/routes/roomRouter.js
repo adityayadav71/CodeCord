@@ -3,6 +3,8 @@ const roomController = require("../controllers/roomController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+router.get("/live", roomController.getLiveRooms);
+
 router.use(authController.protect);
 
 router
@@ -10,7 +12,6 @@ router
   .post(roomController.createRoom)
   .patch(roomController.updateRoom);
   
-router.get("/live", roomController.getLiveRooms);
 router.get("/:roomId", roomController.getRoomData);
 router.post("/join", roomController.joinRoom);
 router.patch("/leave", roomController.leaveRoom);
