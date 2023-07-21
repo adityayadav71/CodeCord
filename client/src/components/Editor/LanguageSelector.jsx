@@ -1,4 +1,4 @@
-import { FaAngleDown } from "react-icons/fa";
+import { FaAngleDown, FaCheck } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
 const LanguageSelector = ({ editorSettings, setEditorSettings }) => {
@@ -24,52 +24,57 @@ const LanguageSelector = ({ editorSettings, setEditorSettings }) => {
       <div
         className={`language absolute z-50
         ${languageOpen ? "block" : "hidden"} 
-        bottom-12 left-0 w-fit rounded-lg bg-primary hideScrollbar overflow-scroll h-40`}
+        drop-shadow-lg bottom-12 left-0 w-fit p-2 rounded-lg bg-primary overflow-y-scroll h-44`}
       >
         <button
-          className="w-full text-left px-3 hover:bg-lightPrimary"
+          className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
             setEditorSettings({ ...editorSettings, language: "Java" });
           }}
         >
           Java
+          {editorSettings.language === "Java" && <FaCheck className="text-accent1"/>}
         </button>
         <button
-          className="w-full text-left px-3 hover:bg-lightPrimary"
+          className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
             setEditorSettings({ ...editorSettings, language: "C++" });
           }}
         >
           C++
+          {editorSettings.language === "C++" && <FaCheck className="text-accent1"/>}
         </button>
         <button
-          className="w-full text-left px-3 hover:bg-lightPrimary"
+          className="flex items-center justify-between gap-3 w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
             setEditorSettings({ ...editorSettings, language: "JavaScript" });
           }}
         >
           JavaScript
+          {editorSettings.language === "JavaScript" && <FaCheck className="text-accent1"/>}
         </button>
         <button
-          className="w-full text-left px-3 hover:bg-lightPrimary"
+          className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
             setEditorSettings({ ...editorSettings, language: "Python" });
           }}
         >
           Python
+          {editorSettings.language === "Python" && <FaCheck className="text-accent1"/>}
         </button>
         <button
-          className="w-full text-left px-3 hover:bg-lightPrimary"
+          className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
             setEditorSettings({ ...editorSettings, language: "Rust" });
           }}
         >
           Rust
+          {editorSettings.language === "Rust" && <FaCheck className="text-accent1"/>}
         </button>
       </div>
     </div>
