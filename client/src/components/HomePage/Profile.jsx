@@ -259,7 +259,7 @@ const Profile = () => {
           </div>
         </form>
       </div>
-      <div className="relative flex flex-row items-center h-20 w-full rounded-3xl mt-10 p-12 bg-secondary">
+      <div className="relative flex flex-row items-center h-20 w-full drop-shadow-xl rounded-2xl mt-10 p-12 bg-secondary">
         <div
           onClick={() => isMyProfile && openAvatarModal()}
           className="modal group absolute flex items-center justify-center w-24 h-24 hover:cursor-pointer rounded-lg overflow-hidden bg-grey2 shadow shadow-heading -top-12 left-1/2 -translate-x-1/2"
@@ -496,25 +496,9 @@ const Profile = () => {
           )}
         </div>
         <div className="row-span-1 bg-secondary rounded-lg p-6 flex flex-col">
-          <div className="grid grid-rows-1 grid-cols-4 gap-x-1">
-            <div>
-              <h1 className="text-grey1 font-bold">Contest Rating</h1>
-              <p className="font-bold text-2xl">324</p>
-            </div>
-            <div>
-              <h className="text-grey1 text-sm">Contest</h>
-              <p className="text-sm">Weekly Contest 1</p>
-            </div>
-            <div>
-              <h className="text-grey1 text-sm">Rank</h>
-              <p className="text-sm">1/360</p>
-            </div>
-            <div>
-              <h className="text-grey1 text-sm">Problems Solved</h>
-              <p className="text-sm">4/4 00:16:04</p>
-            </div>
+          <div className="">
+
           </div>
-          <div className="grow"></div>
         </div>
         <div className="row-span-1 bg-secondary rounded-lg p-6 flex flex-col">
           <h1 className="text-grey1 font-bold">Solved Problems</h1>

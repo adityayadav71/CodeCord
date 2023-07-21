@@ -3,6 +3,7 @@ import { HiMiniXMark } from "react-icons/hi2";
 import { RoomContext } from "../../layouts/AppLayout";
 import { getProblem } from "../../api/problemDataAPI";
 import Skeleton from "../skeletons/ScoreboardSkeleton";
+import { FaUserAlt } from "react-icons/fa";
 
 const Scoreboard = ({ isClosing, setIsClosing, setOpenScoreboard }) => {
   const { roomData } = useContext(RoomContext);
@@ -56,14 +57,24 @@ const Scoreboard = ({ isClosing, setIsClosing, setOpenScoreboard }) => {
             <Fragment key={i}>
               <p className={`${i === 0 ? "bg-green-500" : i === 1 ? "bg-yellow-500" : i === 2 ? "bg-amber-800" : "border border-white"} w-8 h-8 rounded-lg text-center`}>{i + 1}</p>
               <div className="col-span-2 flex items-center gap-3 justify-self-start w-full">
-                <img className="w-8 h-8 rounded-full drop-shadow-lg overflow-hidden" src={`data:${participant?.avatar?.contentType};base64,${participant?.avatar?.image}`} alt="user-profile-picture" />
+                {participant?.avatar ? (
+                  <img
+                    className="w-8 h-8 rounded-full drop-shadow-lg overflow-hidden"
+                    src={`data:${participant?.avatar?.contentType};base64,${participant?.avatar?.image}`}
+                    alt="user-profile-picture"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center rounded-full bg-grey2 w-8 h-8 text-xl">
+                    <FaUserAlt className="text-lg hover:cursor-pointer" />
+                  </div>
+                )}
                 <p className="text-ellipsis overflow-hidden whitespace-nowrap text-center">{participant?.username}</p>
               </div>
-              <p className="col-span-2 text-lg text-center">03:45</p>
-              <p className="col-span-2 text-lg text-center">03:45</p>
-              <p className="col-span-2 text-lg text-center">03:45</p>
-              <p className="col-span-2 text-lg text-center">03:45</p>
-              <p className="text-xl text-center font-bold">100</p>
+              <p className="col-span-2 text-lg text-center">-</p>
+              <p className="col-span-2 text-lg text-center">-</p>
+              <p className="col-span-2 text-lg text-center">-</p>
+              <p className="col-span-2 text-lg text-center">-</p>
+              <p className="text-xl text-center font-bold">0</p>
             </Fragment>
           ))}
         </div>
