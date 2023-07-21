@@ -50,6 +50,8 @@ module.exports = {
     animation: {
       load: "load 2s ease-in-out infinite",
       fadeIn: "fadeIn 2s ease-out forwards",
+      openModal: "openModal 0.2s ease-in-out forwards",
+      closeModal: "closeModal 0.2s ease-in-out forwards",
       grow: "grow 2s ease-out forwards",
       slideOutDelayed: "slideOut 0.5s 0.1s ease-out forwards",
       slideOut: "slideOut 0.5s ease-out forwards",

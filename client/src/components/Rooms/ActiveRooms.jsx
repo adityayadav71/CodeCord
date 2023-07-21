@@ -125,7 +125,7 @@ const ActiveRooms = () => {
   ) : rooms && rooms.length > 0 ? (
     <div className="mx-48 mt-12 drop-shadow-xl">
       {!isLoggedIn && <div className="bg-yellowBackGround border border-mediumYellow text-md font-semibold px-3 py-1 mb-3 rounded-lg">Login to join rooms</div>}
-      <div className="rounded-xl">
+      <div className="rounded-xl overflow-hidden">
         <table className="w-full h-full text-lg">
           <thead className="bg-secondary">
             <tr>

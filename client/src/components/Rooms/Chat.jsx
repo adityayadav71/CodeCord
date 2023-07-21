@@ -1,13 +1,5 @@
 import { useState, useContext, useEffect, useRef, memo } from "react";
-import {
-  FaUserPlus,
-  FaPhoneAlt,
-  FaSmile,
-  FaUserAlt,
-  FaCog,
-  FaDoorOpen as EntryIcon,
-  FaDoorClosed as LeaveIcon,
-} from "react-icons/fa";
+import { FaUserPlus, FaPhoneAlt, FaSmile, FaUserAlt, FaCog, FaDoorOpen as EntryIcon, FaDoorClosed as LeaveIcon } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { AuthContext, loadData } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
@@ -16,7 +8,7 @@ import InviteLinkModal from "./InviteLinkModal";
 import { startRoom, leaveRoom, endRoom } from "../../api/roomsAPI";
 import Timer from "./Timer";
 import { toast } from "react-hot-toast";
-import Skeleton from "../skeletons/ChatSkeleton"
+import Skeleton from "../skeletons/ChatSkeleton";
 
 const Chat = ({ setOpenScoreboard }) => {
   const { userData, socket } = useContext(AuthContext);
@@ -25,10 +17,19 @@ const Chat = ({ setOpenScoreboard }) => {
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
   const [messageList, setMessageList] = useState([]);
-  const [participants, setParticipants] = useState(
-    roomData?.participants?.length || 0
-  );
+  const [participants, setParticipants] = useState(roomData?.participants?.length || 0);
   const [inviteLinkModal, setInviteLinkModal] = useState(false);
+  useEffect(() => {
+    const closeModal = (event) => {
+      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal")) {
+        setInviteLinkModal("");
+      }
+    };
+    document.addEventListener("click", closeModal);
+    return () => {
+      document.removeEventListener("click", closeModal);
+    };
+  }, []);
 
   const sendMessage = async (formData) => {
     if (formData.message !== "") {
@@ -43,9 +44,7 @@ const Chat = ({ setOpenScoreboard }) => {
         type: "chatMessage",
         message: formData.message,
         author: userData?.username,
-        avatar:
-          userData?.profile?.avatar?.image &&
-          `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`,
+        avatar: userData?.profile?.avatar?.image && `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`,
         timeStamp,
       };
       await socket.emit("send-message", messageData, roomData?.roomId);
@@ -59,17 +58,10 @@ const Chat = ({ setOpenScoreboard }) => {
       toast(
         (t) => (
           <div className="text-lg w-full">
-            <div className="text-xl mb-1 font-semibold">
-              Are you sure you want to leave?
-            </div>
-            <div className="text-md mb-2">
-              You will be removed from the room. You can join back anytime.
-            </div>
+            <div className="text-xl mb-1 font-semibold">Are you sure you want to leave?</div>
+            <div className="text-md mb-2">You will be removed from the room. You can join back anytime.</div>
             <div className="flex justify-end gap-3 ml-auto">
-              <button
-                className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300"
-                onClick={() => toast.dismiss(t.id)}
-              >
+              <button className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300" onClick={() => toast.dismiss(t.id)}>
                 Cancel
               </button>
               <button
@@ -85,10 +77,7 @@ const Chat = ({ setOpenScoreboard }) => {
                         <span className="mr-3 font-semibold">
                           🚪You left the <b>room</b>
                         </span>
-                        <button
-                          className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
-                          onClick={() => toast.dismiss(t.id)}
-                        >
+                        <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
                           Dismiss
                         </button>
                       </div>
@@ -116,17 +105,10 @@ const Chat = ({ setOpenScoreboard }) => {
       toast(
         (t) => (
           <div className="text-lg w-full">
-            <div className="text-xl mb-1 font-semibold">
-              Are you sure you want to end?
-            </div>
-            <div className="text-md mb-2">
-              The room will be ended for all the participants.
-            </div>
+            <div className="text-xl mb-1 font-semibold">Are you sure you want to end?</div>
+            <div className="text-md mb-2">The room will be ended for all the participants.</div>
             <div className="flex justify-end gap-3 ml-auto">
-              <button
-                className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300"
-                onClick={() => toast.dismiss(t.id)}
-              >
+              <button className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300" onClick={() => toast.dismiss(t.id)}>
                 Cancel
               </button>
               <button
@@ -142,10 +124,7 @@ const Chat = ({ setOpenScoreboard }) => {
                         <span className="mr-3 font-semibold">
                           🛑 You ended the <b>room</b>
                         </span>
-                        <button
-                          className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
-                          onClick={() => toast.dismiss(t.id)}
-                        >
+                        <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
                           Dismiss
                         </button>
                       </div>
@@ -198,8 +177,7 @@ const Chat = ({ setOpenScoreboard }) => {
   }, [messageList]);
 
   const scrollToBottom = () => {
-    if (chatPanelRef.current)
-      chatPanelRef.current.scrollTop = chatPanelRef.current.scrollHeight;
+    if (chatPanelRef.current) chatPanelRef.current.scrollTop = chatPanelRef.current.scrollHeight;
   };
 
   return (
@@ -225,26 +203,23 @@ const Chat = ({ setOpenScoreboard }) => {
             </div>
             <div className="relative">
               <button
-                className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
-                onClick={() => setInviteLinkModal((prevState) => !prevState)}
+                className="open-modal peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setInviteLinkModal((prevState) => !prevState);
+                }}
               >
                 <FaUserPlus className="text-xl" />
               </button>
               <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-14 px-3 py-1 bg-white text-primary rounded-lg">
                 Invite Code
               </div>
-              <InviteLinkModal
-                inviteLinkModal={inviteLinkModal}
-                inviteCode={roomData?.roomId || ""}
-              />
+              <InviteLinkModal inviteLinkModal={inviteLinkModal} inviteCode={roomData?.roomId || ""} />
             </div>
             <div className="relative">
               {roomData?.owner?._id !== userData?._id ? (
                 <>
-                  <button
-                    className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
-                    onClick={handleLeaveRoom}
-                  >
+                  <button className="peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover" onClick={handleLeaveRoom}>
                     <LeaveIcon className="text-xl" />
                   </button>
                   <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 top-14 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
@@ -268,24 +243,15 @@ const Chat = ({ setOpenScoreboard }) => {
           <div className="flex flex-row gap-x-3 w-full mb-2">
             {roomData?.startedAt ? (
               <>
-                <button
-                  className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
-                  onClick={handleLeaveRoom}
-                >
+                <button className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover" onClick={handleLeaveRoom}>
                   Leave Room
                 </button>
-                <button
-                  className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400"
-                  onClick={handleEndRoom}
-                >
+                <button className="py-2 px-4 grow-[5] rounded-lg bg-rose-700 hover:bg-rose-400" onClick={handleEndRoom}>
                   End Room
                 </button>
               </>
             ) : (
-              <button
-                className="flex flex-row items-center justify-center gap-x-3 font-bold py-2 px-4 grow-[5] rounded-lg bg-green-500 hover:bg-easyGreen"
-                onClick={handleStartRoom}
-              >
+              <button className="flex flex-row items-center justify-center gap-x-3 font-bold py-2 px-4 grow-[5] rounded-lg bg-green-500 hover:bg-easyGreen" onClick={handleStartRoom}>
                 <EntryIcon className="text-2xl" />
                 Start Room
               </button>
@@ -293,27 +259,17 @@ const Chat = ({ setOpenScoreboard }) => {
           </div>
         )}
         <div className="flex flex-row gap-x-3 w-full">
-          <button
-            className="py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover"
-            onClick={() => setOpenScoreboard(true)}
-          >
+          <button className="scoreboard py-2 px-4 grow-[5] rounded-lg bg-lightPrimary hover:bg-hover" onClick={() => setOpenScoreboard(true)}>
             Scoreboard
           </button>
         </div>
       </div>
       <Timer roomData={roomData} />
       <div className="relative ml-3 mb-14 py-3 overflow-y-hidden">
-        <div
-          ref={chatPanelRef}
-          className="h-full pr-3 overflow-y-scroll"
-          id="chat-window"
-        >
+        <div ref={chatPanelRef} className="h-full pr-3 overflow-y-scroll" id="chat-window">
           {messageList.map((messageContent, i) => {
             return messageContent?.type === "roomMessage" ? (
-              <div
-                key={i}
-                className="flex flex-row items-center justify-between gap-x-1 px-3 py-2 mb-3 bg-primary rounded-lg"
-              >
+              <div key={i} className="flex flex-row items-center justify-between gap-x-1 px-3 py-2 mb-3 bg-primary rounded-lg">
                 {messageContent.message}
                 <p className="text-grey1">{messageContent.timeStamp}</p>
               </div>
@@ -322,23 +278,15 @@ const Chat = ({ setOpenScoreboard }) => {
                 <div className="flex gap-3">
                   <div className="shrink-0 w-10 h-10 mt-2 flex flex-row items-center justify-center rounded-full bg-grey2">
                     {messageContent.avatar ? (
-                      <img
-                        className="rounded-full overflow-clip object-cover h-full w-full"
-                        src={messageContent.avatar}
-                        alt="user-profile-picture"
-                      />
+                      <img className="rounded-full overflow-clip object-cover h-full w-full" src={messageContent.avatar} alt="user-profile-picture" />
                     ) : (
                       <FaUserAlt className="text-xl hover:cursor-pointer" />
                     )}
                   </div>
                   <div className="flex flex-col justify-center">
                     <div>
-                      <span className="font-bold text-lg">
-                        {messageContent.author}
-                      </span>
-                      <span className="text-sm ml-3 text-grey1">
-                        {messageContent.timeStamp}
-                      </span>
+                      <span className="font-bold text-lg">{messageContent.author}</span>
+                      <span className="text-sm ml-3 text-grey1">{messageContent.timeStamp}</span>
                     </div>
                     <p>{messageContent.message}</p>
                   </div>

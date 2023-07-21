@@ -122,6 +122,32 @@ button {
   }
 }
 
+@keyframes openModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translate(-50%, -50%);
+    transform-origin: 0% 0%;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate(-50%, -50%);
+    transform-origin: 0% 0%;
+  }
+}
+
+@keyframes closeModal {
+  from {
+    opacity: 1;
+    transform: scale(1) translate(-50%, -50%);
+    transform-origin: 0% 0%;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translate(-50%, -50%);
+    transform-origin: 0% 0%;
+  }
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

@@ -7,6 +7,7 @@ import { java } from "@codemirror/lang-java";
 import { useContext, useState } from "react";
 import { RoomContext } from "../../layouts/AppLayout";
 import { AuthContext } from "../../App";
+import { EditorView } from "@codemirror/view";
 
 const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
   const stateFields = { history: historyField };
@@ -17,6 +18,12 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
 
   const [activeEditor, setActiveEditor] = useState(userData?.username);
 
+  const FontSizeTheme = EditorView.theme({
+    "&": {
+      fontSize: `${editorSettings.fontSize - 2}pt`,
+    },
+  });
+  
   return (
     <div className="flex flex-col h-full">
       {isRoom && roomData?.participants && (
@@ -85,7 +92,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
           const state = viewUpdate.state.toJSON(stateFields);
           localStorage.setItem("myEditorState", JSON.stringify(state));
         }}
-        extensions={[java()]}
+        extensions={[java(), FontSizeTheme]}
         options={{
           styleActiveLine: false, // Disable highlighting the current line
         }}

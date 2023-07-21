@@ -80,6 +80,7 @@ const Editor = ({ isRoom }) => {
   const [output, setOutput] = useState(null);
   const [runningCode, setRunningCode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const params = useParams();
   const location = useLocation();
@@ -114,8 +115,13 @@ const Editor = ({ isRoom }) => {
 
   useEffect(() => {
     const closeDropdown = (event) => {
-      if (!event.target.closest(".settings")) {
-        setSettingsOpen(false);
+      if (!event.target.closest(".settings") && !event.target.closest(".scoreboard")) {
+        setIsClosing(true);
+        setTimeout(() => {
+          setIsClosing(false);
+          setSettingsOpen(false);
+          setOpenScoreboard(false);
+        }, 300);
       }
     };
     document.addEventListener("click", closeDropdown);
@@ -242,8 +248,8 @@ const Editor = ({ isRoom }) => {
                   Reset
                 </div>
               </div>
-              <div className="relative">
-                <FaCog className="settings peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
+              <div className="settings relative">
+                <FaCog className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
                 <div className="absolute w-max peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
                   Editor Settings
                 </div>
@@ -304,8 +310,8 @@ const Editor = ({ isRoom }) => {
           </div>
         ) : null}
       </Split>
-      {openScoreboard && <Scoreboard setOpenScoreboard={setOpenScoreboard} />}
-      {settingsOpen && <EditorSettings editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
+      {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
+      {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
     </ProblemContext.Provider>
   );
 };
