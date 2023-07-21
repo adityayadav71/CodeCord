@@ -15,7 +15,7 @@ import { toast } from "react-hot-toast";
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
+const CreateRoom = ({ isContest, roomId, isClosing, setModalOpen, isLoading }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData, socket } = useContext(AuthContext);
@@ -46,32 +46,24 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
     const slider = document.getElementById("slider");
     const timeLimit = slider.value;
     const percent = (timeLimit * 100) / 120;
-    slider.style.background = `linear-gradient(90deg, ${
-      "rgb(44 187 93)" + percent + "%"
-    } , ${"rgb(41 77 53)" + percent + "%"})`;
+    slider.style.background = `linear-gradient(90deg, ${"rgb(44 187 93)" + percent + "%"} , ${"rgb(41 77 53)" + percent + "%"})`;
     setTimeLimit(timeLimit);
   };
 
   const handleJoinInviteChange = (e) => {
-    e.target.value === ""
-      ? setIsUserJoining(false)
-      : !isUserJoining
-      ? setIsUserJoining(true)
-      : null;
+    e.target.value === "" ? setIsUserJoining(false) : !isUserJoining ? setIsUserJoining(true) : null;
   };
 
   const handleJoinRoom = async () => {
     const roomId = inviteRef.current.value;
     try {
       if (userData?.activeRoom) {
-        toast.error(
-          "You are already in a room. Leave before joining another one."
-        );
+        toast.error("You are already in a room. Leave before joining another one.");
       } else {
         // 1. Find Room In Database
         const { roomData } = await joinRoom(userData, socket, roomId);
         setRoomData(roomData);
-        setModal(null);
+        setModalOpen(null);
 
         // 2 Save newly joined room in RoomContext
         const room = await getRoomData(roomId);
@@ -97,14 +89,14 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
           participantsLimit: participantLimit,
           timeLimit: roomType === "Default" ? 40 : timeLimit,
           problems: selected,
-          difficulty
+          difficulty,
         };
         // 1. Update Room with these settings
         const room = await updateRoomSettings(roomId, settings, socket);
         setRoomData(room);
         await loadData(); // update user data
 
-        setModal(null);
+        setModalOpen(null);
         toast.success("Successfully created a room.");
         navigate(`/app/room/${roomId}?problems=${selected}`, {
           replace: false,
@@ -137,30 +129,21 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
   }, [timeLimit]);
 
   return (
-    <div className="modal fixed z-[9999] h-[95%] w-[60%] overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6">
+    <div
+      className={`modal fixed z-[9999] h-[95%] w-[60%] ${
+        isClosing ? "animate-closeModal" : "animate-openModal"
+      } overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6`}
+    >
       <div className="flex flex-row gap-x-3 mb-3">
         <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
           <div className="flex flex-row gap-x-3 mb-3">
             <h1 className="text-xl font-bold">Create Room</h1>
-            <RoomVisibility
-              visibility={visibility}
-              setVisibility={setVisibility}
-            />
+            <RoomVisibility visibility={visibility} setVisibility={setVisibility} />
           </div>
           <div className="grid grid-cols-2 grid-rows-2 gap-5">
             <RoomTypeSelector roomType={roomType} setRoomType={setRoomType} />
-            <ParticipantLimit
-              participantLimit={participantLimit}
-              setParticipantLimit={setParticipantLimit}
-              isLimitActive={isLimitActive}
-              setLimitActive={setLimitActive}
-            />
-            <RoomDuration
-              roomType={roomType}
-              updateTimeLimit={updateTimeLimit}
-              hrs={hrs}
-              mins={mins}
-            />
+            <ParticipantLimit participantLimit={participantLimit} setParticipantLimit={setParticipantLimit} isLimitActive={isLimitActive} setLimitActive={setLimitActive} />
+            <RoomDuration roomType={roomType} updateTimeLimit={updateTimeLimit} hrs={hrs} mins={mins} />
             <RoomInviteLink isLoading={isLoading} inviteLink={roomId} />
           </div>
         </div>
@@ -174,17 +157,11 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
             placeholder="Invite Code"
           />
           {isUserJoining ? (
-            <button
-              onClick={handleJoinRoom}
-              className="w-full p-3 bg-accent1 hover:bg-lightAccent1 duration-300 text-xl font-bold rounded-lg"
-            >
+            <button onClick={handleJoinRoom} className="w-full p-3 bg-accent1 hover:bg-lightAccent1 duration-300 text-xl font-bold rounded-lg">
               JOIN
             </button>
           ) : (
-            <button
-              onClick={handleUpdateRoom}
-              className="w-full p-3 bg-accent1 hover:bg-lightAccent1 duration-300 text-xl font-bold rounded-lg"
-            >
+            <button onClick={handleUpdateRoom} className="w-full p-3 bg-accent1 hover:bg-lightAccent1 duration-300 text-xl font-bold rounded-lg">
               CREATE
             </button>
           )}
@@ -192,18 +169,9 @@ const CreateRoom = ({ isContest, roomId, setModal, isLoading }) => {
       </div>
       <RoomFilterContext.Provider value={{ filterObj, setFilterObj }}>
         <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
-          <ProblemFilter
-            selected={selected}
-            setSelected={setSelected}
-            setDifficulty={setDifficulty}
-            filterInsideModal={true}
-          />
+          <ProblemFilter selected={selected} setSelected={setSelected} setDifficulty={setDifficulty} filterInsideModal={true} />
           <div className="flex grow overflow-y-scroll mb-3">
-            <ProblemList
-              selected={selected}
-              setSelected={setSelected}
-              filterInsideModal={true}
-            />
+            <ProblemList selected={selected} setSelected={setSelected} filterInsideModal={true} />
           </div>
           <Pagination filterInsideModal={true} />
         </div>

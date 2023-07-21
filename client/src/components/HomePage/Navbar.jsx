@@ -17,35 +17,23 @@ const HomeNavbar = ({ handleLogout }) => {
   };
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [modal, setModal] = useState();
+  const [modalOpen, setModalOpen] = useState();
   const [imageURL, setImageURL] = useState();
   const [profileActive, setProfileActive] = useState(false);
   const [searchbarActive, setSearchbarActive] = useState(false);
+  const [roomId, setRoomId] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
 
   const openRoomModal = async () => {
-    setModal(
-      <CreateRoom
-        isContest={false}
-        roomId={""}
-        setModal={setModal}
-        isLoading={true}
-      />
-    );
+    setModalOpen(false);
 
     // 1. Create a random unique ID
     const roomID = nanoid();
     // 2. Create Room in Database - Returns RoomID
     try {
       const result = await createRoom(socket, roomID, userData?.username);
-
-      setModal(
-        <CreateRoom
-          isContest={false}
-          roomId={result.id}
-          setModal={setModal}
-          isLoading={false}
-        />
-      );
+      setRoomId(result.id);
+      setModalOpen(true);
     } catch (err) {
       toast.error("Something went wrong! Please try again.");
     }
@@ -57,21 +45,18 @@ const HomeNavbar = ({ handleLogout }) => {
         replace: false,
       });
     } else {
-      toast.error(
-        "User has not joined any room! Please try reloading the page."
-      );
+      toast.error("User has not joined any room! Please try reloading the page.");
     }
   };
 
   useEffect(() => {
     const closeModal = (event) => {
-      if (
-        !event.target.closest(".modal") &&
-        !event.target.classList.contains("open-modal") &&
-        !event.target.closest(".profile") &&
-        !event.target.closest(".searchbar")
-      ) {
-        setModal("");
+      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal") && !event.target.closest(".profile") && !event.target.closest(".searchbar")) {
+        setIsClosing(true);
+        setTimeout(() => {
+          setIsClosing(false);
+          setModalOpen(false);
+        }, 300);
         setProfileActive(false);
         setSearchbarActive(false);
       }
@@ -83,31 +68,21 @@ const HomeNavbar = ({ handleLogout }) => {
   }, []);
 
   useEffect(() => {
-    const imgURL =
-      userData?.profile?.avatar &&
-      `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
+    const imgURL = userData?.profile?.avatar && `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
     setImageURL(imgURL);
   }, [userData]);
 
   return (
     <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
       <Link to="/">
-        <img
-          className="p-3 hover:cursor-pointer"
-          src="/favicon.svg"
-          alt="logo"
-        />
+        <img className="p-3 hover:cursor-pointer" src="/favicon.svg" alt="logo" />
       </Link>
 
       <ul className="flex flex-row justify-center">
         <li className="flex">
           <NavLink
             to="/app/contest"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
-              isActive(pathname, "/app/contest")
-                ? "border-b-2 border-b-accent1"
-                : ""
-            }`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/contest") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Contest
           </NavLink>
@@ -115,11 +90,7 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/problem"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
-              isActive(pathname, "/app/problem")
-                ? "border-b-2 border-b-accent1"
-                : ""
-            }`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/problem") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Problems
           </NavLink>
@@ -127,11 +98,7 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/rooms"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
-              isActive(pathname, "/app/rooms")
-                ? "border-b-2 border-b-accent1"
-                : ""
-            }`}
+            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/rooms") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Rooms
           </NavLink>
@@ -142,16 +109,12 @@ const HomeNavbar = ({ handleLogout }) => {
           <>
             <div className="searchbar relative flex flex-row items-center right-5">
               <FaSearch
-                className={`absolute ${
-                  searchbarActive ? "" : "text-2xl translate-x-64"
-                } hover:cursor-pointer left-2 transition-all duration-300`}
+                className={`absolute ${searchbarActive ? "" : "text-2xl translate-x-64"} hover:cursor-pointer left-2 transition-all duration-300`}
                 onClick={() => setSearchbarActive((prev) => !prev)}
               />
               <input
                 className={`h-full ${
-                  searchbarActive
-                    ? "scale-x-1 opacity-1"
-                    : "scale-x-0 opacity-0"
+                  searchbarActive ? "scale-x-1 opacity-1" : "scale-x-0 opacity-0"
                 } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-lg transition-all duration-300`}
                 type="text"
                 placeholder="Search problems, contests, users..."
@@ -174,52 +137,34 @@ const HomeNavbar = ({ handleLogout }) => {
             )}
             <FaBell className="text-2xl hover:cursor-pointer hover:text-accent1" />
             <div className="relative profile">
-              <div
-                className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2"
-                onClick={() => setProfileActive((prev) => !prev)}
-              >
+              <div className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2" onClick={() => setProfileActive((prev) => !prev)}>
                 {isLoading ? (
                   <Skeleton />
                 ) : userData?.profile?.avatar ? (
-                  <img
-                    src={imageURL}
-                    className="w-full h-full object-cover hover:cursor-pointer"
-                    alt="profile-pic"
-                  />
+                  <img src={imageURL} className="w-full h-full object-cover hover:cursor-pointer" alt="profile-pic" />
                 ) : (
                   <FaUserAlt className="text-2xl hover:cursor-pointer" />
                 )}
               </div>
               <div
                 className={`${
-                  profileActive
-                    ? "opacity-1 z-20 top-14 translate-y-0"
-                    : "opacity-0 z-0 -translate-y-2 top-20"
+                  profileActive ? "opacity-1 z-20 top-14 translate-y-0" : "opacity-0 z-0 -translate-y-2 top-20"
                 } absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >
                 <ul className="flex flex-col gap-y-3">
                   <li onClick={() => setProfileActive((prev) => !prev)}>
-                    <Link
-                      to={`/app/user/${userData?.username}`}
-                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
-                    >
+                    <Link to={`/app/user/${userData?.username}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaUserAlt />
                       Profile
                     </Link>
                   </li>
                   <li onClick={() => setProfileActive((prev) => !prev)}>
-                    <Link
-                      to="/app/settings"
-                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
-                    >
+                    <Link to="/app/settings" className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaCog />
                       Settings
                     </Link>
                   </li>
-                  <li
-                    className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
-                    onClick={handleLogout}
-                  >
+                  <li className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg" onClick={handleLogout}>
                     <RiLogoutCircleRLine />
                     Logout
                   </li>
@@ -229,22 +174,14 @@ const HomeNavbar = ({ handleLogout }) => {
           </>
         ) : (
           <>
-            <div
-              className={
-                "searchbar relative flex flex-row items-center right-5"
-              }
-            >
+            <div className={"searchbar relative flex flex-row items-center right-5"}>
               <FaSearch
-                className={`absolute ${
-                  searchbarActive ? "" : "text-2xl translate-x-64"
-                } hover:cursor-pointer left-2 transition-all duration-300`}
+                className={`absolute ${searchbarActive ? "" : "text-2xl translate-x-64"} hover:cursor-pointer left-2 transition-all duration-300`}
                 onClick={() => setSearchbarActive((prev) => !prev)}
               />
               <input
                 className={`h-full ${
-                  searchbarActive
-                    ? "scale-x-1 opacity-1"
-                    : "scale-x-0 opacity-0"
+                  searchbarActive ? "scale-x-1 opacity-1" : "scale-x-0 opacity-0"
                 } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-full transition-all duration-300`}
                 type="text"
                 placeholder="Search problems, contests, users..."
@@ -265,7 +202,7 @@ const HomeNavbar = ({ handleLogout }) => {
           </>
         )}
       </div>
-      {modal}
+      {modalOpen && <CreateRoom isContest={false} roomId={roomId} isClosing={isClosing} setModalOpen={setModalOpen} isLoading={false} />}
     </div>
   );
 };
