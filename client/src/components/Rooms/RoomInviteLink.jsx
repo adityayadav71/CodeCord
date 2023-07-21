@@ -1,6 +1,6 @@
 import { IoCopy } from "react-icons/io5";
 import { useState } from "react";
-import Skeleton from "../skeletons/Skeleton";
+import Skeleton from "../skeletons/RoomInviteLinkSkeleton";
 
 const RoomInviteLink = ({ isLoading, inviteLink }) => {
   const [message, setMessage] = useState();
@@ -17,7 +17,7 @@ const RoomInviteLink = ({ isLoading, inviteLink }) => {
         <p className="text-green-500 text-sm font-bold ml-auto">{message}</p>
       </div>
       {isLoading ? (
-        <Skeleton classes="w-full h-14 pr-16 bg-secondary p-3 focus:outline-none rounded-lg" />
+        <Skeleton />
       ) : (
         <div className="relative">
           <button

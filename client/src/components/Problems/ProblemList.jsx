@@ -6,7 +6,7 @@ import formatStats from "../../utilities/formatStats";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { FaSort, FaCaretDown, FaCaretUp } from "react-icons/fa";
-import Skeleton from "../skeletons/Skeleton";
+import Skeleton from "../skeletons/RoomInviteLinkSkeleton";
 
 const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
   const { isLoggedIn } = useContext(AuthContext);
