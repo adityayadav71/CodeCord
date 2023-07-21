@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { FaAngleDown, FaCheck } from "react-icons/fa";
-import * as themes from "@uiw/codemirror-themes-all";
 
 const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
   useEffect(() => {
@@ -28,7 +27,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.dracula, themeName: "default" });
+            setEditorSettings({ ...editorSettings, themeName: "default" });
           }}
         >
           default
@@ -38,7 +37,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.abcdef, themeName: "abcdef" });
+            setEditorSettings({ ...editorSettings, themeName: "abcdef" });
           }}
         >
           abcdef
@@ -48,7 +47,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.androidstudio, themeName: "androidstudio" });
+            setEditorSettings({ ...editorSettings, themeName: "androidstudio" });
           }}
         >
           androidstudio
@@ -58,7 +57,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.atomone, themeName: "atomone" });
+            setEditorSettings({ ...editorSettings, themeName: "atomone" });
           }}
         >
           atomone
@@ -68,7 +67,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.aura, themeName: "aura" });
+            setEditorSettings({ ...editorSettings, themeName: "aura" });
           }}
         >
           aura
@@ -78,7 +77,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.bbedit, themeName: "bbedit" });
+            setEditorSettings({ ...editorSettings, themeName: "bbedit" });
           }}
         >
           bbedit
@@ -88,7 +87,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.bespin, themeName: "bespin" });
+            setEditorSettings({ ...editorSettings, themeName: "bespin" });
           }}
         >
           bespin
@@ -98,7 +97,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.darcula, themeName: "darcula" });
+            setEditorSettings({ ...editorSettings, themeName: "darcula" });
           }}
         >
           darcula
@@ -108,7 +107,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.duotoneDark, themeName: "duotoneDark" });
+            setEditorSettings({ ...editorSettings, themeName: "duotoneDark" });
           }}
         >
           duotoneDark
@@ -118,7 +117,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.duotoneLight, themeName: "duotoneLight" });
+            setEditorSettings({ ...editorSettings, themeName: "duotoneLight" });
           }}
         >
           duotoneLight
@@ -128,7 +127,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.eclipse, themeName: "eclipse" });
+            setEditorSettings({ ...editorSettings, themeName: "eclipse" });
           }}
         >
           eclipse
@@ -138,7 +137,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.githubDark, themeName: "githubDark" });
+            setEditorSettings({ ...editorSettings, themeName: "githubDark" });
           }}
         >
           githubDark
@@ -148,7 +147,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.githubLight, themeName: "githubLight" });
+            setEditorSettings({ ...editorSettings, themeName: "githubLight" });
           }}
         >
           githubLight
@@ -158,7 +157,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.gruvboxDark, themeName: "gruvboxDark" });
+            setEditorSettings({ ...editorSettings, themeName: "gruvboxDark" });
           }}
         >
           gruvboxDark
@@ -168,7 +167,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.gruvboxLight, themeName: "gruvboxLight" });
+            setEditorSettings({ ...editorSettings, themeName: "gruvboxLight" });
           }}
         >
           gruvboxLight
@@ -178,7 +177,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.material, themeName: "material" });
+            setEditorSettings({ ...editorSettings, themeName: "material" });
           }}
         >
           material
@@ -188,7 +187,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.materialDark, themeName: "materialDark" });
+            setEditorSettings({ ...editorSettings, themeName: "materialDark" });
           }}
         >
           materialDark
@@ -198,7 +197,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.materialLight, themeName: "materialLight" });
+            setEditorSettings({ ...editorSettings, themeName: "materialLight" });
           }}
         >
           materialLight
@@ -208,7 +207,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.noctisLilac, themeName: "noctisLilac" });
+            setEditorSettings({ ...editorSettings, themeName: "noctisLilac" });
           }}
         >
           noctisLilac
@@ -218,7 +217,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.nord, themeName: "nord" });
+            setEditorSettings({ ...editorSettings, themeName: "nord" });
           }}
         >
           nord
@@ -228,7 +227,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.okaidia, themeName: "okaidia" });
+            setEditorSettings({ ...editorSettings, themeName: "okaidia" });
           }}
         >
           okaidia
@@ -238,7 +237,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.solarizedDark, themeName: "solarizedDark" });
+            setEditorSettings({ ...editorSettings, themeName: "solarizedDark" });
           }}
         >
           solarizedDark
@@ -248,7 +247,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.solarizedLight, themeName: "solarizedLight" });
+            setEditorSettings({ ...editorSettings, themeName: "solarizedLight" });
           }}
         >
           solarizedLight
@@ -258,7 +257,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.sublime, themeName: "sublime" });
+            setEditorSettings({ ...editorSettings, themeName: "sublime" });
           }}
         >
           sublime
@@ -268,7 +267,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.tokyoNight, themeName: "tokyoNight" });
+            setEditorSettings({ ...editorSettings, themeName: "tokyoNight" });
           }}
         >
           tokyoNight
@@ -278,7 +277,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.tokyoNightDay, themeName: "tokyoNightDay" });
+            setEditorSettings({ ...editorSettings, themeName: "tokyoNightDay" });
           }}
         >
           tokyoNightDay
@@ -288,7 +287,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.tokyoNightStorm, themeName: "tokyoNightStorm" });
+            setEditorSettings({ ...editorSettings, themeName: "tokyoNightStorm" });
           }}
         >
           tokyoNightStorm
@@ -298,7 +297,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.vscodeDark, themeName: "vscodeDark" });
+            setEditorSettings({ ...editorSettings, themeName: "vscodeDark" });
           }}
         >
           vscodeDark
@@ -308,7 +307,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.xcodeDark, themeName: "xcodeDark" });
+            setEditorSettings({ ...editorSettings, themeName: "xcodeDark" });
           }}
         >
           xcodeDark
@@ -318,7 +317,7 @@ const ThemeSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setThemesOpen(false);
-            setEditorSettings({ ...editorSettings, theme: themes.xcodeLight, themeName: "xcodeLight" });
+            setEditorSettings({ ...editorSettings, themeName: "xcodeLight" });
           }}
         >
           xcodeLight

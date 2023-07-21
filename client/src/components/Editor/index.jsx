@@ -10,7 +10,6 @@ import LanguageSelector from "./LanguageSelector";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
-import * as themes from "@uiw/codemirror-themes-all";
 import { toast } from "react-hot-toast";
 import he from "he";
 
@@ -25,12 +24,44 @@ import { runCode, getResult } from "../../api/codeExecutionAPI";
 export const ProblemContext = createContext(null);
 
 const Editor = ({ isRoom }) => {
+  // React Router Hooks declaration
   const editorRef = useRef(null);
   const navigate = useNavigate();
+  const params = useParams();
+  const location = useLocation();
 
+  // Context values
   const { isLoggedIn, userData, socket, setSocket } = useContext(AuthContext);
   let { roomData } = useContext(RoomContext);
 
+  // State Declarations
+  const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
+  const [consoleOpen, setConsoleOpen] = useState(true);
+  const [editorSizes, setEditorSizes] = useState(consoleOpen ? [60, 40] : [100, 0]);
+  const [editorSettings, setEditorSettings] = useState({
+    themeName: "default",
+    language: "Java",
+    fontSize: "10.5pt",
+    keyBinding: "Vim",
+    tabSize: 2,
+    value: "",
+  });
+  const [problems, setProblems] = useState({});
+  const [activeProblem, setActiveProblem] = useState({});
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [openScoreboard, setOpenScoreboard] = useState(false);
+  const [displaySubmission, setDisplaySubmission] = useState(false);
+  const [submissionDetails, setSubmissionDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState("Testcase");
+  const [output, setOutput] = useState(null);
+  const [runningCode, setRunningCode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Side effect handlers
+
+  // 1. Action Notification handler
   useEffect(() => {
     if (userData?.user?._id) {
       // Join the user back to stored room
@@ -58,33 +89,7 @@ const Editor = ({ isRoom }) => {
     });
   }, [userData, socket]);
 
-  const [sizes, setSizes] = useState(isRoom ? [40, 40, 20] : [50, 50]);
-  const [consoleOpen, setConsoleOpen] = useState(true);
-  const [editorSizes, setEditorSizes] = useState(consoleOpen ? [60, 40] : [100, 0]);
-  const [editorSettings, setEditorSettings] = useState({
-    theme: themes.dracula,
-    themeName: "default",
-    language: "Java",
-    fontSize: 12,
-    keyBinding: "Vim",
-    tabSize: 2,
-    value: localStorage.getItem("editorValue") || "",
-  });
-  const [problems, setProblems] = useState({});
-  const [activeProblem, setActiveProblem] = useState({});
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [openScoreboard, setOpenScoreboard] = useState(false);
-  const [displaySubmission, setDisplaySubmission] = useState(false);
-  const [submissionDetails, setSubmissionDetails] = useState(false);
-  const [activeTab, setActiveTab] = useState("Testcase");
-  const [output, setOutput] = useState(null);
-  const [runningCode, setRunningCode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-
-  const params = useParams();
-  const location = useLocation();
-
+  // 2. Load problem data asynchronously
   const values = queryString.parse(location.search);
 
   useEffect(() => {
@@ -105,14 +110,19 @@ const Editor = ({ isRoom }) => {
     }
   }, [roomData]);
 
+  // 3. Handle initializing editor sizes and settings with local storage data
   useEffect(() => {
     const sizes = JSON.parse(localStorage?.getItem("sizes"));
     if ((isRoom && sizes && sizes?.length === 3) || (!isRoom && sizes && sizes?.length === 2)) setSizes(sizes);
 
     const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
     editorSizes && setEditorSizes(editorSizes);
+    
+    const editorSettings = JSON.parse(localStorage?.getItem("editorSettings"));
+    editorSettings && setEditorSettings(editorSettings);
   }, []);
 
+  // 4. Handle Document click
   useEffect(() => {
     const closeDropdown = (event) => {
       if (!event.target.closest(".settings") && !event.target.closest(".scoreboard")) {
@@ -130,6 +140,7 @@ const Editor = ({ isRoom }) => {
     };
   }, []);
 
+  // 5. Updating local storage data
   const updateSize = (sizes) => {
     localStorage.setItem("sizes", JSON.stringify(sizes));
     setSizes(sizes);
@@ -141,21 +152,25 @@ const Editor = ({ isRoom }) => {
   };
 
   useEffect(() => {
+    localStorage.setItem("editorSettings", JSON.stringify(editorSettings));
+  }, [editorSettings]);
+
+  useEffect(() => {
     const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
     setEditorSizes(consoleOpen && editorSizes ? (editorSizes[0] > 95 ? [60, 40] : editorSizes) : [100, 0]);
   }, [consoleOpen]);
+
+  // Event Handlers
 
   const handleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
 
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const handleSettings = () => {
     setSettingsOpen(!settingsOpen);
   };
 
   const handleClearEditor = () => {
-    localStorage.clear("editorValue");
     setEditorSettings({ ...editorSettings, value: "" });
   };
 
@@ -215,12 +230,12 @@ const Editor = ({ isRoom }) => {
 
   return (
     <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
-      <Split className="editor flex flex-row grow overflow-hidden h-full" onDrag={updateSize} sizes={sizes} minSize={[0, 500, 0]} maxSize={[2560, 2560, 250]} snapOffset={[300, 0, 200]}>
+      <Split gutterSize={8} className="editor flex flex-row grow overflow-hidden h-full" onDrag={updateSize} sizes={sizes} minSize={[0, 500, 0]} maxSize={[2560, 2560, 250]} snapOffset={[300, 0, 200]}>
         <div className="flex flex-col bg-transparentSecondary overflow-x-hidden">
           <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} />
         </div>
         <div>
-          <Split style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
+          <Split gutterSize={8}  style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
             {displaySubmission ? (
               <div ref={editorRef} className="z-[-1] h-full bg-primary">
                 <SubmissionPanel isRoom={isRoom} submissionDetails={submissionDetails} setSubmissionDetails={setSubmissionDetails} setDisplaySubmission={setDisplaySubmission} />

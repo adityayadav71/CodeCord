@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import { RoomContext } from "../../layouts/AppLayout";
 import { AuthContext } from "../../App";
 import { EditorView } from "@codemirror/view";
+import * as themes from "@uiw/codemirror-themes-all";
 
 const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
   const stateFields = { history: historyField };
@@ -20,9 +21,42 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
 
   const FontSizeTheme = EditorView.theme({
     "&": {
-      fontSize: `${editorSettings.fontSize - 2}pt`,
+      fontSize: `${editorSettings.fontSize - 3}pt`,
     },
   });
+
+  const themeMap = {
+    default: themes.dracula,
+    abcdef: themes.abcdef,
+    androidstudio: themes.androidstudio,
+    atomone: themes.atomone,
+    aura: themes.aura,
+    bbedit: themes.bbedit,
+    bespin: themes.bespin,
+    darcula: themes.darcula,
+    duotoneDark: themes.duotoneDark,
+    duotoneLight: themes.duotoneLight,
+    eclipse: themes.eclipse,
+    githubDark: themes.githubDark,
+    githubLight: themes.githubLight,
+    gruvboxDark: themes.gruvboxDark,
+    gruvboxLight: themes.gruvboxLight,
+    material: themes.material,
+    materialDark: themes.materialDark,
+    materialLight: themes.materialLight,
+    noctisLilac: themes.noctisLilac,
+    nord: themes.nord,
+    okaidia: themes.okaidia,
+    solarizedDark: themes.solarizedDark,
+    solarizedLight: themes.solarizedLight,
+    sublime: themes.sublime,
+    tokyoNight: themes.tokyoNight,
+    tokyoNightDay: themes.tokyoNightDay,
+    tokyoNightStorm: themes.tokyoNightStorm,
+    vscodeDark: themes.vscodeDark,
+    xcodeDark: themes.xcodeDark,
+    xcodeLight: themes.xcodeLight,
+  }
   
   return (
     <div className="flex flex-col h-full">
@@ -68,7 +102,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
       <CodeMirror
         className="grow w-full overflow-scroll hideScrollbar"
         value={editorSettings.value}
-        theme={editorSettings.theme}
+        theme={themeMap[editorSettings.themeName]}
         height="100%"
         basicSetup={{
           tabSize: editorSettings.tabSize,
@@ -87,15 +121,11 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
           setEditorSettings((prevSettings) => {
             return { ...prevSettings, value };
           });
-          localStorage.setItem("editorValue", value);
 
           const state = viewUpdate.state.toJSON(stateFields);
           localStorage.setItem("myEditorState", JSON.stringify(state));
         }}
         extensions={[java(), FontSizeTheme]}
-        options={{
-          styleActiveLine: false, // Disable highlighting the current line
-        }}
       />
     </div>
   );
