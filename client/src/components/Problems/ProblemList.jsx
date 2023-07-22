@@ -204,7 +204,7 @@ const ProblemList = ({ selected, setSelected, filterInsideModal }) => {
         {filterInsideModal && <div className="w-20">Selected</div>}
       </div>
       {isLoading ? (
-        <Skeleton classes="grow" />
+        <Skeleton />
       ) : (
         problems
           .filter((problem) => {

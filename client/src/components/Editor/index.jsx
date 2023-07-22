@@ -40,9 +40,8 @@ const Editor = ({ isRoom }) => {
   const [editorSizes, setEditorSizes] = useState(consoleOpen ? [60, 40] : [100, 0]);
   const [editorSettings, setEditorSettings] = useState({
     themeName: "default",
-    language: "Java",
-    fontSize: "10.5pt",
-    keyBinding: "Vim",
+    language: "java",
+    fontSize: 12,
     tabSize: 2,
     value: "",
   });

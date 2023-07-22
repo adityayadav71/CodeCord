@@ -18,7 +18,7 @@ const LanguageSelector = ({ editorSettings, setEditorSettings }) => {
   return (
     <div className="relative language-dropdown">
       <button className="flex flex-row items-center justify-between gap-x-3 px-3 py-1 bg-primary hover:bg-lightPrimary rounded-lg" onClick={() => setLanguageOpen((prev) => !prev)}>
-        <p>{editorSettings.language}</p>
+        <p>{editorSettings.language.substring(0, 1).toUpperCase() + editorSettings.language.substring(1).toLowerCase().replaceAll("pp", "++")}</p>
         <FaAngleDown className={`${languageOpen ? "rotate-180" : ""}`} />
       </button>
       <div
@@ -30,51 +30,51 @@ const LanguageSelector = ({ editorSettings, setEditorSettings }) => {
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
-            setEditorSettings({ ...editorSettings, language: "Java" });
+            setEditorSettings({ ...editorSettings, language: "java" });
           }}
         >
           Java
-          {editorSettings.language === "Java" && <FaCheck className="text-accent1"/>}
+          {editorSettings.language === "java" && <FaCheck className="text-accent1" />}
         </button>
         <button
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
-            setEditorSettings({ ...editorSettings, language: "C++" });
+            setEditorSettings({ ...editorSettings, language: "cpp" });
           }}
         >
           C++
-          {editorSettings.language === "C++" && <FaCheck className="text-accent1"/>}
+          {editorSettings.language === "cpp" && <FaCheck className="text-accent1" />}
         </button>
         <button
           className="flex items-center justify-between gap-3 w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
-            setEditorSettings({ ...editorSettings, language: "JavaScript" });
+            setEditorSettings({ ...editorSettings, language: "javascript" });
           }}
         >
           JavaScript
-          {editorSettings.language === "JavaScript" && <FaCheck className="text-accent1"/>}
+          {editorSettings.language === "javascript" && <FaCheck className="text-accent1" />}
         </button>
         <button
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
-            setEditorSettings({ ...editorSettings, language: "Python" });
+            setEditorSettings({ ...editorSettings, language: "python" });
           }}
         >
           Python
-          {editorSettings.language === "Python" && <FaCheck className="text-accent1"/>}
+          {editorSettings.language === "python" && <FaCheck className="text-accent1" />}
         </button>
         <button
           className="flex items-center justify-between w-full text-left px-3 rounded-md hover:bg-lightPrimary"
           onClick={() => {
             setLanguageOpen(false);
-            setEditorSettings({ ...editorSettings, language: "Rust" });
+            setEditorSettings({ ...editorSettings, language: "rust" });
           }}
         >
           Rust
-          {editorSettings.language === "Rust" && <FaCheck className="text-accent1"/>}
+          {editorSettings.language === "rust" && <FaCheck className="text-accent1" />}
         </button>
       </div>
     </div>

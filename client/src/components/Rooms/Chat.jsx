@@ -271,7 +271,7 @@ const Chat = ({ setOpenScoreboard }) => {
             return messageContent?.type === "roomMessage" ? (
               <div key={i} className="flex flex-row items-center justify-between gap-x-1 px-3 py-2 mb-3 bg-primary rounded-lg">
                 {messageContent.message}
-                <p className="text-grey1">{messageContent.timeStamp}</p>
+                <p className="text-sm text-grey1">{messageContent.timeStamp}</p>
               </div>
             ) : (
               <div key={i} className="flex flex-col gap-y-3 mb-3">
