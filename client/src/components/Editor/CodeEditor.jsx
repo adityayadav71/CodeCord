@@ -8,7 +8,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
 import { rust } from "@codemirror/lang-rust";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RoomContext } from "../../layouts/AppLayout";
 import { AuthContext } from "../../App";
 import { EditorView } from "@codemirror/view";
@@ -17,18 +17,16 @@ import * as themes from "@uiw/codemirror-themes-all";
 const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
   const stateFields = { history: historyField };
   const { roomData } = useContext(RoomContext);
-  const { userData } = useContext(AuthContext);
+  const { userData, socket } = useContext(AuthContext);
 
   const serializedState = localStorage.getItem("myEditorState");
 
   const [activeEditor, setActiveEditor] = useState(userData?.username);
+  const [editorValue, setEditorValue] = useState(editorSettings.value);
 
   const FontSizeTheme = EditorView.theme({
     "&": {
       fontSize: `${editorSettings.fontSize - 3}pt`,
-    },
-    '&.cm-focused .cm-content ::selection': {
-      color: "#D9D9D9",
     },
   });
 
@@ -39,8 +37,30 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
     python: python,
     rust: rust,
   };
-  console.log(languages.cpp());
   const selectedLanguage = languages[editorSettings.language]() || languages.java();
+
+  useEffect(() => {
+    socket.emit("participant-code-update", { username: userData?.username, value: editorSettings.value }, roomData?.roomId);
+  }, [editorSettings.value, socket]);
+
+  socket?.on("participant-code-updated", (data) => {
+    roomData?.participants.forEach((participant, i) => {
+      if (participant.username === data.username) participant.code = data.value;
+      if (activeEditor === participant.username) {
+        localStorage.setItem(participant.username, data.value);
+        setEditorValue(participant.code);
+      }
+    });
+  });
+
+  useEffect(() => {
+    roomData?.participants.forEach((participant, i) => {
+      if (activeEditor === participant.username) {
+        const storedCode = localStorage.getItem(participant.username);
+        setEditorValue(storedCode || participant.code);
+      }
+    });
+  }, [activeEditor]);
 
   return (
     <div className="flex flex-col h-full">
@@ -64,34 +84,37 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
           ))}
         </Swiper>
       )}
-      <CodeMirror
-        className="grow w-full overflow-scroll hideScrollbar"
-        value={editorSettings.value}
-        theme={themes[editorSettings.themeName === "default" ? "dracula" : editorSettings.themeName]}
-        height="100%"
-        basicSetup={{
-          tabSize: editorSettings.tabSize,
-          highlightActiveLine: false,
-          autoIndent: true,
-        }}
-        initialState={
-          serializedState
-            ? {
-                json: JSON.parse(serializedState || ""),
-                fields: stateFields,
-              }
-            : undefined
-        }
-        onChange={(value, viewUpdate) => {
-          setEditorSettings((prevSettings) => {
-            return { ...prevSettings, value };
-          });
+      <div className={`flex flex-col h-full ${isRoom && new Date(roomData?.expiresAt) > new Date() && activeEditor !== userData?.username ? "blur-sm" : ""}`}>
+        <CodeMirror
+          className="grow w-full overflow-scroll hideScrollbar"
+          value={activeEditor === userData?.username ? editorSettings.value : editorValue}
+          theme={themes[editorSettings.themeName === "default" ? "dracula" : editorSettings.themeName]}
+          height="100%"
+          basicSetup={{
+            tabSize: editorSettings.tabSize,
+            highlightActiveLine: false,
+            autoIndent: true,
+          }}
+          readOnly={activeEditor !== userData?.username}
+          initialState={
+            serializedState
+              ? {
+                  json: JSON.parse(serializedState || ""),
+                  fields: stateFields,
+                }
+              : undefined
+          }
+          onChange={(value, viewUpdate) => {
+            setEditorSettings((prevSettings) => {
+              return { ...prevSettings, value };
+            });
 
-          const state = viewUpdate.state.toJSON(stateFields);
-          localStorage.setItem("myEditorState", JSON.stringify(state));
-        }}
-        extensions={[selectedLanguage, FontSizeTheme]}
-      />
+            const state = viewUpdate.state.toJSON(stateFields);
+            localStorage.setItem("myEditorState", JSON.stringify(state));
+          }}
+          extensions={[selectedLanguage, FontSizeTheme]}
+        />
+      </div>
     </div>
   );
 };

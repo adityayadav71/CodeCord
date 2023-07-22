@@ -167,6 +167,14 @@ io.on("connection", (socket) => {
       socket.emit("error", err);
     }
   });
+
+  socket.on("participant-code-update", (data, roomId) => {
+    try {
+      socket.to(roomId).emit("participant-code-updated", data);
+    } catch (err) {
+      socket.emit("error", err);
+    }
+  })
 });
 
 instrument(io, {
