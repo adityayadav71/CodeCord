@@ -4,6 +4,10 @@ import "swiper/css";
 import CodeMirror from "@uiw/react-codemirror";
 import { historyField } from "@codemirror/commands";
 import { java } from "@codemirror/lang-java";
+import { cpp } from "@codemirror/lang-cpp";
+import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
+import { rust } from "@codemirror/lang-rust";
 import { useContext, useState } from "react";
 import { RoomContext } from "../../layouts/AppLayout";
 import { AuthContext } from "../../App";
@@ -23,77 +27,38 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
     "&": {
       fontSize: `${editorSettings.fontSize - 3}pt`,
     },
+    '&.cm-focused .cm-content ::selection': {
+      color: "#D9D9D9",
+    },
   });
 
-  const themeMap = {
-    default: themes.dracula,
-    abcdef: themes.abcdef,
-    androidstudio: themes.androidstudio,
-    atomone: themes.atomone,
-    aura: themes.aura,
-    bbedit: themes.bbedit,
-    bespin: themes.bespin,
-    darcula: themes.darcula,
-    duotoneDark: themes.duotoneDark,
-    duotoneLight: themes.duotoneLight,
-    eclipse: themes.eclipse,
-    githubDark: themes.githubDark,
-    githubLight: themes.githubLight,
-    gruvboxDark: themes.gruvboxDark,
-    gruvboxLight: themes.gruvboxLight,
-    material: themes.material,
-    materialDark: themes.materialDark,
-    materialLight: themes.materialLight,
-    noctisLilac: themes.noctisLilac,
-    nord: themes.nord,
-    okaidia: themes.okaidia,
-    solarizedDark: themes.solarizedDark,
-    solarizedLight: themes.solarizedLight,
-    sublime: themes.sublime,
-    tokyoNight: themes.tokyoNight,
-    tokyoNightDay: themes.tokyoNightDay,
-    tokyoNightStorm: themes.tokyoNightStorm,
-    vscodeDark: themes.vscodeDark,
-    xcodeDark: themes.xcodeDark,
-    xcodeLight: themes.xcodeLight,
-  }
-  
+  const languages = {
+    java: java,
+    cpp: cpp,
+    javascript: javascript,
+    python: python,
+    rust: rust,
+  };
+  console.log(languages.cpp());
+  const selectedLanguage = languages[editorSettings.language]() || languages.java();
+
   return (
     <div className="flex flex-col h-full">
       {isRoom && roomData?.participants && (
-        <Swiper
-          className="flex flex-row items-center shrink-0 w-full gap-x-5 border-b border-lightAccent3 relative"
-          slidesPerView={4}
-        >
+        <Swiper className="flex flex-row items-center shrink-0 w-full gap-x-5 border-b border-lightAccent3 relative" slidesPerView={4}>
           {roomData?.participants?.map((participant, i) => (
-            <SwiperSlide
-              key={i}
-              className={`py-3 ${
-                participant?.username === activeEditor
-                  ? "border-b-2 border-accent1"
-                  : ""
-              }`}
-              onClick={() => setActiveEditor(participant?.username)}
-            >
+            <SwiperSlide key={i} className={`py-3 ${participant?.username === activeEditor ? "border-b-2 border-accent1" : ""}`} onClick={() => setActiveEditor(participant?.username)}>
               <button className="flex flex-row items-center justify-center gap-x-3 px-6 py-2 rounded-lg">
                 <div className="flex flex-row items-center justify-center rounded-full bg-grey2">
                   {participant?.avatar ? (
-                    <img
-                      className="w-8 h-8 overflow-clip object-cover rounded-full"
-                      src={`data:${participant?.avatar?.contentType};base64,${participant?.avatar?.image}`}
-                      alt="user-profile-picture"
-                    />
+                    <img className="w-8 h-8 overflow-clip object-cover rounded-full" src={`data:${participant?.avatar?.contentType};base64,${participant?.avatar?.image}`} alt="user-profile-picture" />
                   ) : (
                     <div className="flex items-center justify-center rounded-full bg-grey2 w-8 h-8 text-xl">
                       <FaUserAlt className="text-xl hover:cursor-pointer" />
                     </div>
                   )}
                 </div>
-                <p>
-                  {participant?.username === userData?.username
-                    ? "Me"
-                    : participant?.username}
-                </p>
+                <p>{participant?.username === userData?.username ? "Me" : participant?.username}</p>
               </button>
             </SwiperSlide>
           ))}
@@ -102,7 +67,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
       <CodeMirror
         className="grow w-full overflow-scroll hideScrollbar"
         value={editorSettings.value}
-        theme={themeMap[editorSettings.themeName]}
+        theme={themes[editorSettings.themeName === "default" ? "dracula" : editorSettings.themeName]}
         height="100%"
         basicSetup={{
           tabSize: editorSettings.tabSize,
@@ -125,7 +90,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
           const state = viewUpdate.state.toJSON(stateFields);
           localStorage.setItem("myEditorState", JSON.stringify(state));
         }}
-        extensions={[java(), FontSizeTheme]}
+        extensions={[selectedLanguage, FontSizeTheme]}
       />
     </div>
   );
