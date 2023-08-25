@@ -111,7 +111,7 @@ problemSchema.post("save", async function (doc, next) {
       );
       await problemTag.save();
     }
-    await Counter.findOneAndUpdate({ name: "Counter", $inc: { seq: 1 } });
+    await Counter.findOneAndUpdate({ name: "counter", $inc: { seq: 1 } });
     next();
   } catch (error) {
     await Problem.findOneAndDelete({ _id: doc._id });

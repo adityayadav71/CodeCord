@@ -92,21 +92,19 @@ const Editor = ({ isRoom }) => {
   const values = queryString.parse(location.search);
 
   useEffect(() => {
-    if (roomData) {
-      const selectedProblems =
-        values?.problems?.split(",") || // User creating a new room
-        roomData?.settings?.problems; // User joining a new room
+    const selectedProblems =
+      values?.problems?.split(",") || // User creating a new room
+      (roomData && roomData.settings?.problems); // User joining a new room
 
-      const loadProblems = async () => {
-        setIsLoading(true);
-        const response = await getProblem(isRoom ? selectedProblems : [params.name]);
+    const loadProblems = async () => {
+      setIsLoading(true);
+      const response = await getProblem(isRoom ? selectedProblems : [params.name]);
 
-        setProblems(response.problems);
-        setActiveProblem(response.problems[0]);
-        setIsLoading(false);
-      };
-      loadProblems();
-    }
+      setProblems(response.problems);
+      setActiveProblem(response.problems[0]);
+      setIsLoading(false);
+    };
+    loadProblems();
   }, [roomData]);
 
   // 3. Handle initializing editor sizes and settings with local storage data
@@ -116,7 +114,7 @@ const Editor = ({ isRoom }) => {
 
     const editorSizes = JSON.parse(localStorage?.getItem("editorSizes"));
     editorSizes && setEditorSizes(editorSizes);
-    
+
     const editorSettings = JSON.parse(localStorage?.getItem("editorSettings"));
     editorSettings && setEditorSettings(editorSettings);
   }, []);
@@ -234,7 +232,7 @@ const Editor = ({ isRoom }) => {
           <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} />
         </div>
         <div>
-          <Split gutterSize={8}  style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
+          <Split gutterSize={8} style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
             {displaySubmission ? (
               <div ref={editorRef} className="z-[-1] h-full bg-primary">
                 <SubmissionPanel isRoom={isRoom} submissionDetails={submissionDetails} setSubmissionDetails={setSubmissionDetails} setDisplaySubmission={setDisplaySubmission} />
