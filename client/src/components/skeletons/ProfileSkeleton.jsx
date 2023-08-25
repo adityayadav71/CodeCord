@@ -68,24 +68,8 @@ const ProfileSkeleton = () => {
           </section>
           <button className="animate-pulse bg-grey1 mb-6 h-16 w-full px-3 py-4 rounded-lg"></button>
         </div>
-        <div className="row-span-1 bg-secondary rounded-lg p-6 flex flex-col">
+        <div className="row-span-1 animate-pulse bg-grey1 rounded-lg p-6 flex flex-col">
           <div className="grid grid-rows-1 grid-cols-4 gap-x-1">
-            <div>
-              <h1 className="text-grey1 font-bold">Contest Rating</h1>
-              <p className="font-bold text-2xl">324</p>
-            </div>
-            <div>
-              <h className="text-grey1 text-sm">Contest</h>
-              <p className="text-sm">Weekly Contest 1</p>
-            </div>
-            <div>
-              <h className="text-grey1 text-sm">Rank</h>
-              <p className="text-sm">1/360</p>
-            </div>
-            <div>
-              <h className="text-grey1 text-sm">Problems Solved</h>
-              <p className="text-sm">4/4 00:16:04</p>
-            </div>
           </div>
           <div className="grow"></div>
         </div>
