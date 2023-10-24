@@ -6,7 +6,7 @@ const LoadingScreen = ({ isLoggedIn }) => {
   return (
     !isHidden && (
       <div
-        className={`absolute top-0 left-0 flex flex-col bg-primary items-center justify-center w-full h-full transition-opacity duration-500 ${isLoggedIn === undefined ? "opacity-1" : "opacity-0"}`}
+        className={`absolute top-0 left-0 flex flex-col bg-primary items-center justify-center w-full h-full transition-opacity z-[100] duration-700 ${isLoggedIn === undefined ? "opacity-1" : "opacity-0"}`}
         onTransitionEnd={() => setIsHidden(true)}
       >
         <div className="parent-spinner mx-auto">

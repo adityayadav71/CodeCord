@@ -24,11 +24,7 @@ const PasswordReset = (props) => {
     setStatus("waiting");
     try {
       await resetPassword(formData, params.token);
-      setSuccessMessage(
-        <FormSuccess
-          message={"Password reset successfully! Redirecting to Login page."}
-        />
-      );
+      setSuccessMessage(<FormSuccess message={"Password reset successfully! Redirecting to Login page."} />);
       setTimeout(() => {
         navigate("/app/auth/login", { replace: true });
         setStatus("");
@@ -41,17 +37,16 @@ const PasswordReset = (props) => {
 
   return (
     <div className="flex flex-row items-center grow w-full py-9 px-9">
-      <form
-        className="flex flex-col w-[400px] max-w-7xl mx-auto items-center justify-center px-5 py-10 gap-y-6 text-white bg-secondary rounded-xl"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <img className="mb-12" src={logo} alt="logo" />
+      <form className="flex flex-col w-[400px] max-w-7xl mx-auto items-center justify-center px-5 py-10 gap-y-6 text-white bg-secondary rounded-xl" onSubmit={handleSubmit(onSubmit)}>
+        <div className="h-10 mb-12 mx-auto">
+          <img src={logo} alt="logo" />
+        </div>
         <div className="w-full">
           <input
             type="password"
             className={`w-full rounded-xl h-18 px-6 py-6 text-base 
-            ${errors.password ? "border border-hardRed" : ""} 
-            outline-none focus:border focus:border-accent1 bg-grey3`}
+            ${errors.password ? "ring-1 ring-hardRed" : ""} 
+            outline-none focus:ring-1 focus:ring-accent1 bg-grey3`}
             name="password"
             placeholder="New Password"
             {...register("password", {
@@ -62,16 +57,14 @@ const PasswordReset = (props) => {
               },
             })}
           ></input>
-          {errors.password && (
-            <span className="mt-2 text-red-600">{errors.password.message}</span>
-          )}
+          {errors.password && <span className="mt-2 text-red-600">{errors.password.message}</span>}
         </div>
         <div className="w-full">
           <input
             type="password"
             className={`w-full rounded-xl h-18 px-6 py-6 text-base
-            ${errors.passwordConfirm ? "border border-hardRed" : ""}
-            outline-none focus:border focus:border-accent1 bg-grey3`}
+            ${errors.passwordConfirm ? "ring-1 ring-hardRed" : ""}
+            outline-none focus:ring-1 focus:ring-accent1 bg-grey3`}
             name="passwordConfirm"
             placeholder="Confirm New Password"
             {...register("passwordConfirm", {
@@ -83,18 +76,11 @@ const PasswordReset = (props) => {
               },
             })}
           ></input>
-          {errors.passwordConfirm && (
-            <span className="mt-2 text-red-600">
-              {errors.passwordConfirm.message}
-            </span>
-          )}
+          {errors.passwordConfirm && <span className="mt-2 text-red-600">{errors.passwordConfirm.message}</span>}
         </div>
         {apiErrors}
         {successMessage}
-        <button
-          disabled={status === "waiting"}
-          className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1"
-        >
+        <button disabled={status === "waiting"} className="flex gap-x-3 items-center justify-center mt-6 text-2xl w-full rounded-xl h-18 px-6 py-6 font-bold bg-accent1 hover:bg-lightAccent1">
           {status === "waiting" && <div className="spinner-border"></div>}
           Reset My Password
         </button>

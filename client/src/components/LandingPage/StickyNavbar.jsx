@@ -6,7 +6,7 @@ const StickyNavbar = ({ activeSection }) => {
   };
 
   return (
-    <nav className="drop-shadow-lg transition duration-300 fixed top-0 left-0 flex flex-row gap-x-3 items-center justify-between bg-primary w-full">
+    <nav className="drop-shadow-lg animate-fadeIn transition duration-300 fixed top-0 left-0 flex flex-row gap-x-3 items-center justify-between bg-primary w-full">
       <ul className="flex flex-row items-center text-md ml-6">
         <li
           className="m-4 p-2 relative hover:cursor-pointer"

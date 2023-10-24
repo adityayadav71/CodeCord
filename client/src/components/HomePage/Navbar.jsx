@@ -75,7 +75,7 @@ const HomeNavbar = ({ handleLogout }) => {
   return (
     <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
       <Link to="/">
-        <img className="p-3 hover:cursor-pointer" src="/favicon.svg" alt="logo" />
+        <img className="w-[52px] h-[50px] p-3 hover:cursor-pointer" src="/favicon.svg" alt="logo" />
       </Link>
 
       <ul className="flex flex-row justify-center">
@@ -176,7 +176,7 @@ const HomeNavbar = ({ handleLogout }) => {
           <>
             <div className={"searchbar relative flex flex-row items-center right-5"}>
               <FaSearch
-                className={`absolute ${searchbarActive ? "" : "text-2xl translate-x-64"} hover:cursor-pointer left-2 transition-all duration-300`}
+                className={`absolute ${searchbarActive ? "left-2" : "text-2xl translate-x-64"} hover:cursor-pointer transition-all duration-300`}
                 onClick={() => setSearchbarActive((prev) => !prev)}
               />
               <input
