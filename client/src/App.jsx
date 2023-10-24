@@ -13,7 +13,8 @@ import ForgotPassword from "./components/Authentication/ForgotPassword";
 import Login from "./components/Authentication/Login";
 import SignUp from "./components/Authentication/SignUp";
 import ActiveRooms from "./components/Rooms/ActiveRooms";
-import ProblemTagList from "./components/Problems/ProblemTagList"
+import ProblemTagList from "./components/Problems/ProblemTagList";
+import LoadingScreen from "./components/LandingPage/LoadingScreen";
 import { createContext, useState, useEffect } from "react";
 import { logout, checkLogInStatus } from "./api/authDataAPI";
 import Profile from "./components/HomePage/Profile";
@@ -32,6 +33,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   loadData = async () => {
+    const MIN_DISPLAY_TIME = 500;
+    const startTime = new Date().getTime();
+
     const status = await checkLogInStatus();
     if (status.isLoggedIn && socket === null) {
       const socket = io(SOCKET_URL, {
@@ -39,17 +43,28 @@ function App() {
       });
       setSocket(socket);
     }
-    setIsLoggedIn(status.isLoggedIn);
-    setUserData(status.userData);
+    // Calculate loading time
+    const endTime = new Date().getTime();
+    const elapsedTime = endTime - startTime;
+    const remainingTime = elapsedTime > MIN_DISPLAY_TIME ? 0 : MIN_DISPLAY_TIME;
+    
+    // Delay hiding loading screen for faster connections
+    setTimeout(() => {
+      setIsLoggedIn(status.isLoggedIn);
+      setUserData(status.userData);
+    }, remainingTime);
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    loadData();
-    setIsLoading(false);
-    socket?.on("room-ended", () => {
-      loadData();
-    });
+    const fetchData = async () => {
+      setIsLoading(true);
+      await loadData();
+      setIsLoading(false);
+      socket?.on("room-ended", () => {
+        loadData();
+      });
+    };
+    fetchData();
   }, [socket]);
 
   const handleLogout = async () => {
@@ -76,64 +91,52 @@ function App() {
         setIsLoading,
       }}
     >
-      {typeof isLoggedIn !== "undefined" ? (
-        <div className="mx-auto h-full w-full max-w-[2560px] overflow-x-hidden">
-          <>
-            <Routes>
-              {isLoggedIn ? (
-                <Route
-                  path="/"
-                  element={<AppLayout handleLogout={handleLogout} />}
-                >
-                  <Route index element={<Contest />} />
+      <div className="relative w-full h-full">
+        {<LoadingScreen isLoggedIn={isLoggedIn} />}
+        {isLoggedIn !== undefined && (
+          <div className="mx-auto h-full w-full max-w-[2560px] overflow-x-hidden">
+            <>
+              <Routes>
+                {isLoggedIn ? (
+                  <Route path="/" element={<AppLayout handleLogout={handleLogout} />}>
+                    <Route index element={<Contest />} />
+                  </Route>
+                ) : (
+                  <Route path="/" element={<LandingLayout />}>
+                    <Route index element={<LandingPage />} />
+                  </Route>
+                )}
+                <Route path="/create">
+                  <Route index element={<CreateRoom />} />
                 </Route>
-              ) : (
-                <Route path="/" element={<LandingLayout />}>
-                  <Route index element={<LandingPage />} />
+                <Route path="/app" element={<AppLayout handleLogout={handleLogout} />}>
+                  <Route path="contest" element={<Contest />} />
+                  <Route path="problem">
+                    <Route index element={<Problem />} />
+                    <Route path=":name" element={<Editor isRoom={false} />} />
+                  </Route>
+                  <Route path="room">
+                    <Route index element={<Problem />} />
+                    <Route path=":name" element={<Editor isRoom={true} />} />
+                  </Route>
+                  <Route path="rooms" element={<ActiveRooms />} />
+                  <Route path="discussion" element={<Discussion />} />
+                  <Route path="tag/:tagname" element={<ProblemTagList />} />
+                  <Route path="user/:username" element={<Profile />} />
+                  <Route path="auth">
+                    <Route path="signup" element={<SignUp />} />
+                    <Route path="login" element={<Login />} />
+                    <Route path="reset/request" element={<ForgotPassword />} />
+                    <Route path="reset/:token" element={<PasswordReset />} />
+                  </Route>
                 </Route>
-              )}
-              <Route path="/create">
-                <Route index element={<CreateRoom />} />
-              </Route>
-              <Route
-                path="/app"
-                element={<AppLayout handleLogout={handleLogout} />}
-              >
-                <Route path="contest" element={<Contest />} />
-                <Route path="problem">
-                  <Route index element={<Problem />} />
-                  <Route path=":name" element={<Editor isRoom={false} />} />
-                </Route>
-                <Route path="room">
-                  <Route index element={<Problem />} />
-                  <Route path=":name" element={<Editor isRoom={true} />} />
-                </Route>
-                <Route path="rooms" element={<ActiveRooms />} />
-                <Route path="discussion" element={<Discussion />} />
-                <Route path="tag/:tagname" element={<ProblemTagList />} />
-                <Route path="user/:username" element={<Profile />} />
-                <Route path="auth">
-                  <Route path="signup" element={<SignUp />} />
-                  <Route path="login" element={<Login />} />
-                  <Route path="reset/request" element={<ForgotPassword />} />
-                  <Route path="reset/:token" element={<PasswordReset />} />
-                </Route>
-              </Route>
-              <Route path="/notfound" element={<NotFound />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center w-full h-full">
-          <div className="parent-spinner mx-auto">
-            <img className="mb-14" src="/svg/logo.svg" alt="logo" />
-            <div className="line mx-auto">
-              <div className="inner"></div>
-            </div>
+                <Route path="/notfound" element={<NotFound />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <Toaster />
     </AuthContext.Provider>
   );
