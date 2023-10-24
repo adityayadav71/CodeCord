@@ -179,7 +179,7 @@ const Feature = ({
                 ) : null}
                 {supTitle === "Solve" ? (
                   <div
-                    className={`flex flex-row pt-44 justify-center w-full h-full
+                    className={`flex flex-row pt-24 justify-center w-full h-full
                     ${listIsInView ? "animate-slideUp" : ""} 
                     opacity-0 -translate-y-2 grow`}
                   >
