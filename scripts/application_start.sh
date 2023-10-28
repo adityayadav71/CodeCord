@@ -5,7 +5,7 @@ cd /home/ubuntu/CodeCord/server
 pm2 start npm --name "server" -- run "prod"
 
 # Change to the client dist directory
-cd  ../client/dist
+cd  ../client
 
 # Start the client using http-server with pm2
-pm2 start "http-server dist -b -g -p 5173 --proxy http://localhost:5173?/index.html" --name "client"
+pm2 start npm --name "client" -- run "serve"

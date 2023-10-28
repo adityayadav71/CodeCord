@@ -8,7 +8,7 @@
     "prod": "vite --mode production",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "serve -s dist -l 5173",
+    "serve": "http-server dist -b -g -p 5173 --proxy http://localhost:5173?/index.html",
     "build:tailwind": "tailwindcss build src/styles/tailwind.css -o src/styles/index.css"
   },
   "dependencies": {
