@@ -8,4 +8,4 @@ pm2 start npm --name "server" -- run "prod"
 cd  ../client/dist
 
 # Start the client using http-server with pm2
-pm2 start http-server --name "client" -- -p 5173 -a 0.0.0.0 -c-1 --proxy http://localhost:5173?/index.html
+pm2 start "http-server dist -b -g -p 5173 --proxy http://localhost:5173/index.html" --name "client"
