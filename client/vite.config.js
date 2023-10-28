@@ -1,8 +1,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { compression } from 'vite-plugin-compression2'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(), 
+    compression(),
+    compression({ algorithm: 'brotliCompress', exclude: [/\.(br)$/, /\.(gz)$/], deleteOriginalAssets: true })
+  ],
   server: {
     host: true,
     port: 5173,
@@ -18,7 +23,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ["axios"],
+          vendor: ["axios", "react-icons"],
           shared: ["react", "react-dom"],
         },
       },
