@@ -14,17 +14,17 @@ const Footer = (props) => {
           <h3 className="text-lg mb-6 font-bold text-white">About</h3>
           <ul>
             <li className="mb-4">
-              <a className="hover:text-accent1 transition-all duration-300" href="#">
-                How it works
+              <a target="_blank" className="hover:text-accent1 transition-all duration-300" href="#">
+                Developers
               </a>
             </li>
             <li className="mb-4">
-              <a className="hover:text-accent1 transition-all duration-300" href="#">
+              <a target="_blank" className="hover:text-accent1 transition-all duration-300" href="#">
                 Contact
               </a>
             </li>
             <li className="mb-4">
-              <a className="hover:text-accent1 transition-all duration-300" href="#">
+              <a target="_blank" className="hover:text-accent1 transition-all duration-300" href="https://github.com/adityayadav71/CodeCord">
                 Contribute
               </a>
             </li>
@@ -39,13 +39,13 @@ const Footer = (props) => {
               </Link>
             </li>
             <li className="mb-4">
-              <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
+              <Link to="/app/contest" className="hover:text-accent1 transition-all duration-300">
                 Contests
               </Link>
             </li>
             <li className="mb-4">
-              <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
-                Create a Room
+              <Link to="/app/rooms" className="hover:text-accent1 transition-all duration-300">
+                Public Rooms
               </Link>
             </li>
           </ul>
@@ -55,7 +55,7 @@ const Footer = (props) => {
           <ul>
             <li className="flex flex-row mb-4 gap-x-2 items-center">
               <FaGithub />
-              <a target="_blank" className="hover:text-accent1 transition-all duration-300" href="#">
+              <a target="_blank" className="hover:text-accent1 transition-all duration-300" href="https://github.com/adityayadav71/CodeCord">
                 GitHub
               </a>
             </li>

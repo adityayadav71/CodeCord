@@ -66,7 +66,7 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list,
     Collaborate: FaUsers,
     Compete: FaGlobeAsia,
     Solve: FaProjectDiagram,
-    "Sign up for an account": FaUser,
+    "Sign up for CodeCord": FaUser,
   };
   const gradientLookup = {
     featureGradient1: "bg-gradient-to-b from-accent1 to-easyGreen",
@@ -81,7 +81,7 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list,
   return (
     <InView
       as="div"
-      threshold={[0.3]}
+      threshold={[0.1]}
       onChange={(inView) => {
         if (inView) setIsInView(true);
       }}
@@ -89,8 +89,8 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list,
       <section
         className={`flex flex-row
         ${extra === "SignUp" ? "h-[30rem]" : "sm:h-[60rem] h-[64rem]"} 
-        gap-x-3 px-9`}
-        id={`${supTitle === "Collaborate" ? "Collaborate" : supTitle === "Compete" ? "Compete" : supTitle === "Solve" ? "Solve" : ""}`}
+        gap-x-3 sm:px-9 px-6`}
+        id={supTitle}
       >
         <aside>
           <div
@@ -104,7 +104,7 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list,
           <div
             className={`
               ${isInView ? "animate-grow" : ""} 
-              z-[-1] lg:ml-14 ml-4 lg:w-3 w-2 top-full rounded 
+              z-[-1] lg:ml-14 ml-5 lg:w-3 w-1 top-full rounded 
               ${gradientLookup[gradient]}`}
           ></div>
         </aside>
@@ -113,19 +113,19 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list,
           <p
             className={`${extra === "SignUp" ? "lg:text-5xl md:text-4xl text-3xl" : "lg:text-4xl text-3xl"} 
             ${isInView ? "animate-slideOutDelayed" : ""} 
-            -mt-2 -translate-x-2 origin-top-right opacity-0 font-bold mb-20`}
+            -mt-2 -translate-x-2 tracking-wide origin-top-right opacity-0 font-bold mb-20`}
           >
             {supTitle}
           </p>
           {extra === "SignUp" ? (
             <Link to="/app/auth/signup">
-              <button className="px-6 py-4 lg:w-40 text-3xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 hover:shadow hover:shadow-signUp  bg-accent1 text-white font-bold rounded-xl">
+              <button className="px-6 py-4 sm:w-60 w-full text-3xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 hover:shadow hover:shadow-signUp  bg-accent1 text-white font-bold rounded-xl">
                 Sign up
               </button>
             </Link>
           ) : (
             <div className="flex flex-col grow">
-              <h1 className={`lg:text-5xl md:text-4xl text-3xl sm:font-bold tracking-wide mb-11 ${isInView ? "animate-slideOut" : ""} -translate-x-2 origin-top-right opacity-0`}>
+              <h1 className={`lg:text-5xl md:text-4xl text-3xl sm:font-bold tracking-tight mb-11 ${isInView ? "animate-slideOut" : ""} -translate-x-2 origin-top-right opacity-0`}>
                 <span className={`${textVariants[color]}`}>{TitleHighLight}</span>
                 {Title}
               </h1>
@@ -140,7 +140,7 @@ const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list,
                   <ul
                     className={`
                     ${listIsInView ? "animate-slideOut" : ""} 
-                    min-w-1/2 mb-20 self-center -translate-x-2 origin-top-right text-left opacity-0 list-outside list-disc ml-6 leading-6 lg:text-2xl md:text-xl sm:text-lg text-xl`}
+                    min-w-1/2 mb-20 self-center -translate-x-2 origin-top-right text-left opacity-0 list-outside list-disc ml-6 leading-7 lg:text-2xl md:text-xl sm:text-lg text-xl tracking-wide`}
                   >
                     {listItems}
                   </ul>

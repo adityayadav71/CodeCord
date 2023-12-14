@@ -50,7 +50,7 @@ const LandingPage = (props) => {
         <Feature
           supTitle="Compete"
           TitleHighLight="Attend Weekly Global Contests"
-          Title=" and improve your contest rating"
+          Title=" and challenge your coding skills"
           color="easyGreen"
           gradient="featureGradient2"
           glow="feature2"
@@ -70,8 +70,8 @@ const LandingPage = (props) => {
       >
         <Feature
           supTitle="Solve"
-          TitleHighLight="Filter problems by topics, difficulty "
-          Title=" and solve them"
+          TitleHighLight="Filter problems by topics, difficulty, companies "
+          Title=" and solve"
           color="mediumYellow"
           gradient="featureGradient3"
           glow="feature3"
@@ -82,7 +82,7 @@ const LandingPage = (props) => {
           ]}
         />
       </InView>
-      <Feature supTitle="Sign up for an account" color="accent1" gradient="featureGradient4" extra="SignUp" glow="feature1" />
+      <Feature supTitle="Sign up for CodeCord" color="accent1" gradient="featureGradient4" extra="SignUp" glow="feature1" />
       <Footer />
       {!isAtTop && (
         <>
