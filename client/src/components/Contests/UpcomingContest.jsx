@@ -2,9 +2,9 @@ import { FaRegCalendarPlus } from "react-icons/fa";
 
 const UpcomingContest = ({ name, timeStamp, live, style }) => {
   return (
-    <div style={style} className="flex flex-col justify-items-center bg-gradient-to-b from-black20 to-transparent bg-accent3 h-40 rounded-xl p-4 b min-w-[372px]">
+    <div style={style} className="flex flex-col justify-items-center bg-gradient-to-b from-black20 to-transparent bg-accent3 h-40 rounded-xl p-4 b md:min-w-[372px] w-80">
       <div className="flex flex-row items-center justify-between w-full">
-        <h1 className="font-bold text-xl">{name}</h1>
+        <h1 className="font-bold sm:text-xl">{name}</h1>
         <FaRegCalendarPlus className="hover:text-accent1 hover:cursor-pointer transition-all duration-300 text-xl" />
       </div>
       <p>{timeStamp}</p>

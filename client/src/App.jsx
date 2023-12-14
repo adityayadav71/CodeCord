@@ -94,7 +94,7 @@ function App() {
       <div className="relative w-full h-full">
         {<LoadingScreen isLoggedIn={isLoggedIn} />}
         {isLoggedIn !== undefined && (
-          <div className="mx-auto h-full w-full max-w-[2560px] overflow-x-hidden">
+          <div className="mx-auto h-full w-full max-w-[1920px] overflow-x-hidden">
             <>
               <Routes>
                 {isLoggedIn ? (

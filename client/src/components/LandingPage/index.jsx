@@ -50,11 +50,16 @@ const LandingPage = (props) => {
         <Feature
           supTitle="Compete"
           TitleHighLight="Attend Weekly Global Contests"
-          Title=" and improve your contest rating"
+          Title=" and challenge your coding skills"
           color="easyGreen"
           gradient="featureGradient2"
           glow="feature2"
           extra="noText"
+          list={[
+            "Join weekly coding contests for a fun and challenging way to enhance your skills.",
+            "Compete with a global community, putting your coding abilities to the test.",
+            "Stay motivated and track your progress by participating in regular, timed coding challenges.",
+          ]}
         />
       </InView>
       <InView
@@ -65,25 +70,19 @@ const LandingPage = (props) => {
       >
         <Feature
           supTitle="Solve"
-          TitleHighLight="Filter problems by topics, difficulty "
-          Title=" and solve them"
+          TitleHighLight="Filter problems by topics, difficulty, companies "
+          Title=" and solve"
           color="mediumYellow"
           gradient="featureGradient3"
           glow="feature3"
           list={[
-            "Solve problems independently.",
-            "Solve problems asked in big tech company interviews.",
-            "Use tags to include specific type of problems in contest rooms.",
+            "Focus your coding practice by picking problems in specific topics.",
+            "Adjust the difficulty to match your coding skills seamlessly.",
+            "Practice for real-world challenges with problems tailored to specific companies.",
           ]}
         />
       </InView>
-      <Feature
-        supTitle="Sign up for an account"
-        color="accent1"
-        gradient="featureGradient4"
-        extra="SignUp"
-        glow="feature1"
-      />
+      <Feature supTitle="Sign up for CodeCord" color="accent1" gradient="featureGradient4" extra="SignUp" glow="feature1" />
       <Footer />
       {!isAtTop && (
         <>

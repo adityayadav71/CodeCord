@@ -41,7 +41,7 @@ module.exports = {
       feature1: "0px 0px 54px 45px #0098FA",
       feature2: "0px 0px 54px 45px #19EB48",
       feature3: "0px 0px 54px 45px #E2BC1E",
-      signUp: "0px 1px 10px 0px #0098FA",
+      signUp: "0px 0px 10px 0px #0098FA",
       dropDown: "0px 4px 30px rgba(0, 0, 0, 0.25)",
       heavyDropDown: "0px 5px 5px rgba(0, 0, 0, 0.5)",
       heading: "0px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -56,8 +56,10 @@ module.exports = {
       slideOutDelayed: "slideOut 0.5s 0.1s ease-out forwards",
       slideOut: "slideOut 0.5s ease-out forwards",
       slideUp: "slideUp 0.5s ease-out forwards",
-      expandBorder: "expandBorder 0.5s ease-in-out forwards",
-      pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+      expandBorder: "expandBorder 0.3s ease-in-out forwards",
+      pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      openMobileNavbar: "openMobileNavbar 0.3s ease-in-out forwards",
+      closeMobileNavbar: "closeMobileNavbar 0.3s ease-in-out forwards"
     },
     keyframes: {
       grow: { "0%": { height: "0%" }, "100%": { height: "100%" } },

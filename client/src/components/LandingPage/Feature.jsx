@@ -2,33 +2,61 @@ import { React, useState } from "react";
 import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
-import ContestCard from "../Contests/UpcomingContest";
 import editorSvg from "/feature1.png";
-import Tags from "../Problems/Tags";
+import contestSvg from "/feature2.svg";
+import tagsFilterSvg from "/feature3.svg";
 
-const Feature = ({
-  supTitle,
-  TitleHighLight,
-  Title,
-  color,
-  gradient,
-  glow,
-  list,
-  extra,
-}) => {
+const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list, extra }) => {
   const listItems = list?.map((item, index) => (
     <li key={index} className="mb-3 text-grey2">
       {item}
     </li>
   ));
-  const colorVariants = {
-    accent1: "bg-[#0098FA]",
-    easyGreen: "bg-[#19EB48]",
-    mediumYellow: "bg-[#E2BC1E]",
-    feature1: "shadow-[0px_0px_54px_45px_#0098FA]",
-    feature2: "shadow-[0px_0px_54px_45px_#19EB48]",
-    feature3: "shadow-[0px_0px_54px_45px_#E2BC1E]",
+
+  const getBoxShadow = (isInView, color, glow) => {
+    if (isInView) {
+      if (color)
+        switch (color) {
+          case "accent1":
+            return "bg-[#0098FA]";
+          case "easyGreen":
+            return "bg-[#19EB48]";
+          case "mediumYellow":
+            return "bg-[#E2BC1E]";
+        }
+
+      if (glow)
+        if (window.innerWidth <= 640) {
+          switch (glow) {
+            case "feature1":
+              return "shadow-[0px_0px_36px_24px_#0098FA]";
+            case "feature2":
+              return "shadow-[0px_0px_36px_24px_#19EB48]";
+            case "feature3":
+              return "shadow-[0px_0px_36px_24px_#E2BC1E]";
+          }
+        } else if (window.innerWidth <= 768) {
+          switch (glow) {
+            case "feature1":
+              return "shadow-[0px_0px_40px_28px_#0098FA]";
+            case "feature2":
+              return "shadow-[0px_0px_40px_28px_#19EB48]";
+            case "feature3":
+              return "shadow-[0px_0px_40px_28px_#E2BC1E]";
+          }
+        } else if (window.innerWidth >= 1024) {
+          switch (glow) {
+            case "feature1":
+              return "shadow-[0px_0px_54px_45px_#0098FA]";
+            case "feature2":
+              return "shadow-[0px_0px_54px_45px_#19EB48]";
+            case "feature3":
+              return "shadow-[0px_0px_54px_45px_#E2BC1E]";
+          }
+        }
+    } else return "none";
   };
+
   const textVariants = {
     accent1: "text-[#0098FA]",
     easyGreen: "text-[#19EB48]",
@@ -38,7 +66,7 @@ const Feature = ({
     Collaborate: FaUsers,
     Compete: FaGlobeAsia,
     Solve: FaProjectDiagram,
-    "Sign up for an account": FaUser,
+    "Sign up for CodeCord": FaUser,
   };
   const gradientLookup = {
     featureGradient1: "bg-gradient-to-b from-accent1 to-easyGreen",
@@ -53,147 +81,95 @@ const Feature = ({
   return (
     <InView
       as="div"
-      threshold={[0.3]}
-      onChange={(inView, entry) => {
-        if (inView) {
-          setIsInView(true);
-        }
+      threshold={[0.1]}
+      onChange={(inView) => {
+        if (inView) setIsInView(true);
       }}
     >
       <section
-        className={`flex flex-row 
-        ${extra === "SignUp" ? "h-[30rem]" : "h-[60rem]"} 
-        gap-x-3 px-9`}
-        id={`${
-          supTitle === "Collaborate"
-            ? "Collaborate"
-            : supTitle === "Compete"
-            ? "Compete"
-            : supTitle === "Solve"
-            ? "Solve"
-            : ""
-        }`}
+        className={`flex flex-row
+        ${extra === "SignUp" ? "h-[30rem]" : "sm:h-[60rem] h-[64rem]"} 
+        gap-x-3 sm:px-9 px-6`}
+        id={supTitle}
       >
         <aside>
           <div
-            className={`relative ml-14 w-4 h-4 transition-all duration-300  
-            ${isInView ? colorVariants[color] : ""} 
-            ${isInView ? colorVariants[glow] : ""} 
+            className={`relative lg:ml-14 ml-4 w-4 h-4 transition-all duration-300  
+            ${isInView ? `${getBoxShadow(isInView, color, "")}` : ""} 
+            ${isInView ? `${getBoxShadow(isInView, "", glow)}` : ""} 
             rounded-full`}
           >
-            {Icon ? (
-              <Icon
-                className={`${
-                  isInView ? "animate-fadeIn" : ""
-                } opacity-0 absolute text-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
-              />
-            ) : null}
+            {Icon ? <Icon className={`${isInView ? "animate-fadeIn" : ""} opacity-0 absolute lg:text-7xl text-5xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`} /> : null}
           </div>
           <div
             className={`
               ${isInView ? "animate-grow" : ""} 
-              z-[-1] ml-14 top-full w-3 rounded 
+              z-[-1] lg:ml-14 ml-5 lg:w-3 w-1 top-full rounded 
               ${gradientLookup[gradient]}`}
           ></div>
         </aside>
 
-        <div className="flex flex-col ml-32 w-full h-full">
+        <div className="flex flex-col lg:ml-28 ml-10 w-full h-full">
           <p
-            className={`${extra === "SignUp" ? "text-5xl" : "text-4xl"} 
+            className={`${extra === "SignUp" ? "lg:text-5xl md:text-4xl text-3xl" : "lg:text-4xl text-3xl"} 
             ${isInView ? "animate-slideOutDelayed" : ""} 
-            -translate-x-2 origin-top-right opacity-0 font-bold mb-20`}
+            -mt-2 -translate-x-2 tracking-wide origin-top-right opacity-0 font-bold mb-20`}
           >
             {supTitle}
           </p>
           {extra === "SignUp" ? (
             <Link to="/app/auth/signup">
-              <button className="p-4 w-40 text-3xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 hover:shadow hover:shadow-signUp  bg-accent1 text-white font-bold rounded-xl">
+              <button className="px-6 py-4 sm:w-60 w-full text-3xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 hover:shadow hover:shadow-signUp  bg-accent1 text-white font-bold rounded-xl">
                 Sign up
               </button>
             </Link>
           ) : (
             <div className="flex flex-col grow">
-              <h1
-                className={`text-5xl font-bold tracking-wide mb-11 ${
-                  isInView ? "animate-slideOut" : ""
-                } -translate-x-2 origin-top-right opacity-0`}
-              >
-                <span className={`${textVariants[color]}`}>
-                  {TitleHighLight}
-                </span>
+              <h1 className={`lg:text-5xl md:text-4xl text-3xl sm:font-bold tracking-tight mb-11 ${isInView ? "animate-slideOut" : ""} -translate-x-2 origin-top-right opacity-0`}>
+                <span className={`${textVariants[color]}`}>{TitleHighLight}</span>
                 {Title}
               </h1>
-              <div className="flex flex-row w-full h-full gap-x-6 justify-content-center items-center">
+              <div className="flex sm:flex-row flex-col w-full h-full gap-6 items-center justify-content-center">
                 <InView
                   as="div"
-                  threshold={[1]}
-                  onChange={(listInView, entry) => {
-                    if (listInView) {
-                      setListIsInView(true);
-                    }
+                  threshold={[0.5]}
+                  onChange={(listInView) => {
+                    if (listInView) setListIsInView(true);
                   }}
                 >
                   <ul
                     className={`
                     ${listIsInView ? "animate-slideOut" : ""} 
-                    -translate-x-2 origin-top-right opacity-0 list-outside list-disc ml-6 leading-8 text-2xl grow`}
+                    min-w-1/2 mb-20 self-center -translate-x-2 origin-top-right text-left opacity-0 list-outside list-disc ml-6 leading-7 lg:text-2xl md:text-xl sm:text-lg text-xl tracking-wide`}
                   >
                     {listItems}
                   </ul>
                 </InView>
 
-                {supTitle === "Collaborate" ? (
+                {supTitle === "Collaborate" && (
                   <img
-                    className={`self-start 
-                  ${listIsInView ? "animate-slideUp" : ""} 
-                  opacity-0 -translate-y-2 shadow-2xl w-[853px] h-[480px]`}
+                    className={`
+                        ${listIsInView ? "animate-slideUp" : ""} lg:max-w-4xl sm:max-w-xl sm:mb-0 mb-6 opacity-0 shadow-2xl sm:order-1 -order-1`}
                     src={editorSvg}
                     alt="Room-Feature-UI-Image"
                   />
-                ) : null}
-                {supTitle === "Compete" ? (
-                  <div className="flex flex-row items-center justify-center w-full h-full grow">
-                    <div
-                      className={`self-start 
-                      ${listIsInView ? "animate-slideUp" : ""} 
-                      opacity-0 -translate-y-2`}
-                    >
-                      <ContestCard
-                        style={{
-                          marginLeft: 80,
-                          marginBottom: 10,
-                          pointerEvents: "none",
-                        }}
-                        name="Weekly Contest 1"
-                        timeStamp="15th Jan 2023 8:00 AM GMT+5:30"
-                        live="true"
-                      />
-                      <ContestCard
-                        style={{ marginRight: 80, pointerEvents: "none" }}
-                        name="Weekly Contest 2"
-                        timeStamp="16th Jan 2023 8:00 AM GMT+5:30"
-                        live="false"
-                      />
-                    </div>
-                  </div>
-                ) : null}
-                {supTitle === "Solve" ? (
-                  <div
-                    className={`flex flex-row pt-24 justify-center w-full h-full
-                    ${listIsInView ? "animate-slideUp" : ""} 
-                    opacity-0 -translate-y-2 grow`}
-                  >
-                    <div className="relative w-1/2 h-1/2">
-                      <Tags
-                        disableEvents={true}
-                        isTagsActive={true}
-                        activeTags={[]}
-                        setActiveTags={() => {}}
-                        handleClick={() => {}}
-                      />
-                    </div>
-                  </div>
-                ) : null}
+                )}
+                {supTitle === "Compete" && (
+                  <img
+                    className={`
+                        ${listIsInView ? "animate-slideUp" : ""} lg:max-w-4xl sm:max-w-xl sm:mb-0 mb-6 opacity-0 -translate-y-2 shadow-2xl -order-1`}
+                    src={contestSvg}
+                    alt="Contest-Feature-UI-Image"
+                  />
+                )}
+                {supTitle === "Solve" && (
+                  <img
+                    className={`
+                      ${listIsInView ? "animate-slideUp" : ""} lg:max-w-4xl sm:max-w-xl sm:mb-0 mb-6 opacity-0 -translate-y-2 shadow-2xl sm:order-1 -order-1`}
+                    src={tagsFilterSvg}
+                    alt="Filter-Feature-UI-Image"
+                  />
+                )}
               </div>
             </div>
           )}

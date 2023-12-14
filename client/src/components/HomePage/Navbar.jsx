@@ -105,21 +105,21 @@ const HomeNavbar = ({ handleLogout }) => {
         </li>
       </ul>
       <div className="flex flex-row items-center gap-x-6 ml-auto mr-3">
+        <div className={"searchbar relative flex flex-row items-center right-3"}>
+          <FaSearch
+            className={`absolute ${searchbarActive ? "left-4" : "text-2xl translate-x-64"} hover:cursor-pointer transition-all duration-300`}
+            onClick={() => setSearchbarActive((prev) => !prev)}
+          />
+          <input
+            className={`h-full ${
+              searchbarActive ? "scale-x-1 opacity-1" : "scale-x-0 opacity-0"
+            } origin-right pl-12 pr-4 py-3 focus:outline  focus:outline-accent1  bg-secondary rounded-xl transition-all duration-300`}
+            type="text"
+            placeholder="Search problems, contests, users..."
+          />
+        </div>
         {isLoggedIn ? (
           <>
-            <div className="searchbar relative flex flex-row items-center right-5">
-              <FaSearch
-                className={`absolute ${searchbarActive ? "" : "text-2xl translate-x-64"} hover:cursor-pointer left-2 transition-all duration-300`}
-                onClick={() => setSearchbarActive((prev) => !prev)}
-              />
-              <input
-                className={`h-full ${
-                  searchbarActive ? "scale-x-1 opacity-1" : "scale-x-0 opacity-0"
-                } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-lg transition-all duration-300`}
-                type="text"
-                placeholder="Search problems, contests, users..."
-              />
-            </div>
             {userData?.activeRoom ? (
               <button
                 className="open-modal p-3 hover:cursor-pointer hover:shadow-lg transition duration-300 hover:shadow-sky-900 bg-accent1 hover:bg-lightAccent1 text-white text-base font-bold rounded-lg"
@@ -174,19 +174,6 @@ const HomeNavbar = ({ handleLogout }) => {
           </>
         ) : (
           <>
-            <div className={"searchbar relative flex flex-row items-center right-5"}>
-              <FaSearch
-                className={`absolute ${searchbarActive ? "left-2" : "text-2xl translate-x-64"} hover:cursor-pointer transition-all duration-300`}
-                onClick={() => setSearchbarActive((prev) => !prev)}
-              />
-              <input
-                className={`h-full ${
-                  searchbarActive ? "scale-x-1 opacity-1" : "scale-x-0 opacity-0"
-                } origin-right p-3 pl-8 focus:outline-none focus:bg-grey3 bg-secondary rounded-full transition-all duration-300`}
-                type="text"
-                placeholder="Search problems, contests, users..."
-              />
-            </div>
             <Link
               to="/app/auth/login"
               className="p-3 w-36 text-xl transition-all ease-in-out duration-300 active:scale-90 hover:cursor-pointer border border-white text-white text-center font-bold rounded-xl hover:shadow-signUp hover:shadow"
