@@ -11,7 +11,7 @@ const RoomInviteLink = ({ isLoading, inviteLink }) => {
     setMessage("Copied to Clipboard!");
   };
   return (
-    <div>
+    <div className="sm:col-span-2 col-span-4">
       <div className="flex items-center w-full">
         <h1>Copy Invite Code</h1>
         <p className="text-green-500 text-sm font-bold ml-auto">{message}</p>

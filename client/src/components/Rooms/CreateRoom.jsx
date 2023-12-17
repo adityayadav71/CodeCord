@@ -12,10 +12,11 @@ import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 import { updateRoomSettings, getRoomData, joinRoom } from "../../api/roomsAPI";
 import { toast } from "react-hot-toast";
+import { IoClose } from "react-icons/io5";
 
 export const RoomFilterContext = createContext(null);
 
-const CreateRoom = ({ isContest, roomId, isClosing, setModalOpen, isLoading }) => {
+const CreateRoom = ({ isContest, roomId, isClosing, closeRoomModal, setModalOpen, isLoading }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData, socket } = useContext(AuthContext);
@@ -32,11 +33,12 @@ const CreateRoom = ({ isContest, roomId, isClosing, setModalOpen, isLoading }) =
   const [hrs, sethrs] = useState("");
   const [mins, setmins] = useState("10 mins");
   const [selected, setSelected] = useState([]);
+  const [unselected, setUnSelected] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
   const [filterObj, setFilterObj] = useState({
     tags: [],
     page: 1,
     limit: 20,
-    totalPages: 1,
     difficulty: "",
     sort: "",
   });
@@ -130,25 +132,26 @@ const CreateRoom = ({ isContest, roomId, isClosing, setModalOpen, isLoading }) =
 
   return (
     <div
-      className={`modal fixed z-[9999] h-[95%] w-[60%] ${
+      className={`modal fixed z-[9999] h-[95%] lg:w-[65%] w-[95%] ${
         isClosing ? "animate-closeModal" : "animate-openModal"
-      } overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6`}
+      } hideScrollbar overflow-x-hidden overflow-y-scroll shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6`}
     >
-      <div className="flex flex-row gap-x-3 mb-3">
-        <div className="flex flex-col gap-y-3 pr-12 grow border-r border-r-accent2">
-          <div className="flex flex-row gap-x-3 mb-3">
-            <h1 className="text-xl font-bold">Create Room</h1>
+      <div className="flex sm:flex-row flex-col gap-3 mb-3">
+        <div className="flex flex-col gap-y-3 sm:pr-12 sm:pb-0 pb-4 grow sm:border-r sm:border-r-accent2 sm:border-b-0 border-b border-b-accent2">
+          <div className="flex flex-row sm:items-start items-center gap-x-3 mb-3">
+            <h1 className="text-2xl font-bold">Create Room</h1>
             <RoomVisibility visibility={visibility} setVisibility={setVisibility} />
+            <IoClose className="sm:hidden modal-close-btn ml-auto text-5xl p-3 rounded-lg border border-grey3" onClick={closeRoomModal} />
           </div>
-          <div className="grid grid-cols-2 grid-rows-2 gap-5">
+          <div className="grid grid-cols-4 sm:grid-rows-2 grid-rows-3 gap-5">
             <RoomTypeSelector roomType={roomType} setRoomType={setRoomType} />
             <ParticipantLimit participantLimit={participantLimit} setParticipantLimit={setParticipantLimit} isLimitActive={isLimitActive} setLimitActive={setLimitActive} />
             <RoomDuration roomType={roomType} updateTimeLimit={updateTimeLimit} hrs={hrs} mins={mins} />
             <RoomInviteLink isLoading={isLoading} inviteLink={roomId} />
           </div>
         </div>
-        <div className="flex flex-col gap-y-3 pl-12 grow-0">
-          <h1 className="text-xl font-bold mb-12">Join Room</h1>
+        <div className="flex flex-col gap-y-3 sm:pl-12 grow-0">
+          <h1 className="text-xl font-bold sm:mb-12">Join Room</h1>
           <input
             ref={inviteRef}
             onChange={handleJoinInviteChange}
@@ -168,12 +171,13 @@ const CreateRoom = ({ isContest, roomId, isClosing, setModalOpen, isLoading }) =
         </div>
       </div>
       <RoomFilterContext.Provider value={{ filterObj, setFilterObj }}>
-        <div className="flex flex-col gap-x-3 grow overflow-y-hidden">
-          <ProblemFilter selected={selected} setSelected={setSelected} setDifficulty={setDifficulty} filterInsideModal={true} />
-          <div className="flex grow overflow-y-scroll mb-3">
-            <ProblemList selected={selected} setSelected={setSelected} filterInsideModal={true} />
+        <div className="flex flex-col gap-x-3 grow sm:overflow-hidden z-10">
+          <p className="text-base mb-3 text-green-500 font-bold">{selected.length !== 0 ? `${selected.length}/4 problems selected` : "Select upto 4 problems"}</p>
+          <ProblemFilter selected={selected} setSelected={setSelected} setUnSelected={setUnSelected} setDifficulty={setDifficulty} filterInsideModal={true} />
+          <div className="flex grow overflow-y-hidden hideScrollbar rounded-xl mb-3">
+            <ProblemList setTotalPages={setTotalPages} selected={selected} setSelected={setSelected} unselected={unselected} setUnSelected={setUnSelected} filterInsideModal={true} />
           </div>
-          <Pagination filterInsideModal={true} />
+          <Pagination totalPages={totalPages} filterInsideModal={true} />
         </div>
       </RoomFilterContext.Provider>
     </div>
