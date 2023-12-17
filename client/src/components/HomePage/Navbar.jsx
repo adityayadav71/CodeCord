@@ -4,6 +4,7 @@ import { FaBell, FaBars, FaMagnifyingGlass, FaGear, FaUserLarge, FaPlus } from "
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
+import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
 import { toast } from "react-hot-toast";
 import Skeleton from "../skeletons/NavbarProfileSkeleton";
@@ -37,6 +38,7 @@ const HomeNavbar = ({ handleLogout }) => {
       setRoomId(result.id);
       setModalOpen(true);
     } catch (err) {
+      console.log(err);
       toast.error("Something went wrong! Please try again.");
     }
   };
