@@ -1,7 +1,7 @@
 const Copyright = (props) => {
   return (
-    <div className="flex flex-row items-center w-full px-9 py-px mt-auto text-grey1 ">
-      <p className="mr-9">Copyright &#169; {new Date().getFullYear()} CodeCord</p>
+    <div className="flex flex-row items-center w-full px-9 py-9 mt-auto text-grey1 ">
+      <p className="mr-9">&#169; {new Date().getFullYear()} CodeCord</p>
       <ul className="flex flex-row gap-x-6">
         <li>
           <a href="#">Help</a>

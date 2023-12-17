@@ -3,8 +3,8 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import { FaUsers, FaGlobeAsia, FaProjectDiagram, FaUser } from "react-icons/fa";
 import editorSvg from "/feature1.png";
-import contestSvg from "/feature2.svg";
-import tagsFilterSvg from "/feature3.svg";
+import contestSvg from "/svg/feature2.svg";
+import tagsFilterSvg from "/svg/feature3.svg";
 
 const Feature = ({ supTitle, TitleHighLight, Title, color, gradient, glow, list, extra }) => {
   const listItems = list?.map((item, index) => (
