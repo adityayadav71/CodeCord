@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/LandingPage/Navbar";
+import MobileNavbar from "../components/LandingPage/MobileNavbar";
 import Copyright from "../utilities/Copyright";
 import { useState, createContext } from "react";
 
@@ -14,6 +15,7 @@ const LandingLayout = (props) => {
   return (
     <MobileContext.Provider value={{ isMobileNavbarOpen, handleClick }}>
       <Navbar />
+      <MobileNavbar />
       <Outlet />
       <Copyright />
     </MobileContext.Provider>

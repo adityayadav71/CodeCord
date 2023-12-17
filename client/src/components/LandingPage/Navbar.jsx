@@ -2,7 +2,6 @@ import logo from "/svg/logo.svg";
 import { Link } from "react-router-dom";
 import { IoMenu, IoClose } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
-import MobileNavbar from "./MobileNavbar";
 import { useContext } from "react";
 import { MobileContext } from "../../layouts/LandingLayout";
 
@@ -38,7 +37,6 @@ const Navbar = (props) => {
           Sign up
         </Link>
       </div>
-      {<MobileNavbar isMobileNavbarOpen={isMobileNavbarOpen} handleClick={handleClick} />}
     </nav>
   );
 };
