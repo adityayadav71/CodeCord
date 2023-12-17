@@ -11,11 +11,11 @@ const Problems = (props) => {
   const [filterObj, setFilterObj] = useState({
     tags: [],
     page: 1,
-    limit: 20,
-    totalPages: 1,
+    limit: 30,
     difficulty: "",
     sort: "",
   });
+  const [totalPages, setTotalPages] = useState(1);
   
   return (
     <FilterContext.Provider value={{ filterObj, setFilterObj }}>
@@ -23,8 +23,8 @@ const Problems = (props) => {
         <div className="col-span-3 flex flex-col">
           <TopicFilter />
           <ProblemFilter filterInsideModal={false} />
-          <ProblemList filterInsideModal={false} />
-          <Pagination filterInsideModal={false} />
+          <ProblemList setTotalPages={setTotalPages} filterInsideModal={false} />
+          <Pagination totalPages={totalPages} filterInsideModal={false} />
         </div>
         <LiveRooms className="col-span-1" />
       </div>

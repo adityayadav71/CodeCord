@@ -3,8 +3,8 @@ import { BASE_URL } from "./apiConfig";
 
 export const getAllProblems = async (filters) => {
   let queryString = `fields=number,title,difficulty,tags,stats.acceptance,stats.submissions${
-    filters.tags.length !== 0 ? `&tags=${filters.tags}` : ""
-  }${filters.difficulty ? `&difficulty=${filters.difficulty}` : ""}`;
+    filters.tags.length !== 0 && `&tags=${filters.tags}`
+  }${filters.difficulty && `&difficulty=${filters.difficulty}`}${filters.page && `&page=${filters.page}`}${filters.limit && `&limit=${filters.limit}`}`;
   const response = await axios.get(`${BASE_URL}/problems?${queryString}`);
   return response.data;
 };

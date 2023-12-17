@@ -4,8 +4,9 @@ import { useContext } from "react";
 import { MobileContext } from "../../layouts/LandingLayout";
 
 const Section = ({ name, activeSection, handleScroll }) => {
+  const activeTextColor = activeSection === name ? (name === "Collaborate" ? "text-accent1" : name === "Compete" ? "text-easyGreen" : "text-mediumYellow") : "text-white";
   return (
-    <li className="m-4 pt-2 px-2 pb-4 relative hover:text-accent1 transition-all duration-300 hover:cursor-pointer" onClick={() => handleScroll(name)}>
+    <li className={`m-4 pt-2 px-2 pb-4 relative hover:text-accent1 ${activeTextColor} transition-all duration-300 hover:cursor-pointer`} onClick={() => handleScroll(name)}>
       {name}
       <div className={`absolute ${activeSection === name ? "left-0 bottom-0 w-full h-[1px] bg-white animate-expandBorder" : ""}`}></div>
     </li>

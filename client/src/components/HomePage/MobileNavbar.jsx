@@ -2,24 +2,32 @@ import { Link } from "react-router-dom";
 import logo from "/svg/logo.svg";
 import { FaChevronRight, FaSearch } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { useContext, useEffect, useRef } from "react";
-import { MobileContext } from "../../layouts/LandingLayout";
+import { useContext, useEffect, useRef, useState } from "react";
+import { MobileContext } from "../../layouts/AppLayout";
+import { AuthContext } from "../../App";
 
-const MobileNavbar = () => {
+const MobileNavbar = ({ handleLogout }) => {
   const { isMobileNavbarOpen, handleClick } = useContext(MobileContext);
-  
+  const { isLoggedIn, isLoading, userData } = useContext(AuthContext);
+  const [imageURL, setImageURL] = useState();
+
+  useEffect(() => {
+    const imgURL = userData?.profile?.avatar && `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
+    setImageURL(imgURL);
+  }, [userData]);
+
   const isFirstRender = useRef(true);
 
   useEffect(() => {
     isFirstRender.current = false;
   }, []);
 
-  let navbarClasses = `fixed flex flex-col gap-12 left-0 top-0 py-11 px-9 w-full bg-primary z-10 h-screen`;
+  let navbarClasses = `fixed sm:hidden flex flex-col gap-12 left-0 top-0 py-11 px-9 w-4/5 border-r border-grey3 rounded-r-xl bg-primary z-10 h-screen`;
 
   if (isFirstRender.current) {
     navbarClasses += " hidden";
   } else {
-    navbarClasses += isMobileNavbarOpen ? " shadow-heavyDropDown animate-openMobileNavbar" : " animate-closeMobileNavbar";
+    navbarClasses += isMobileNavbarOpen ? " shadow-sidebar animate-openMobileHomeNavbar" : " animate-closeMobileHomeNavbar";
   }
 
   return (
@@ -28,7 +36,7 @@ const MobileNavbar = () => {
         <img className="sm:hidden w-60 ml-0" src={logo} alt="codecord_logo" />
         <IoClose className="ml-auto text-4xl" onClick={handleClick} />
       </div>
-      <ul className="text-2xl leading-10">
+      <ul className="text-2xl leading-10" onClick={handleClick}>
         <li className="mb-6">
           <Link to="/app/contest" className="hover:text-accent1 transition-all duration-300">
             <div className="flex items-center justify-between">
@@ -65,20 +73,24 @@ const MobileNavbar = () => {
         />
       </div>
 
-      <div className="flex items-center justify-center gap-3">
-        <Link
-          to="/app/auth/login"
-          className="p-4 w-full sm:block text-2xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 active:scale-100 border border-white text-white text-center font-bold rounded-xl hover:shadow-signUp hover:shadow"
-        >
-          Login
-        </Link>
-        <Link
-          to="/app/auth/signup"
-          className="p-4 w-full sm:block text-2xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 active:scale-100 bg-accent1 text-white text-center font-bold rounded-xl hover:shadow-signUp hover:shadow"
-        >
-          Sign up
-        </Link>
-      </div>
+      {!isLoggedIn && (
+        <div className="flex items-center justify-center gap-3">
+          <Link
+            onClick={handleClick}
+            to="/app/auth/login"
+            className="p-4 w-full sm:block text-2xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 active:scale-100 border border-white text-white text-center font-bold rounded-xl hover:shadow-signUp hover:shadow"
+          >
+            Login
+          </Link>
+          <Link
+            onClick={handleClick}
+            to="/app/auth/signup"
+            className="p-4 w-full sm:block text-2xl transition-all ease-in-out duration-300 hover:cursor-pointer hover:scale-110 active:scale-100 bg-accent1 text-white text-center font-bold rounded-xl hover:shadow-signUp hover:shadow"
+          >
+            Sign up
+          </Link>
+        </div>
+      )}
     </nav>
   );
 };

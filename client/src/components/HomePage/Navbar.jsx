@@ -1,23 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FaBell, FaSearch, FaCog, FaUserAlt } from "react-icons/fa";
+import { FaBell, FaBars, FaMagnifyingGlass, FaGear, FaUserLarge, FaPlus } from "react-icons/fa6";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
-import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
 import { toast } from "react-hot-toast";
 import Skeleton from "../skeletons/NavbarProfileSkeleton";
+import favicon from "/svg/favicon.svg";
+import { MobileContext } from "../../layouts/AppLayout";
+import MobileSettings from "./MobileSettings";
 
 const HomeNavbar = ({ handleLogout }) => {
   const { isLoggedIn, isLoading, userData, socket } = useContext(AuthContext);
+  const { handleClick, handleSettingsClick } = useContext(MobileContext);
 
-  const isActive = (pathname, to) => {
-    return pathname.startsWith(to);
-  };
+  const isActive = (pathname, to) => pathname.startsWith(to);
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [modalOpen, setModalOpen] = useState();
+  const [modalOpen, setModalOpen] = useState(false);
   const [imageURL, setImageURL] = useState();
   const [profileActive, setProfileActive] = useState(false);
   const [searchbarActive, setSearchbarActive] = useState(false);
@@ -49,21 +51,25 @@ const HomeNavbar = ({ handleLogout }) => {
     }
   };
 
+  const closeRoomModal = (event) => {
+    if (
+      event.target.classList.contains("modal-close-btn") ||
+      (!event.target.closest(".modal") && !event.target.classList.contains("open-modal") && !event.target.closest(".profile") && !event.target.closest(".searchbar"))
+    ) {
+      setIsClosing(true);
+      setTimeout(() => {
+        setIsClosing(false);
+        setModalOpen(false);
+      }, 300);
+      setProfileActive(false);
+      setSearchbarActive(false);
+    }
+  };
+
   useEffect(() => {
-    const closeModal = (event) => {
-      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal") && !event.target.closest(".profile") && !event.target.closest(".searchbar")) {
-        setIsClosing(true);
-        setTimeout(() => {
-          setIsClosing(false);
-          setModalOpen(false);
-        }, 300);
-        setProfileActive(false);
-        setSearchbarActive(false);
-      }
-    };
-    document.addEventListener("click", closeModal);
+    document.addEventListener("click", closeRoomModal);
     return () => {
-      document.removeEventListener("click", closeModal);
+      document.removeEventListener("click", closeRoomModal);
     };
   }, []);
 
@@ -73,16 +79,19 @@ const HomeNavbar = ({ handleLogout }) => {
   }, [userData]);
 
   return (
-    <div className="flex flex-row justify-start border-b max-w-[2560px] border-b-accent2 w-full">
-      <Link to="/">
-        <img className="w-[52px] h-[50px] p-3 hover:cursor-pointer" src="/favicon.svg" alt="logo" />
-      </Link>
+    <div className="flex flex-row sm:justify-start justify-between sm:p-0 py-3 px-6 border-b max-w-[2560px] border-b-accent2 w-full">
+      <div className="flex sm:items-stretch items-center gap-3">
+        <FaBars className="sm:hidden text-5xl p-3 rounded-lg border border-grey3" onClick={handleClick} />
+        <Link to="/">
+          <img className="p-3 w-18 hover:cursor-pointer" src={favicon} alt="logo" />
+        </Link>
+      </div>
 
-      <ul className="flex flex-row justify-center">
+      <ul className="sm:flex flex-row hidden">
         <li className="flex">
           <NavLink
             to="/app/contest"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/contest") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/contest") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Contest
           </NavLink>
@@ -90,7 +99,7 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/problem"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/problem") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/problem") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Problems
           </NavLink>
@@ -98,15 +107,15 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/rooms"
-            className={`box-border p-4 align-middle text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/rooms") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/rooms") ? "border-b-2 border-b-accent1" : ""}`}
           >
             Rooms
           </NavLink>
         </li>
       </ul>
-      <div className="flex flex-row items-center gap-x-6 ml-auto mr-3">
-        <div className={"searchbar relative flex flex-row items-center right-3"}>
-          <FaSearch
+      <div className="sm:flex flex-row items-center gap-x-6 ml-auto mr-3 hidden">
+        <div className={"searchbar hidden relative lg:flex flex-row items-center right-3"}>
+          <FaMagnifyingGlass
             className={`absolute ${searchbarActive ? "left-4" : "text-2xl translate-x-64"} hover:cursor-pointer transition-all duration-300`}
             onClick={() => setSearchbarActive((prev) => !prev)}
           />
@@ -136,14 +145,14 @@ const HomeNavbar = ({ handleLogout }) => {
               </button>
             )}
             <FaBell className="text-2xl hover:cursor-pointer hover:text-accent1" />
-            <div className="relative profile">
-              <div className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2" onClick={() => setProfileActive((prev) => !prev)}>
+            <div className="relative profile sm:block hidden" onClick={() => setProfileActive((prev) => !prev)}>
+              <div className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2">
                 {isLoading ? (
                   <Skeleton />
                 ) : userData?.profile?.avatar ? (
                   <img src={imageURL} className="w-full h-full object-cover hover:cursor-pointer" alt="profile-pic" />
                 ) : (
-                  <FaUserAlt className="text-2xl hover:cursor-pointer" />
+                  <FaUserLarge className="text-2xl hover:cursor-pointer" />
                 )}
               </div>
               <div
@@ -154,17 +163,17 @@ const HomeNavbar = ({ handleLogout }) => {
                 <ul className="flex flex-col gap-y-3">
                   <li onClick={() => setProfileActive((prev) => !prev)}>
                     <Link to={`/app/user/${userData?.username}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
-                      <FaUserAlt />
+                      <FaUserLarge />
                       Profile
                     </Link>
                   </li>
                   <li onClick={() => setProfileActive((prev) => !prev)}>
                     <Link to="/app/settings" className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
-                      <FaCog />
+                      <FaGear />
                       Settings
                     </Link>
                   </li>
-                  <li className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg" onClick={handleLogout}>
+                  <li onClick={handleLogout} className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                     <RiLogoutCircleRLine />
                     Logout
                   </li>
@@ -189,7 +198,26 @@ const HomeNavbar = ({ handleLogout }) => {
           </>
         )}
       </div>
-      {modalOpen && <CreateRoom isContest={false} roomId={roomId} isClosing={isClosing} setModalOpen={setModalOpen} isLoading={false} />}
+      {/* Changes for Mobile */}
+      <div className="flex items-center gap-6">
+        <FaMagnifyingGlass className="sm:hidden hover:cursor-pointer left-4 text-5xl p-3 rounded-lg border border-grey3" onClick={handleClick} />
+        {isLoggedIn && (
+          <>
+            <FaPlus className="modal sm:hidden hover:cursor-pointer left-4 text-5xl p-3 rounded-lg border border-grey3" onClick={openRoomModal} />
+            <div className="sm:hidden w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2" onClick={handleSettingsClick}>
+              {isLoading ? (
+                <Skeleton />
+              ) : userData?.profile?.avatar ? (
+                <img src={imageURL} className="w-full h-full object-cover hover:cursor-pointer" alt="profile-pic" />
+              ) : (
+                <FaUserLarge className="text-2xl hover:cursor-pointer" />
+              )}
+            </div>
+            <MobileSettings imageURL={imageURL} openRoomModal={openRoomModal} goToActiveRoom={goToActiveRoom} handleLogout={handleLogout} />
+          </>
+        )}
+      </div>
+      {modalOpen && <CreateRoom isContest={false} roomId={roomId} isClosing={isClosing} closeRoomModal={closeRoomModal} setModalOpen={setModalOpen} isLoading={false} />}
     </div>
   );
 };

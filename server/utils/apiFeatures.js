@@ -52,5 +52,12 @@ class APIFeatures {
 
     return this;
   }
+
+  count() {
+    this.totalCountQuery = this.query.countDocuments();
+    this.limit = this.queryString.limit;
+    return this;
+  }
+  
 }
 module.exports = APIFeatures;

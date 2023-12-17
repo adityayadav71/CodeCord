@@ -18,7 +18,7 @@ const TopicFilter = (props) => {
   return (
     <div
       className={`relative flex flex-row flex-wrap items-start text-lg justify-start gap-x-3 gap-y-3 ${
-        tagsExpanded ? "h-fit" : "h-10"
+        tagsExpanded ? "h-fit" : "h-12"
       } overflow-y-hidden mb-3`}
     >
       {topics?.map((topic, i) => (

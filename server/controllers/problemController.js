@@ -7,15 +7,20 @@ const APIFeatures = require("../utils/apiFeatures");
 
 exports.getAllProblems = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Problem, req.query)
+    .count()
     .filter()
     .sort()
     .limitFields()
-    .paginate();
-
-  const problems = await features.query;
+    .paginate()
+    
+  const [problems, total] = await Promise.all([
+    features.query,
+    features.totalCountQuery
+  ]);
   res.status(200).json({
     status: "success",
     problems,
+    totalPages: Math.ceil(total / features.limit)
   });
 });
 

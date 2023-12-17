@@ -1,8 +1,6 @@
-import React from "react";
-
 const RoomTypeSelector = ({ roomType, setRoomType }) => {
   return (
-    <div>
+    <div className="sm:col-span-2 col-span-3">
       <h1>Select Room Type</h1>
       <div className="flex flex-row justify-center items-center gap-3 bg-secondary p-3 rounded-lg">
         <button
