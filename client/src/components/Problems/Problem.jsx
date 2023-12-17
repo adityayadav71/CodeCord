@@ -6,18 +6,7 @@ import "swiper/css";
 import { AuthContext } from "../../App";
 import { Link } from "react-router-dom";
 
-const Problem = ({
-  selected,
-  setSelected,
-  number,
-  name,
-  acceptance,
-  difficulty,
-  submissions,
-  userSubmissions,
-  status,
-  filterInsideModal,
-}) => {
+const Problem = ({ selected, setSelected, unselected, setUnSelected, number, name, acceptance, difficulty, submissions, userSubmissions, status, filterInsideModal }) => {
   const { isLoggedIn } = useContext(AuthContext);
   const loadSubmissions = () => {
     let submissions = [];
@@ -35,84 +24,58 @@ const Problem = ({
 
   const handleSelectProblem = (e) => {
     if (selected.length < 4 && e.target.checked) {
-      setSelected((prevSelected) =>
-        !prevSelected.includes(number)
-          ? [...prevSelected, number]
-          : prevSelected
-      );
+      setSelected((prevSelected) => (!prevSelected.includes(number) ? [...prevSelected, number] : prevSelected));
     } else if (!e.target.checked) {
-      setSelected((prevSelected) =>
-        prevSelected.filter((problem) => problem !== number)
-      );
+      setSelected((prevSelected) => prevSelected.filter((problem) => problem !== number));
     }
   };
 
   useEffect(() => {
+    const inputs = document.querySelectorAll(".problem-selected");
+    if (unselected) {
+      Array.from(inputs).forEach((input) => {
+        input.checked = false;
+      });
+      setUnSelected(false);
+    }
     if (selected?.length < 4) {
-      const inputs = document.querySelectorAll(".problem-selected");
       Array.from(inputs).forEach((input) => {
         input.disabled = false;
       });
     } else {
-      const inputs = document.querySelectorAll(".problem-selected");
       Array.from(inputs).forEach((input) => {
         if (!input.checked) {
           input.disabled = true;
         }
       });
     }
-  }, [selected]);
+  }, [selected, unselected]);
 
   return (
-    <div className="odd:bg-hover">
-      <div className="flex flex-row items-center p-3 text-lg">
-        <div className="w-20">
-          {status === "solved" ? (
-            <FaCheckCircle className="text-green-500" />
-          ) : status === "attempted" ? (
-            <RiPulseLine className="text-mediumYellow" />
-          ) : (
-            ""
-          )}
-        </div>
-        <div className="grow">
-          <Link
-            to={`/app/problem/${name.toLowerCase().replace(/\s/g, "-")}`}
-            className="hover:text-accent1"
-          >
+    <div className="w-full even:bg-hover">
+      <div className="flex flex-row items-center gap-3 p-3 text-lg">
+        {filterInsideModal && <input type="checkbox" onClick={handleSelectProblem} className="problem-selected hover:cursor-pointer w-20 flex flex-row gap-x-3" />}
+        {!filterInsideModal && (
+          <div className="w-20">{status === "solved" ? <FaCheckCircle className="text-green-500" /> : status === "attempted" ? <RiPulseLine className="text-mediumYellow" /> : ""}</div>
+        )}
+        <div className="grow min-w-[18rem] truncate">
+          <Link to={`/app/problem/${name.toLowerCase().replace(/\s/g, "-")}`} className="hover:text-accent1">
             {number}. {name}
           </Link>
         </div>
-        <div className="w-40">{acceptance}%</div>
-        <div
-          className={`w-40 font-bold ${
-            difficulty === "easy"
-              ? "text-easyGreen"
-              : difficulty === "medium"
-              ? "text-mediumYellow"
-              : "text-hardRed"
-          }`}
-        >
+        <div className="w-32">{acceptance}%</div>
+        <div className={`w-32 font-bold ${difficulty === "easy" ? "text-easyGreen" : difficulty === "medium" ? "text-mediumYellow" : "text-hardRed"}`}>
           {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
         </div>
-        <p className="hideScrollbar w-40 flex flex-row gap-x-3">
-          {submissions}
-        </p>
+        <p className="hideScrollbar w-32 flex flex-row gap-x-3">{submissions}</p>
         {isLoggedIn && !filterInsideModal && (
-          <Swiper
-            className="hideScrollbar w-40 flex flex-row gap-x-3"
-            spaceBetween={12}
-            slidesPerView={6}
-          >
+          <Swiper className="hideScrollbar w-32 flex flex-row gap-x-3" spaceBetween={12} slidesPerView={6}>
             {loadSubmissions()}
           </Swiper>
         )}
+
         {filterInsideModal && (
-          <input
-            type="checkbox"
-            onClick={handleSelectProblem}
-            className="problem-selected w-20 flex flex-row gap-x-3"
-          />
+          <div className="w-20">{status === "solved" ? <FaCheckCircle className="text-green-500" /> : status === "attempted" ? <RiPulseLine className="text-mediumYellow" /> : ""}</div>
         )}
       </div>
     </div>
