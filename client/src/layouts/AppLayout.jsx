@@ -65,7 +65,7 @@ const AppLayout = ({ handleLogout }) => {
   return (
     <RoomContext.Provider value={{ roomData, setRoomData, isLoading }}>
       <MobileContext.Provider value={{ isMobileNavbarOpen, handleClick, isMobileSettingsOpen, handleSettingsClick }}>
-        <div className={`flex flex-col ${params?.name ? "h-screen" : "h-full"}`}>
+        <div className={`flex flex-col ${params?.name ? "h-screen" : ""}`}>
           <Navbar handleLogout={handleLogout} />
           <MobileNavbar handleLogout={handleLogout} />
           <Outlet />
