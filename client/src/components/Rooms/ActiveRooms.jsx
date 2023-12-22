@@ -60,7 +60,7 @@ const ActiveRoom = ({ name, participants, participantsLimit, difficulty, remaini
       </td>
       <td className="px-3 py-1 ">
         <div className="relative">
-          <button onClick={() => handleJoinRoom(roomId)} disabled={!isLoggedIn} className="peer px-6 py-3 border rounded-lg border-accent1 hover:bg-accent1 disabled:cursor-not-allowed">
+          <button onClick={() => handleJoinRoom(roomId)} disabled={!isLoggedIn} className="peer px-6 py-2 m-1 w-full border rounded-lg border-accent1 hover:bg-accent1 disabled:cursor-not-allowed">
             Join
           </button>
           {!isLoggedIn && (
@@ -120,24 +120,22 @@ const ActiveRooms = () => {
     toast.success("Invite Code copied to clipboard!");
   };
 
-  const lg = "te";
-
   return isLoading ? (
     <Skeleton />
   ) : rooms && rooms.length > 0 ? (
-    <div className="max-sm:w-ful lg:mx-48 max-lg:mx-3 max-sm:mx-1 mt-12 drop-shadow-xl">
+    <div className="max-sm:w-full lg:mx-48 max-lg:mx-3 max-sm:mx-1 mt-12 grow drop-shadow-xl">
       {!isLoggedIn && <div className="bg-yellowBackGround border border-mediumYellow text-md font-semibold px-3 py-1 mb-3 rounded-lg">Login to join rooms</div>}
-        <div className="rounded-xl lg:overflow-hidden overflow-x-auto hideScrollbar mx-3">
+        <div className="rounded-lg lg:overflow-hidden overflow-x-auto hideScrollbar mx-3">
         <table className="w-full h-full">
-          <thead className="bg-secondary text-xl font-medium">
+          <thead className="bg-secondary text-lg font-medium">
             <tr>
               <td className="p-4 pr-6 truncate">Room Name</td>
-              <td className="p-4 pr-6 ">Participants</td>
-              <td className="p-4 pr-6  truncate">Time Left</td>
-              <td className="p-4 pr-6 ">Difficulty</td>
-              <td className="p-4 pr-6 ">Status</td>
-              <td className="p-4 pr-6 ">Action</td>
-              <td className="p-4 pr-6  truncate">Invite Code</td>
+              <td className="p-4 pr-6">Participants</td>
+              <td className="p-4 pr-6 truncate">Time Left</td>
+              <td className="p-4 pr-6">Difficulty</td>
+              <td className="p-4 pr-6">Status</td>
+              <td className="p-4 pr-6">Action</td>
+              <td className="p-4 pr-6 truncate">Invite Code</td>
             </tr>
           </thead>
           <tbody>
