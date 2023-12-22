@@ -38,12 +38,12 @@ const ActiveRoom = ({ name, participants, participantsLimit, difficulty, remaini
 
   return (
     <tr className="odd:bg-hover">
-      <td className="px-3 py-1">{name}</td>
-      <td className="px-3 py-1">
+      <td className="px-3 py-1 truncate grow">{name}</td>
+      <td className="px-3 py-1 ">
         {participants} / {participantsLimit}
       </td>
-      <td className="px-3 py-1">{formatDuration(remainingTime)}</td>
-      <td className="px-3 py-1">
+      <td className="px-4 py-1  min-w-[7rem]">{formatDuration(remainingTime)}</td>
+      <td className="px-3 py-1 ">
         <p
           className={`px-3 w-fit ${
             difficulty === "Easy" ? "bg-greenBackGround text-easyGreen" : difficulty === "Medium" ? "bg-yellowBackGround text-mediumYellow" : "bg-redBackGround text-hardRed"
@@ -52,15 +52,15 @@ const ActiveRoom = ({ name, participants, participantsLimit, difficulty, remaini
           {difficulty}
         </p>
       </td>
-      <td className="px-3 py-1">
+      <td className="px-3 py-1 ">
         <p className="flex items-center">
           <span className={`inline-block w-3 h-3 rounded-full mr-2 ${remainingTime > 0 ? (startedAt ? "bg-green-500" : "bg-yellow-500") : "bg-red-500"}`}></span>
           <span>{remainingTime > 0 ? (startedAt ? "Live" : "Yet to start") : "Ended"}</span>
         </p>
       </td>
-      <td className="px-3 py-1">
+      <td className="px-3 py-1 ">
         <div className="relative">
-          <button onClick={() => handleJoinRoom(roomId)} disabled={!isLoggedIn} className="peer px-6 py-3 border rounded-lg border-accent1 hover:bg-accent1 disabled:cursor-not-allowed">
+          <button onClick={() => handleJoinRoom(roomId)} disabled={!isLoggedIn} className="peer px-6 py-2 m-1 w-full border rounded-lg border-accent1 hover:bg-accent1 disabled:cursor-not-allowed">
             Join
           </button>
           {!isLoggedIn && (
@@ -70,8 +70,8 @@ const ActiveRoom = ({ name, participants, participantsLimit, difficulty, remaini
           )}
         </div>
       </td>
-      <td>
-        <FaRegClipboard onClick={() => handleCopyInviteLink(roomId)} className="text-xl hover:text-accent1 hover:cursor-pointer" />
+      <td className="px-3">
+        <FaRegClipboard onClick={() => handleCopyInviteLink(roomId)} className="text-xl mx-auto hover:text-accent1 hover:cursor-pointer" />
       </td>
     </tr>
   );
@@ -123,19 +123,19 @@ const ActiveRooms = () => {
   return isLoading ? (
     <Skeleton />
   ) : rooms && rooms.length > 0 ? (
-    <div className="mx-48 mt-12 drop-shadow-xl">
+    <div className="max-sm:w-full lg:mx-48 max-lg:mx-3 max-sm:mx-1 mt-12 grow drop-shadow-xl">
       {!isLoggedIn && <div className="bg-yellowBackGround border border-mediumYellow text-md font-semibold px-3 py-1 mb-3 rounded-lg">Login to join rooms</div>}
-      <div className="rounded-xl overflow-hidden">
-        <table className="w-full h-full text-lg">
-          <thead className="bg-secondary">
+        <div className="rounded-lg lg:overflow-hidden overflow-x-auto hideScrollbar mx-3">
+        <table className="w-full h-full">
+          <thead className="bg-secondary text-lg font-medium">
             <tr>
-              <td className="p-3">Room Name</td>
-              <td className="p-3">Participants</td>
-              <td className="p-3">Time Left</td>
-              <td className="p-3">Difficulty</td>
-              <td className="p-3">Status</td>
-              <td className="p-3">Action</td>
-              <td className="p-3">Invite Code</td>
+              <td className="p-4 pr-6 truncate">Room Name</td>
+              <td className="p-4 pr-6">Participants</td>
+              <td className="p-4 pr-6 truncate">Time Left</td>
+              <td className="p-4 pr-6">Difficulty</td>
+              <td className="p-4 pr-6">Status</td>
+              <td className="p-4 pr-6">Action</td>
+              <td className="p-4 pr-6 truncate">Invite Code</td>
             </tr>
           </thead>
           <tbody>

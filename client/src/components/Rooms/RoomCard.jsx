@@ -52,9 +52,9 @@ const RoomCard = ({ name, id, roomType, difficulty, started, remainingTimeInSeco
   };
 
   return (
-    <div className="grid grid-cols-4 grid-rows-3 p-3 bg-accent2 border border-[#8496A3] rounded-xl w-full leading-tight last:mb-24">
-      <div className="col-span-2 row-span-2">
-        <h2 className="text-lg leading-6 font-bold mb-2">{name}</h2>
+    <div className="grid grid-cols-4 grid-rows-3 gap-x-2 p-3 bg-accent2 border border-[#8496A3] rounded-xl w-full leading-tight last:mb-24">
+      <div className="col-span-3 row-span-2">
+        <h2 className="sm:text-lg text-xl leading-6 truncate font-bold sm:mb-2 mb-3">{name}</h2>
         <span className={`px-2 py-1 uppercase font-semibold rounded-lg ${roomType === "Contest" ? "bg-green-300 text-green-800" : "bg-sky-200 text-accent1"}  mr-3`}>{roomType}</span>
         <span
           className={`px-2 py-1 rounded-lg uppercase font-semibold ${
@@ -64,15 +64,15 @@ const RoomCard = ({ name, id, roomType, difficulty, started, remainingTimeInSeco
           {difficulty}
         </span>
       </div>
-      <p className="col-span-2 row-span-2 justify-self-end">
-        {participants}/{participantLimit} joined
+      <p className="col-span-1 row-span-2 justify-self-end">
+        {participants}/{participantLimit}
       </p>
       <div className="text-sm col-span-3 flex self-end items-center gap-3">
-        <p className="flex items-center gap-2">
+        <p className="flex items-center gap-2 sm:text-base text-lg truncate">
           {started ? <FaHourglassHalf className="inline" /> : <FaHourglassStart className="inline" />}
           {formatDuration(remainingTime)} left
         </p>
-        <p className="flex items-center gap-2">
+        <p className="flex items-center gap-2 sm:text-base text-lg">
           <FaInfoCircle className={`inline ${remainingTime > 0 ? (started ? "text-green-500" : "text-yellow-500") : "text-red-500"}`} />
           {remainingTime > 0 ? (started ? "Live" : "Yet to start") : "Ended"}
         </p>
@@ -81,7 +81,7 @@ const RoomCard = ({ name, id, roomType, difficulty, started, remainingTimeInSeco
         <button
           onClick={() => handleJoinRoom(id)}
           disabled={!isLoggedIn}
-          className="peer bg-accent1 hover:bg-lightAccent1 disabled:cursor-not-allowed transition-all duration-300 p-1 w-20 rounded-lg text-lg text-white font-bold"
+          className="peer bg-accent1 hover:bg-lightAccent1 disabled:cursor-not-allowed transition-all duration-300 sm:p-1 p-2 w-full rounded-lg sm:text-lg text-xl text-white font-bold"
         >
           JOIN
         </button>

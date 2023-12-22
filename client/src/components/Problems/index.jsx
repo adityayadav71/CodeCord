@@ -16,17 +16,19 @@ const Problems = (props) => {
     sort: "",
   });
   const [totalPages, setTotalPages] = useState(1);
-  
+
   return (
     <FilterContext.Provider value={{ filterObj, setFilterObj }}>
-      <div className="grid grid-cols-4 w-full px-6 py-4 gap-x-6">
-        <div className="col-span-3 flex flex-col">
+      <div className="flex grow md:flex-row flex-col max-w-full px-6 py-4 gap-6">
+        <div className="flex flex-col md:grow md:w-1/2">
           <TopicFilter />
           <ProblemFilter filterInsideModal={false} />
-          <ProblemList setTotalPages={setTotalPages} filterInsideModal={false} />
+          <div className="flex overflow-y-hidden hideScrollbar rounded-lg mb-3">
+            <ProblemList setTotalPages={setTotalPages} filterInsideModal={false} />
+          </div>
           <Pagination totalPages={totalPages} filterInsideModal={false} />
         </div>
-        <LiveRooms className="col-span-1" />
+        <LiveRooms />
       </div>
     </FilterContext.Provider>
   );

@@ -88,11 +88,11 @@ const ProblemList = ({ setTotalPages, selected, setSelected, unselected, setUnSe
   };
 
   return (
-    <div className={`flex flex-col h-full mb-3 w-fit sm:w-full bg-secondary rounded-xl`}>
+    <div className={`flex flex-col mb-3 w-fit sm:w-full bg-secondary rounded-xl`}>
       <div className="flex flex-row items-center gap-3 p-3 text-md border-b-[1px] border-hover">
         {filterInsideModal ? <div className="w-20">Selected</div> : <p className="w-20">Status</p>}
         <div className="header group flex flex-row grow items-center justify-between hover:cursor-pointer" data-header="number" onClick={handleHeaderClick}>
-          <p className="w-60">Title</p>
+          <p className="grow min-w-[18rem]">Title</p>
           <div className="flex flex-col items-center justify-center mr-2">
             <FaSort className={`text-grey1 group-hover:text-white ${order.number === "default" ? "block" : "hidden"}`} />
             <FaCaretUp className={`text-sm text-grey1 group-hover:text-white ${order.number === "asc" ? "block" : "hidden"}`} />
@@ -124,10 +124,10 @@ const ProblemList = ({ setTotalPages, selected, setSelected, unselected, setUnSe
             <FaCaretDown className={`text-sm text-grey1 group-hover:text-white ${order.submissions === "desc" ? "block" : "hidden"}`} />
           </div>
         </div>
-        {isLoggedIn && !filterInsideModal && <div className="w-40">Your Submissions</div>}
+        {isLoggedIn && !filterInsideModal && <div className="w-40 truncate">Your Submissions</div>}
         {filterInsideModal && <p className="w-20">Status</p>}
       </div>
-      <div className={`hideScrollbar flex flex-col h-36 sm:h-fit w-full ${filterInsideModal ? "max-h-72" : ""} overflow-scroll rounded-b-xl bg-secondary`}>
+      <div className={`hideScrollbar flex flex-col sm:h-fit w-full ${filterInsideModal ? "h-40 max-h-72" : ""} overflow-scroll rounded-b-xl bg-secondary`}>
         {isLoading ? (
           <Skeleton />
         ) : (

@@ -24,27 +24,18 @@ const LiveRooms = () => {
   }, [socket]);
 
   return (
-    <aside className="relative flex flex-col px-5 py-6 gap-y-4 ml-auto w-[288px] max-h-[874px] order-last rounded-xl bg-secondary">
+    <aside className="relative flex flex-col px-5 py-6 gap-y-4 md:ml-auto xl:w-[300px] lg:w-1/4 md:w-2/5 max-h-[674px] order-last rounded-xl bg-secondary">
       <section className="flex flex-col grow h-80">
         <h2 className="text-2xl font-bold mb-3">Join Public Rooms</h2>
         {!isLoggedIn && <div className="bg-yellowBackGround border border-mediumYellow text-md font-semibold px-3 py-1 mb-3 rounded-lg">Login to create and join rooms</div>}
         {isLoading ? (
           <Skeleton />
         ) : (
-          <div
-            className={`flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full ${
-              rooms.length > 0 ? "fade-in visible" : ""
-            }`}
-          >
+          <div className={`flex flex-col gap-y-3 grow hideScrollbar overflow-scroll w-full ${rooms.length > 0 ? "fade-in visible" : ""}`}>
             {rooms.length > 0 ? (
               rooms?.map((room, i) => {
-                const expiresAt =
-                  new Date(room.expiresAt).getTime() - Date.now();
-                const remainingTime = room.startedAt
-                  ? expiresAt > 0
-                    ? expiresAt / 1000
-                    : 0
-                  : room.settings.timeLimit * 60;
+                const expiresAt = new Date(room.expiresAt).getTime() - Date.now();
+                const remainingTime = room.startedAt ? (expiresAt > 0 ? expiresAt / 1000 : 0) : room.settings.timeLimit * 60;
 
                 return (
                   <RoomCard
@@ -73,10 +64,7 @@ const LiveRooms = () => {
         <>
           <section className="absolute z-[1] top-1/2 left-0 -translate-y-1/2 flex flex-row items-center justify-center gradient w-full h-40">
             {rooms.length > 0 && (
-              <Link
-                to="/app/rooms"
-                className="hover:text-accent1 hover:cursor-pointer"
-              >
+              <Link to="/app/rooms" className="hover:text-accent1 hover:cursor-pointer">
                 Browse more rooms
               </Link>
             )}
