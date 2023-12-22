@@ -1,4 +1,4 @@
-import { React, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import LiveRooms from "../Rooms/LiveRooms";
 import UpcomingContest from "./UpcomingContest";
 import PastContest from "./PastContest";
@@ -13,11 +13,30 @@ const Contest = () => {
   const [activeTab, setActiveTab] = useState("past-contests");
 
   return (
-    <div className="flex flex-col h-full grow items-center">
-      <div className="flex flex-row w-full px-6 py-4 grow gap-x-6">
-        <div className="flex flex-col grow">
+    <div className="flex flex-col">
+      <div className="flex md:flex-row flex-col max-w-full px-6 py-4 gap-6">
+        <div className="flex flex-col lg:w-3/4 md:w-3/5 sm:3/4 max-w-[753px]">
           <h1 className="text-4xl font-bold mb-12">Upcoming Contests</h1>
-          <Swiper className="relative ml-0 h-40 w-[753px] mb-9" navigation={true} modules={[Navigation]} spaceBetween={12} slidesPerView={2}>
+          <Swiper
+            className="relative mb-9 w-full"
+            navigation={true}
+            modules={[Navigation]}
+            spaceBetween={12}
+            breakpoints={{
+              320: {
+                slidesPerView: 1,
+              },
+              640: {
+                slidesPerView: 2,
+              },
+              768: {
+                slidesPerView: 1,
+              },
+              1024: {
+                slidesPerView: 2,
+              },
+            }}
+          >
             <SwiperSlide>
               <UpcomingContest name="Weekly Contest-1" timeStamp="15th Jan 2023 8:00 AM GMT+5:30" live="true" />
             </SwiperSlide>
@@ -42,12 +61,12 @@ const Contest = () => {
             )}
           </div>
           {activeTab === "past-contests" ? (
-            <div className="flex flex-col bg-secondary rounded-xl p-3 w-[753px] grow">
+            <div className="flex flex-col bg-secondary rounded-xl p-3 grow">
               <PastContest name="Weekly Contest 2" timeStamp="January 8 2023 | 8:00 AM" />
               <PastContest name="Weekly Contest 1" timeStamp="January 1 2023 | 8:00 AM" />
             </div>
           ) : (
-            <div className="flex flex-col bg-secondary rounded-xl p-3 max-h-[720px] w-[753px] grow">
+            <div className="flex flex-col bg-secondary rounded-xl p-3 max-h-[720px] grow">
               <PastContest name="My Contest 2" timeStamp="January 8 2023 | 8:00 AM" />
               <PastContest name="My Contest 1" timeStamp="January 1 2023 | 8:00 AM" />
             </div>
