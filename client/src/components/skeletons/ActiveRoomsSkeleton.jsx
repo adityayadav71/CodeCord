@@ -28,8 +28,8 @@ const ActiveRoomsSkeleton = () => {
     );
   }
   return (
-    <div className="mx-48 mt-12 drop-shadow-xl">
-      <div className="rounded-xl overflow-hidden">
+    <div className="lg:mx-48 mt-12 max-lg:mx-3 drop-shadow-xl">
+      <div className="rounded-xl md:overflow-hidden overflow-x-auto hideScrollbar">
         <table className="w-full h-full text-lg">
           <thead className="bg-secondary">
             <tr>
