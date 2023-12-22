@@ -70,7 +70,7 @@ const ActiveRoom = ({ name, participants, participantsLimit, difficulty, remaini
           )}
         </div>
       </td>
-      <td className="px-">
+      <td className="px-3">
         <FaRegClipboard onClick={() => handleCopyInviteLink(roomId)} className="text-xl mx-auto hover:text-accent1 hover:cursor-pointer" />
       </td>
     </tr>
