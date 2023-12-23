@@ -17,8 +17,8 @@ const TopicFilter = (props) => {
 
   return (
     <div
-      className={`relative flex flex-row flex-wrap items-start text-lg justify-start gap-x-3 gap-y-3 ${
-        tagsExpanded ? "h-fit" : "h-12"
+      className={`relative flex flex-row flex-wrap items-start text-lg justify-start gap-3 ${
+        tagsExpanded ? "h-fit" : "h-10"
       } overflow-y-hidden mb-3`}
     >
       {topics?.map((topic, i) => (
@@ -27,7 +27,7 @@ const TopicFilter = (props) => {
       <button
         className={`absolute flex flex-row items-center gap-x-3 px-3 ${
           tagsExpanded ? "right-0 bottom-0" : "right-0"
-        } text-grey1 bg-primary`}
+        } text-grey1 shadow-heading bg-primary`}
         onClick={() => setTagsExpanded((prev) => !prev)}
       >
         {tagsExpanded ? "Collapse" : "Expand"}

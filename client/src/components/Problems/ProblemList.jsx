@@ -6,7 +6,7 @@ import formatStats from "../../utilities/formatStats";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { FaSort, FaCaretDown, FaCaretUp } from "react-icons/fa";
-import Skeleton from "../skeletons/RoomInviteLinkSkeleton";
+import Skeleton from "../skeletons/ProblemListSkeleton";
 
 const ProblemList = ({ setTotalPages, selected, setSelected, unselected, setUnSelected, filterInsideModal }) => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -88,7 +88,7 @@ const ProblemList = ({ setTotalPages, selected, setSelected, unselected, setUnSe
   };
 
   return (
-    <div className={`flex flex-col mb-3 w-fit sm:w-full bg-secondary rounded-xl`}>
+    <div className={`flex flex-col mb-3 w-fit sm:w-full grow bg-secondary rounded-xl`}>
       <div className="flex flex-row items-center gap-3 p-3 text-md border-b-[1px] border-hover">
         {filterInsideModal ? <div className="w-20">Selected</div> : <p className="w-20">Status</p>}
         <div className="header group flex flex-row grow items-center justify-between hover:cursor-pointer" data-header="number" onClick={handleHeaderClick}>
@@ -127,7 +127,7 @@ const ProblemList = ({ setTotalPages, selected, setSelected, unselected, setUnSe
         {isLoggedIn && !filterInsideModal && <div className="w-40 truncate">Your Submissions</div>}
         {filterInsideModal && <p className="w-20">Status</p>}
       </div>
-      <div className={`hideScrollbar flex flex-col sm:h-fit w-full ${filterInsideModal ? "h-40 max-h-72" : ""} overflow-scroll rounded-b-xl bg-secondary`}>
+      <div className={`hideScrollbar flex flex-col h-full w-full ${filterInsideModal ? "h-40 max-h-72" : ""} overflow-scroll rounded-b-xl bg-secondary`}>
         {isLoading ? (
           <Skeleton />
         ) : (

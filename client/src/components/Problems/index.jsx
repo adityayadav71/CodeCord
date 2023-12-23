@@ -23,7 +23,7 @@ const Problems = (props) => {
         <div className="flex flex-col md:grow md:w-1/2">
           <TopicFilter />
           <ProblemFilter filterInsideModal={false} />
-          <div className="flex overflow-y-hidden hideScrollbar rounded-lg mb-3">
+          <div className="flex grow overflow-y-hidden hideScrollbar rounded-lg mb-3">
             <ProblemList setTotalPages={setTotalPages} filterInsideModal={false} />
           </div>
           <Pagination totalPages={totalPages} filterInsideModal={false} />
