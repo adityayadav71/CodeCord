@@ -123,7 +123,7 @@ const ProfileSkeleton = () => {
               </div>
             </div>
             <div className='grow'>
-              <div className='flex flex-col items-center justify-center h-52 w-52 rounded-full border-8 border-accent1 m-auto'>
+              <div className='flex flex-col items-center justify-center h-52 w-52 rounded-full border-8 animate-pulse border-grey1 m-auto'>
                 <div className='animate-pulse bg-grey1 rounded-md h-14 w-24'></div>
                 <p>solved</p>
               </div>

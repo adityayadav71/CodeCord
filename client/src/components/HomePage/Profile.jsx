@@ -198,12 +198,8 @@ const Profile = () => {
     const removeEl = e.currentTarget.dataset.tagname;
     setTags((prevTags) => prevTags.filter((element) => element !== removeEl));
   };
-  // return isLoading ? (
-  // <Skeleton />
-  // ) : (
 
-  const skeleton = true;
-  return skeleton ? (
+  return isLoading ? (
     <Skeleton />
   ) : (
     <div className='flex flex-col w-full px-6 py-4 gap-x-6 grow'>
