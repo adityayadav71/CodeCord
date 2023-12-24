@@ -9,6 +9,8 @@ const ProblemPanel = ({
   handleSubmissionDisplay,
   handleProblemChange,
   setDisplaySubmission,
+  showParticipant,
+  setShowParticipant
 }) => {
   const [activeTab, setActiveTab] = useState(1);
 
@@ -52,6 +54,8 @@ const ProblemPanel = ({
         <Description
           isRoom={isRoom}
           handleProblemChange={handleProblemChange}
+          showParticipant={showParticipant}
+          setShowParticipant={setShowParticipant}
         />
       ) : activeTab === 2 ? (
         <Solutions isRoom={isRoom} />
