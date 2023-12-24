@@ -27,7 +27,7 @@ const TopicFilter = (props) => {
       <button
         className={`absolute flex flex-row items-center gap-x-3 px-3 ${
           tagsExpanded ? "right-0 bottom-0" : "right-0"
-        } text-grey1 shadow-heading bg-primary`}
+        } text-grey1 bg-primary`}
         onClick={() => setTagsExpanded((prev) => !prev)}
       >
         {tagsExpanded ? "Collapse" : "Expand"}
