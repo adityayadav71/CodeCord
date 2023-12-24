@@ -198,13 +198,15 @@ const Profile = () => {
     const removeEl = e.currentTarget.dataset.tagname;
     setTags((prevTags) => prevTags.filter((element) => element !== removeEl));
   };
-
   // return isLoading ? (
-  //   <Skeleton />
+  // <Skeleton />
   // ) : (
-  return (
-    <div className='flex flex-col w-full px-6 py-4 gap-x-6 grow'>
 
+  const skeleton = true;
+  return skeleton ? (
+    <Skeleton />
+  ) : (
+    <div className='flex flex-col w-full px-6 py-4 gap-x-6 grow'>
       {/* First Section Mobile Version */}
       <div className='sm:hidden flex flex-col gap-4 w-full drop-shadow-xl rounded-2xl mt-10 p-6 bg-secondary'>
         <div className='flex flex-row gap-6'>
@@ -222,77 +224,44 @@ const Profile = () => {
             ) : (
               <FaUserAlt className='text-5xl' />
             )}
-            {/* {isMyProfile && (
-            <>
-              <FaCamera className="group-hover:opacity-100 z-10 opacity-0 transition duration-300 text-5xl" />
-              <div className="group-hover:opacity-50 z-10 opacity-0 transition duration-300 bg-gray-400 w-full h-full"></div>
-            </>
-          )} */}
           </div>
           {/* Rest Value Div */}
           <div className='flex flex-col gap-1 w-full'>
             <div className='flex justify-between'>
               <div className='font-bold text-white text-xl'>hrishikesh.ti</div>
-              {/* <div className='flex'> */}
-              <div className='flex gap-4 text-center pl-6'>
-                <p className='max-sm:hidden'>Country</p>
-                <div className='flex items-center justify-center gap-x-3'>
-                  {profileData?.country && (
-                    <img
-                      className='w-5 h-5 object-cover overflow-clip rounded-full'
-                      src={`${
-                        countries?.filter(
-                          (country) => country.name === profileData?.country
-                        )[0]?.flag
-                      }`}
-                      alt='country-flag'
-                    />
-                  )}
-                  {editing ? (
-                    <select
-                      className='profile-data focus:outline-none px-3 py-1 rounded-lg bg-primary'
-                      defaultValue={profileData?.country}
-                      name='country'
-                    >
-                      {countries.map((country, index) => (
-                        <option key={index} value={country.name}>
-                          {country.name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <p>
-                      {profileData?.country ?? (
-                        <span className='text-sm text-grey1'>Country</span>
-                      )}
-                    </p>
-                  )}
-                </div>
+
+              <div className='flex items-center justify-center gap-x-3'>
+                {profileData?.country && (
+                  <img
+                    className='w-5 h-5 object-cover overflow-clip rounded-full'
+                    src={`${
+                      countries?.filter(
+                        (country) => country.name === profileData?.country
+                      )[0]?.flag
+                    }`}
+                    alt='country-flag'
+                  />
+                )}
+                {editing ? (
+                  <select
+                    className='profile-data focus:outline-none px-3 py-1 rounded-lg bg-primary'
+                    defaultValue={profileData?.country}
+                    name='country'
+                  >
+                    {countries.map((country, index) => (
+                      <option key={index} value={country.name}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p>
+                    {profileData?.country ?? (
+                      <span className='text-sm text-grey1'>Country</span>
+                    )}
+                  </p>
+                )}
               </div>
-              {/* <div className='text-center flex items-center gap-x-3'>
-                {profileData?.socials?.map((social, index) => {
-                  if (social !== "")
-                    return index === 0 ? (
-                      <a
-                        href={social}
-                        className='hover:text-accent1 transition duration-300'
-                      >
-                        <FaGithub className='text-4xl' />
-                      </a>
-                    ) : (
-                      <a
-                        href={social}
-                        className='hover:text-accent1 transition duration-300'
-                      >
-                        <FaLinkedin className='text-4xl' />
-                      </a>
-                    );
-                  else if (index === 0) {
-                    return <p className='text-grey1 text-sm'>No socials</p>;
-                  }
-                })}
-              </div> */}
-              {/* </div> */}
             </div>
             <div className='flex gap-4 items-center'>
               <div className='text-center pr-4 border-r border-accent3'>
@@ -311,7 +280,7 @@ const Profile = () => {
           </div>
         </div>
 
-        {true && (
+        {isMyProfile && (
           <button
             onClick={() => {
               if (editing) updateProfile();
@@ -351,8 +320,8 @@ const Profile = () => {
       {/* First Section Desktop Version */}
       <div className='hidden sm:block '>
         <div
-          className={`modal 
-        ${modalOpen ? "scale-100 opacity-1" : "scale-0 opacity-0"} 
+          className={`modal
+        ${modalOpen ? "scale-100 opacity-1" : "scale-0 opacity-0"}
         fixed z-[9999] h-[60%] w-[40%] transition-all duration-300 overflow-y-hidden shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col items-center justify-center gap-y-3 rounded-lg p-6`}
         >
           <div className='rounded-lg w-64 h-64'>
@@ -640,7 +609,7 @@ const Profile = () => {
                 if (editing) updateProfile();
                 setEditing((prev) => !prev);
               }}
-              className='bg-greenBackGround hover:bg-emerald-800 mb-6 w-full px-3 py-4 rounded-lg text-green-500 font-bold text-xl'
+              className='hidden sm:block bg-greenBackGround hover:bg-emerald-800 mb-6 w-full px-3 py-4 rounded-lg text-green-500 font-bold text-xl'
             >
               {editing ? "Done" : "Edit Profile"}
             </button>
