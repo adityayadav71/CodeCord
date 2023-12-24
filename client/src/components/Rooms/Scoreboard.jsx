@@ -13,7 +13,7 @@ const Scoreboard = ({ isClosing, setIsClosing, setOpenScoreboard }) => {
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      const response = await getProblem(roomData.settings.problems);
+      const response = await getProblem(roomData?.settings?.problems);
       setProblems(response.problems);
       setIsLoading(false);
     };

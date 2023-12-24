@@ -4,7 +4,6 @@ import { FaBell, FaBars, FaMagnifyingGlass, FaGear, FaUserLarge, FaPlus } from "
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
-import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
 import { toast } from "react-hot-toast";
 import Skeleton from "../skeletons/NavbarProfileSkeleton";
@@ -13,7 +12,7 @@ import { MobileContext } from "../../layouts/AppLayout";
 import MobileSettings from "./MobileSettings";
 
 const HomeNavbar = ({ handleLogout }) => {
-  const { isLoggedIn, isLoading, userData, socket } = useContext(AuthContext);
+  const { isLoggedIn, isLoading, userData } = useContext(AuthContext);
   const { handleClick, handleSettingsClick } = useContext(MobileContext);
 
   const isActive = (pathname, to) => pathname.startsWith(to);
@@ -29,16 +28,11 @@ const HomeNavbar = ({ handleLogout }) => {
 
   const openRoomModal = async () => {
     setModalOpen(false);
-
-    // 1. Create a random unique ID
     const roomID = nanoid();
-    // 2. Create Room in Database - Returns RoomID
     try {
-      const result = await createRoom(socket, roomID, userData?.username);
-      setRoomId(result.id);
+      setRoomId(roomID);
       setModalOpen(true);
     } catch (err) {
-      console.log(err);
       toast.error("Something went wrong! Please try again.");
     }
   };

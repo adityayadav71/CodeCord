@@ -44,7 +44,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
   }, [editorSettings.value, socket]);
 
   socket?.on("participant-code-updated", (data) => {
-    roomData?.participants.forEach((participant, i) => {
+    roomData?.participants?.forEach((participant, i) => {
       if (participant.username === data.username) participant.code = data.value;
       if (activeEditor === participant.username) {
         localStorage.setItem(participant.username, data.value);
@@ -54,7 +54,7 @@ const CodeEditor = ({ isRoom, editorSettings, setEditorSettings }) => {
   });
 
   useEffect(() => {
-    roomData?.participants.forEach((participant, i) => {
+    roomData?.participants?.forEach((participant, i) => {
       if (activeEditor === participant.username) {
         const storedCode = localStorage.getItem(participant.username);
         setEditorValue(storedCode || participant.code);

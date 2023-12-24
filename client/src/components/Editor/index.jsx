@@ -6,6 +6,8 @@ import SubmissionPanel from "./SubmissionPanel";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
 import Chat from "../Rooms/Chat";
+import MobileRoomBar from "./MobileRoomBar";
+import MobileRoomBarSkeleton from "../skeletons/MobileRoomBarSkeleton";
 import LanguageSelector from "./LanguageSelector";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
@@ -14,7 +16,6 @@ import { toast } from "react-hot-toast";
 import he from "he";
 
 import { getProblem } from "../../api/problemDataAPI";
-import queryString from "query-string";
 import { FaCog, FaCompress, FaExpand, FaUndo } from "react-icons/fa";
 import Scoreboard from "../Rooms/Scoreboard";
 import EditorSettings from "./EditorSettings";
@@ -28,7 +29,6 @@ const Editor = ({ isRoom }) => {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const params = useParams();
-  const location = useLocation();
 
   // Context values
   const { isLoggedIn, userData, socket, setSocket } = useContext(AuthContext);
@@ -57,6 +57,7 @@ const Editor = ({ isRoom }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const isMobileScreen = window.innerWidth < 640;
 
   // Side effect handlers
 
@@ -89,13 +90,9 @@ const Editor = ({ isRoom }) => {
   }, [userData, socket]);
 
   // 2. Load problem data asynchronously
-  const values = queryString.parse(location.search);
-
   useEffect(() => {
-    const selectedProblems =
-      values?.problems?.split(",") || // User creating a new room
-      (roomData && roomData.settings?.problems); // User joining a new room
-
+    const selectedProblems = roomData?.settings?.problems; 
+      
     const loadProblems = async () => {
       setIsLoading(true);
       const response = await getProblem(isRoom ? selectedProblems : [params.name]);
@@ -225,7 +222,7 @@ const Editor = ({ isRoom }) => {
     setSubmissionDetails(submission);
   };
 
-  return (
+  return !isMobileScreen ? (
     <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
       <Split gutterSize={8} className="editor flex flex-row grow overflow-hidden h-full" onDrag={updateSize} sizes={sizes} minSize={[0, 500, 0]} maxSize={[2560, 2560, 250]} snapOffset={[300, 0, 200]}>
         <div className="flex flex-col bg-transparentSecondary overflow-x-hidden">
@@ -325,7 +322,15 @@ const Editor = ({ isRoom }) => {
       {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
       {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
     </ProblemContext.Provider>
+  ) : (
+    <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
+      <div className="relative flex flex-col h-full w-full bg-transparentSecondary overflow-x-hidden">
+        <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} />
+        {isLoading ? <MobileRoomBarSkeleton /> : <MobileRoomBar roomData={roomData} />}
+      </div>
+      {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
+      {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
+    </ProblemContext.Provider>
   );
 };
-
 export default Editor;

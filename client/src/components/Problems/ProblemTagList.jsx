@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { getAllProblems } from "../../api/problemDataAPI";
 import Problem from "./Problem";
 import { AuthContext } from "../../App";
-import Skeleton from "../skeletons/ProblemListSkeleton";
+import Skeleton from "../skeletons/TopicListSkeleton";
 import formatStats from "../../utilities/formatStats";
 
 const ProblemTagList = (props) => {

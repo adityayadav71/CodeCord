@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useContext, createContext } from "react";
+import { createRoom } from "../../api/roomsAPI";
 import ProblemList from "../Problems/ProblemList";
 import Pagination from "../Problems/Pagination";
 import RoomTypeSelector from "./RoomTypeSelector";
@@ -80,11 +81,13 @@ const CreateRoom = ({ isContest, roomId, isClosing, closeRoomModal, setModalOpen
     }
   };
 
-  const handleUpdateRoom = async () => {
+  const handleCreateRoom = async () => {
     try {
       if (selected.length === 0) {
         toast.error("Please select problems before creating a room.");
       } else {
+        await createRoom(socket, roomId, userData?.username);
+        
         const settings = {
           visibility,
           roomType,
@@ -100,7 +103,7 @@ const CreateRoom = ({ isContest, roomId, isClosing, closeRoomModal, setModalOpen
 
         setModalOpen(null);
         toast.success("Successfully created a room.");
-        navigate(`/app/room/${roomId}?problems=${selected}`, {
+        navigate(`/app/room/${roomId}`, {
           replace: false,
         });
       }
@@ -160,11 +163,11 @@ const CreateRoom = ({ isContest, roomId, isClosing, closeRoomModal, setModalOpen
             placeholder="Invite Code"
           />
           {isUserJoining ? (
-            <button onClick={handleJoinRoom} className="w-full p-3 bg-accent1 hover:bg-lightAccent1 duration-300 text-xl font-bold rounded-lg">
+            <button onClick={handleJoinRoom} className="w-full p-3 bg-easyGreen hover:bg-greenBackGround duration-300 text-xl font-bold rounded-lg">
               JOIN
             </button>
           ) : (
-            <button onClick={handleUpdateRoom} className="w-full p-3 bg-accent1 hover:bg-lightAccent1 duration-300 text-xl font-bold rounded-lg">
+            <button onClick={handleCreateRoom} className="w-full p-3 bg-easyGreen hover:bg-greenBackGround duration-300 text-xl font-bold rounded-lg">
               CREATE
             </button>
           )}

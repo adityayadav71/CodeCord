@@ -52,7 +52,7 @@ const ActiveRoom = ({ name, participants, participantsLimit, difficulty, remaini
           {difficulty}
         </p>
       </td>
-      <td className="px-3 py-1 ">
+      <td className="px-3 py-1 truncate">
         <p className="flex items-center">
           <span className={`inline-block w-3 h-3 rounded-full mr-2 ${remainingTime > 0 ? (startedAt ? "bg-green-500" : "bg-yellow-500") : "bg-red-500"}`}></span>
           <span>{remainingTime > 0 ? (startedAt ? "Live" : "Yet to start") : "Ended"}</span>
@@ -120,8 +120,8 @@ const ActiveRooms = () => {
     toast.success("Invite Code copied to clipboard!");
   };
 
-  return isLoading ? (
-    <Skeleton />
+  return  isLoading ? (
+  <Skeleton />
   ) : rooms && rooms.length > 0 ? (
     <div className="max-sm:w-full lg:mx-48 max-lg:mx-3 max-sm:mx-1 mt-12 grow drop-shadow-xl">
       {!isLoggedIn && <div className="bg-yellowBackGround border border-mediumYellow text-md font-semibold px-3 py-1 mb-3 rounded-lg">Login to join rooms</div>}
@@ -129,13 +129,13 @@ const ActiveRooms = () => {
         <table className="w-full h-full">
           <thead className="bg-secondary text-lg font-medium">
             <tr>
-              <td className="p-4 pr-6 truncate">Room Name</td>
-              <td className="p-4 pr-6">Participants</td>
-              <td className="p-4 pr-6 truncate">Time Left</td>
-              <td className="p-4 pr-6">Difficulty</td>
-              <td className="p-4 pr-6">Status</td>
-              <td className="p-4 pr-6">Action</td>
-              <td className="p-4 pr-6 truncate">Invite Code</td>
+              <td className="p-3 truncate">Room Name</td>
+              <td className="p-3">Participants</td>
+              <td className="p-3 truncate">Time Left</td>
+              <td className="p-3">Difficulty</td>
+              <td className="p-3">Status</td>
+              <td className="p-3">Action</td>
+              <td className="p-3 truncate">Invite Code</td>
             </tr>
           </thead>
           <tbody>
