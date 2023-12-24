@@ -1,9 +1,9 @@
 import RoomInviteLink from "./RoomInviteLink";
 
-const InviteLinkModal = ({ inviteLinkModal, inviteCode }) => {
+const InviteLinkModal = ({ inviteLinkModal, inviteCode, isMobileScreen }) => {
   return (
     <div
-      className={`modal absolute top-16 right-0 w-96 h-42 overflow-y-scroll px-4 py-3 drop-shadow-xl rounded-xl transition duration-300 bg-secondary ${
+      className={`modal absolute ${isMobileScreen ? "-top-36 right-0" : "top-16 right-0"} w-96 h-42 overflow-y-scroll px-4 py-3 drop-shadow-xl rounded-xl transition duration-300 bg-secondary ${
         inviteLinkModal ? "" : "hidden"
       }`}
     >

@@ -39,8 +39,8 @@ const calculateDifficulty = async (problems) => {
   return problems.includes("Hard")
     ? "Hard"
     : problems.filter((value) => value === "Medium").length === 2
-    ? "Medium"
-    : "Easy";
+      ? "Medium"
+      : "Easy";
 };
 
 exports.checkHostPermissions = async (req, res, next) => {
@@ -61,10 +61,11 @@ exports.checkHostPermissions = async (req, res, next) => {
 };
 
 exports.createRoom = catchAsync(async (req, res, next) => {
-  const { roomId } = req.body;
+  const { roomId, settings } = req.body;
   const userId = req.user._id;
 
   let user = await User.findById(userId);
+  let room;
 
   const currentTimeStamp = Date.now();
 
@@ -85,10 +86,28 @@ exports.createRoom = catchAsync(async (req, res, next) => {
     user.activeRoom?.expiresAt < currentTimeStamp ||
     !user.activeRoom
   ) {
+    // Calculate room difficulty
+    if (settings.difficulty === "")
+      settings.difficulty = await calculateDifficulty(settings.problems);
+
     // Update User
     user = await User.findByIdAndUpdate(userId, {
       activeRoom: { roomId },
     });
+
+    // Create a new room
+    let room = await Room.create({
+      name: data.room_names[Math.floor(Math.random() * 1000)],
+      roomId,
+      owner: userId,
+      settings: settings,
+      participants: [userId],
+    });
+
+    room = await populateRoom(room.roomId);
+
+    if (!room)
+      return next(new AppError("Something went wrong. Please try again", 500));
   }
   // If the Room is active & working, then throw an error.
   if (user.activeRoom?.expiresAt > currentTimeStamp) {
@@ -101,7 +120,7 @@ exports.createRoom = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    user,
+    room,
   });
 });
 

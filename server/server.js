@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("updated-public-room", () => {
+  socket.on("created-public-room", () => {
     try {
       io.emit("live-rooms-update");
     } catch (err) {

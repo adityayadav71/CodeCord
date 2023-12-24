@@ -6,12 +6,10 @@ import SubmissionPanel from "./SubmissionPanel";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
 import Chat from "../Rooms/Chat";
-import MobileRoomBar from "./MobileRoomBar";
-import MobileRoomBarSkeleton from "../skeletons/MobileRoomBarSkeleton";
 import LanguageSelector from "./LanguageSelector";
 import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import he from "he";
 
@@ -57,6 +55,7 @@ const Editor = ({ isRoom }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [showParticipant, setShowParticipant] = useState(false);
   const isMobileScreen = window.innerWidth < 640;
 
   // Side effect handlers
@@ -91,8 +90,8 @@ const Editor = ({ isRoom }) => {
 
   // 2. Load problem data asynchronously
   useEffect(() => {
-    const selectedProblems = roomData?.settings?.problems; 
-      
+    const selectedProblems = roomData?.settings?.problems;
+
     const loadProblems = async () => {
       setIsLoading(true);
       const response = await getProblem(isRoom ? selectedProblems : [params.name]);
@@ -226,7 +225,7 @@ const Editor = ({ isRoom }) => {
     <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
       <Split gutterSize={8} className="editor flex flex-row grow overflow-hidden h-full" onDrag={updateSize} sizes={sizes} minSize={[0, 500, 0]} maxSize={[2560, 2560, 250]} snapOffset={[300, 0, 200]}>
         <div className="flex flex-col bg-transparentSecondary overflow-x-hidden">
-          <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} />
+          <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />
         </div>
         <div>
           <Split gutterSize={8} style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
@@ -313,11 +312,11 @@ const Editor = ({ isRoom }) => {
           </div>
         </div>
         {/* If this is a room add a chat window as third split pane */}
-        {isRoom ? (
+        {isRoom && (
           <div className="bg-lightAccent3">
-            <Chat setOpenScoreboard={setOpenScoreboard} />
+            <Chat setOpenScoreboard={setOpenScoreboard} isMobileScreen={isMobileScreen} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />
           </div>
-        ) : null}
+        )}
       </Split>
       {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
       {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
@@ -325,8 +324,8 @@ const Editor = ({ isRoom }) => {
   ) : (
     <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
       <div className="relative flex flex-col h-full w-full bg-transparentSecondary overflow-x-hidden">
-        <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} />
-        {isLoading ? <MobileRoomBarSkeleton /> : <MobileRoomBar roomData={roomData} />}
+        <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />
+        {isRoom && <Chat setOpenScoreboard={setOpenScoreboard} isMobileScreen={isMobileScreen} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />}
       </div>
       {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
       {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}

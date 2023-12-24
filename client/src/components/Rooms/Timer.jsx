@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { BiAlarm } from "react-icons/bi";
 
 function Timer({ roomData }) {
-  const [timer, setTimer] = useState(
-    roomData?.settings?.timeLimit * 60 || 40 * 60
-  );
+  const [timer, setTimer] = useState(roomData?.settings?.timeLimit * 60 || 40 * 60);
   const [roomEnded, setRoomEnded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,9 +17,7 @@ function Timer({ roomData }) {
           return;
         }
 
-        const timeLeftInSeconds = Math.floor(
-          (new Date(roomData.expiresAt) - Date.now()) / 1000
-        );
+        const timeLeftInSeconds = Math.floor((new Date(roomData.expiresAt) - Date.now()) / 1000);
         setTimer(timeLeftInSeconds);
 
         interval = setInterval(() => {
@@ -58,18 +54,18 @@ function Timer({ roomData }) {
   return isLoading ? (
     <div className="w-full p-6 bg-grey1 animate-pulse"></div>
   ) : !roomEnded ? (
-    <h1 className="flex flex-row items-center gap-x-3 bg-lightSecondary px-6 py-2 mb-3">
-      <BiAlarm className="text-xl" />
-      Room ends in
-      <span className="bg-accent1 rounded-lg px-3 font-bold">
-        {formatTime(timer)}
-      </span>
-    </h1>
+    <div className="flex sm:flex-row flex-col sm:items-center items-start gap-x-3 gap-y-1 sm:bg-lightSecondary p-0 sm:px-6 sm:py-2 sm:mb-3">
+      <div className="flex sm:gap-3 gap-1 items-center">
+        <BiAlarm className="text-lg" />
+        <p className="text-sm sm:text-base">Room ends in</p>
+      </div>
+      <span className="bg-accent1 rounded-lg px-3 font-bold">{formatTime(timer)}</span>
+    </div>
   ) : (
-    <h1 className="flex flex-row items-center gap-x-3 bg-hardRed px-6 py-2 mb-3">
-      <BiAlarm className="text-xl" />
-      Room has ended.
-    </h1>
+    <div className="flex sm:gap-3 gap-1 sm:items-center items-start rounded-lg bg-hardRed px-2 py-3 sm:px-6 sm:py-2 sm:mb-3">
+      <BiAlarm className="text-lg" />
+      <p className="text-sm sm:text-base">Room has ended</p>
+    </div>
   );
 }
 
