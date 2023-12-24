@@ -75,17 +75,20 @@ export const joinRoom = async (userData, socket, roomId) => {
   }
 };
 
-export const createRoom = async (socket, roomId) => {
+export const createRoom = async (socket, roomId, settings) => {
   try {
     // Create room in database
     const response = await axios.post(`${BASE_URL}/rooms`, {
       roomId,
+      settings,
     });
 
     // emit the create-room event
     socket.emit("create-room", roomId);
 
-    return new Promise((resolve, reject) => {
+    if (settings.visibility === "public") socket.emit("created-public-room");
+
+    await new Promise((resolve, reject) => {
       // listen for the room-created event
       socket.on("room-created", (id) => {
         resolve({ id });
@@ -96,6 +99,7 @@ export const createRoom = async (socket, roomId) => {
         reject(error);
       });
     });
+    return response?.data?.room;
   } catch (err) {
     return err;
   }
