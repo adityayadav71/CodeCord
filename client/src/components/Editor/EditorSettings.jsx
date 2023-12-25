@@ -16,7 +16,7 @@ const EditorSettings = ({ isClosing, setIsClosing, editorSettings, setEditorSett
     <div
       className={`settings absolute z-[9999] origin-center ${
         isClosing ? "animate-closeModal" : "animate-openModal"
-      } shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/5 drop-shadow-xl bg-secondary rounded-lg`}
+      } shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-2/5 w-5/6 drop-shadow-xl bg-secondary rounded-lg`}
     >
       <div className="flex items-center justify-between mb-3 px-6 py-4 border-b border-accent2">
         <h1 className="text-2xl font-bold">Settings</h1>

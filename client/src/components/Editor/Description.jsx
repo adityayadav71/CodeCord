@@ -103,7 +103,7 @@ const Description = ({ isRoom, handleProblemChange, showParticipant, setShowPart
         </div>
       ) : (
         <div className="flex flex-col gap-3 px-3 py-6 rounded-xl grow">
-          <div className="flex flex-row items-center">
+          <div className={`flex ${roomData?.startedAt ? "flex-row" : "lg:flex-row flex-col"} lg:items-center`}>
             <div className="flex-col">
               <h1 className="text-2xl font-bold">{roomData?.name}</h1>
               <p className="text-base text-grey1 mb-3">{roomData?.participants?.length || 0} participants</p>
@@ -130,7 +130,7 @@ const Description = ({ isRoom, handleProblemChange, showParticipant, setShowPart
                 </button>
               </div>
             ) : (
-              <p className="ml-auto mb-auto text-grey1">Waiting for the host to start the room...</p>
+              <p className="lg:ml-auto mb-auto text-grey1">Waiting for the host to start the room...</p>
             )}
           </div>
           {roomData?.participants?.map((participant, i) => (
