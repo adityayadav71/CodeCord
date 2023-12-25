@@ -156,11 +156,11 @@ const Editor = ({ isRoom }) => {
   // Event Handlers
 
   const handleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
+    setIsFullScreen((prev) => !prev);
   };
 
   const handleSettings = () => {
-    setSettingsOpen(!settingsOpen);
+    setSettingsOpen((prev) => !prev);
   };
 
   const handleClearEditor = () => {
@@ -222,110 +222,326 @@ const Editor = ({ isRoom }) => {
   };
 
   return !isMobileScreen ? (
-    <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
-      <Split gutterSize={8} className="editor flex flex-row grow overflow-hidden h-full" onDrag={updateSize} sizes={sizes} minSize={[0, 500, 0]} maxSize={[2560, 2560, 250]} snapOffset={[300, 0, 200]}>
-        <div className="flex flex-col bg-transparentSecondary overflow-x-hidden">
-          <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />
-        </div>
-        <div>
-          <Split gutterSize={8} style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
-            {displaySubmission ? (
-              <div ref={editorRef} className="z-[-1] h-full bg-primary">
-                <SubmissionPanel isRoom={isRoom} submissionDetails={submissionDetails} setSubmissionDetails={setSubmissionDetails} setDisplaySubmission={setDisplaySubmission} />
-              </div>
-            ) : (
-              <div ref={editorRef} className="z-[-1] h-full bg-primary">
-                <CodeEditor isRoom={isRoom} editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
-              </div>
-            )}
-            <div className="bg-lightAccent3 z-10">
-              {Object.keys(problems).length > 0 && <Console isRoom={isRoom} isFullScreen={isFullScreen} activeTab={activeTab} setActiveTab={setActiveTab} output={output} runningCode={runningCode} />}
-            </div>
-          </Split>
-          <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
-            <div className="flex flex-row items-center ml-3 gap-x-6">
-              <div className="relative">
-                <TbTerminal2 className="peer text-2xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={() => setConsoleOpen((prev) => !prev)} />
-                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
-                  Console
+    window.innerWidth < 1024 ? (
+      <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
+        <Split gutterSize={8} className="editor flex flex-row grow overflow-hidden" minSize={[0, 0]} snapOffset={[200, 200]}>
+          <div className="relative flex flex-col w-full bg-transparentSecondary overflow-x-hidden">
+            <ProblemPanel
+              isRoom={isRoom}
+              handleSubmissionDisplay={handleSubmissionDisplay}
+              handleProblemChange={handleActiveProblemChange}
+              setDisplaySubmission={setDisplaySubmission}
+              showParticipant={showParticipant}
+              setShowParticipant={setShowParticipant}
+            />
+            {isRoom && <Chat setOpenScoreboard={setOpenScoreboard} isMobileScreen={true} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />}
+          </div>
+          <div>
+            <Split gutterSize={8} style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
+              {displaySubmission ? (
+                <div ref={editorRef} className="z-[-1] h-full bg-primary">
+                  <SubmissionPanel isRoom={isRoom} submissionDetails={submissionDetails} setSubmissionDetails={setSubmissionDetails} setDisplaySubmission={setDisplaySubmission} />
                 </div>
-              </div>
-              <div className="relative">
-                <FaUndo className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleClearEditor} />
-                <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
-                  Reset
+              ) : (
+                <div ref={editorRef} className="z-[-1] h-full bg-primary">
+                  <CodeEditor isRoom={isRoom} editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
                 </div>
+              )}
+              <div className="bg-lightAccent3 z-10">
+                {Object.keys(problems).length > 0 && (
+                  <Console isRoom={isRoom} isFullScreen={isFullScreen} activeTab={activeTab} setActiveTab={setActiveTab} output={output} runningCode={runningCode} />
+                )}
               </div>
-              <div className="settings relative">
-                <FaCog className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
-                <div className="absolute w-max peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
-                  Editor Settings
+            </Split>
+            <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
+              <div className="flex flex-row items-center ml-3 gap-x-6">
+                <div className="relative">
+                  <TbTerminal2 className="peer text-2xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={() => setConsoleOpen((prev) => !prev)} />
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                    Console
+                  </div>
                 </div>
+                <div className="relative">
+                  <FaUndo className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleClearEditor} />
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                    Reset
+                  </div>
+                </div>
+                <div className="settings relative">
+                  <FaCog className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
+                  <div className="absolute w-max peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                    Editor Settings
+                  </div>
+                </div>
+                <div className="relative">
+                  {isFullScreen ? (
+                    <>
+                      <FaCompress className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                      <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                        Minimize
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <FaExpand className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                      <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                        FullScreen
+                      </div>
+                    </>
+                  )}
+                </div>
+                <LanguageSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
               </div>
-              <div className="relative">
-                {isFullScreen ? (
-                  <>
-                    <FaCompress className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
-                    <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
-                      Minimize
-                    </div>
-                  </>
+              <div className="flex flex-row items-center gap-x-3">
+                {!isLoggedIn ? (
+                  <p>
+                    Please{" "}
+                    <Link to="/app/auth/login" className="text-blue-500 font-bold hover:underline">
+                      Login/Signup
+                    </Link>{" "}
+                    to run or submit your code
+                  </p>
                 ) : (
                   <>
-                    <FaExpand className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
-                    <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
-                      FullScreen
-                    </div>
+                    <button
+                      disabled={isRoom && !roomData?.startedAt}
+                      className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}
+                      onClick={handleRunCode}
+                    >
+                      Run
+                    </button>
+                    <button
+                      disabled={isRoom && !roomData?.startedAt}
+                      className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-green-500 hover:bg-easyGreen rounded-lg`}
+                      onClick={handleSubmitCode}
+                    >
+                      Submit
+                    </button>
                   </>
                 )}
               </div>
-              <LanguageSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
             </div>
-            <div className="flex flex-row items-center gap-x-3">
-              {!isLoggedIn ? (
-                <p>
-                  Please{" "}
-                  <Link to="/app/auth/login" className="text-blue-500 font-bold hover:underline">
-                    Login/Signup
-                  </Link>{" "}
-                  to run or submit your code
-                </p>
+          </div>
+        </Split>
+        {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
+        {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
+      </ProblemContext.Provider>
+    ) : (
+      <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
+        <Split
+          gutterSize={8}
+          className="editor flex flex-row grow overflow-hidden h-full"
+          onDrag={updateSize}
+          sizes={sizes}
+          minSize={[0, 500, 0]}
+          maxSize={[2560, 2560, 250]}
+          snapOffset={[300, 0, 200]}
+        >
+          <div className="flex flex-col bg-transparentSecondary overflow-x-hidden">
+            <ProblemPanel
+              isRoom={isRoom}
+              handleSubmissionDisplay={handleSubmissionDisplay}
+              handleProblemChange={handleActiveProblemChange}
+              setDisplaySubmission={setDisplaySubmission}
+              showParticipant={showParticipant}
+              setShowParticipant={setShowParticipant}
+            />
+          </div>
+          <div>
+            <Split gutterSize={8} style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
+              {displaySubmission ? (
+                <div ref={editorRef} className="z-[-1] h-full bg-primary">
+                  <SubmissionPanel isRoom={isRoom} submissionDetails={submissionDetails} setSubmissionDetails={setSubmissionDetails} setDisplaySubmission={setDisplaySubmission} />
+                </div>
+              ) : (
+                <div ref={editorRef} className="z-[-1] h-full bg-primary">
+                  <CodeEditor isRoom={isRoom} editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
+                </div>
+              )}
+              <div className="bg-lightAccent3 z-10">
+                {Object.keys(problems).length > 0 && (
+                  <Console isRoom={isRoom} isFullScreen={isFullScreen} activeTab={activeTab} setActiveTab={setActiveTab} output={output} runningCode={runningCode} />
+                )}
+              </div>
+            </Split>
+            <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
+              <div className="flex flex-row items-center ml-3 gap-x-6">
+                <div className="relative">
+                  <TbTerminal2 className="peer text-2xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={() => setConsoleOpen((prev) => !prev)} />
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                    Console
+                  </div>
+                </div>
+                <div className="relative">
+                  <FaUndo className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleClearEditor} />
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                    Reset
+                  </div>
+                </div>
+                <div className="settings relative">
+                  <FaCog className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
+                  <div className="absolute w-max peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                    Editor Settings
+                  </div>
+                </div>
+                <div className="relative">
+                  {isFullScreen ? (
+                    <>
+                      <FaCompress className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                      <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                        Minimize
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <FaExpand className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                      <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                        FullScreen
+                      </div>
+                    </>
+                  )}
+                </div>
+                <LanguageSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
+              </div>
+              <div className="flex flex-row items-center gap-x-3">
+                {!isLoggedIn ? (
+                  <p>
+                    Please{" "}
+                    <Link to="/app/auth/login" className="text-blue-500 font-bold hover:underline">
+                      Login/Signup
+                    </Link>{" "}
+                    to run or submit your code
+                  </p>
+                ) : (
+                  <>
+                    <button
+                      disabled={isRoom && !roomData?.startedAt}
+                      className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}
+                      onClick={handleRunCode}
+                    >
+                      Run
+                    </button>
+                    <button
+                      disabled={isRoom && !roomData?.startedAt}
+                      className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-green-500 hover:bg-easyGreen rounded-lg`}
+                      onClick={handleSubmitCode}
+                    >
+                      Submit
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* If this is a room add a chat window as third split pane */}
+          {isRoom && (
+            <div className="bg-lightAccent3">
+              <Chat setOpenScoreboard={setOpenScoreboard} isMobileScreen={isMobileScreen} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />
+            </div>
+          )}
+        </Split>
+        {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
+        {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
+      </ProblemContext.Provider>
+    )
+  ) : (
+    <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
+      <div className="relative flex flex-col h-screen w-full bg-transparentSecondary overflow-x-hidden">
+        <div className="grow relative flex flex-col w-full bg-transparentSecondary overflow-x-hidden">
+          <ProblemPanel
+            isRoom={isRoom}
+            handleSubmissionDisplay={handleSubmissionDisplay}
+            handleProblemChange={handleActiveProblemChange}
+            setDisplaySubmission={setDisplaySubmission}
+            showParticipant={showParticipant}
+            setShowParticipant={setShowParticipant}
+          />
+          {isRoom && <Chat setOpenScoreboard={setOpenScoreboard} isMobileScreen={isMobileScreen} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />}
+        </div>
+      </div>
+      <div className="editor h-screen">
+        <Split gutterSize={8} style={{ height: "calc(100% - 56px)" }} onDrag={updateEditorSize} sizes={editorSizes} direction="vertical" minSize={[260, 0]} snapOffset={[0, 100]}>
+          {displaySubmission ? (
+            <div ref={editorRef} className="z-[-1] h-full bg-primary">
+              <SubmissionPanel isRoom={isRoom} submissionDetails={submissionDetails} setSubmissionDetails={setSubmissionDetails} setDisplaySubmission={setDisplaySubmission} />
+            </div>
+          ) : (
+            <div ref={editorRef} className="z-[-1] h-full bg-primary">
+              <CodeEditor isRoom={isRoom} editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
+            </div>
+          )}
+          <div className="bg-lightAccent3 z-10">
+            {Object.keys(problems).length > 0 && <Console isRoom={isRoom} isFullScreen={isFullScreen} activeTab={activeTab} setActiveTab={setActiveTab} output={output} runningCode={runningCode} />}
+          </div>
+        </Split>
+        <div className="flex flex-row items-center bg-lightAccent3 justify-between p-3 h-[56px] font-bold">
+          <div className="flex flex-row items-center ml-3 gap-x-6">
+            <div className="relative">
+              <TbTerminal2 className="peer text-2xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={() => setConsoleOpen((prev) => !prev)} />
+              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                Console
+              </div>
+            </div>
+            <div className="relative">
+              <FaUndo className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleClearEditor} />
+              <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                Reset
+              </div>
+            </div>
+            <div className="settings relative">
+              <FaCog className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleSettings} />
+              <div className="absolute w-max peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-6 px-3 py-1 bg-white text-primary rounded-lg">
+                Editor Settings
+              </div>
+            </div>
+            <div className="relative">
+              {isFullScreen ? (
+                <>
+                  <FaCompress className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                    Minimize
+                  </div>
+                </>
               ) : (
                 <>
-                  <button
-                    disabled={isRoom && !roomData?.startedAt}
-                    className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}
-                    onClick={handleRunCode}
-                  >
-                    Run
-                  </button>
-                  <button
-                    disabled={isRoom && !roomData?.startedAt}
-                    className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-green-500 hover:bg-easyGreen rounded-lg`}
-                    onClick={handleSubmitCode}
-                  >
-                    Submit
-                  </button>
+                  <FaExpand className="peer text-xl rounded-lg hover:text-grey1 hover:cursor-pointer" onClick={handleFullScreen} />
+                  <div className="absolute peer-hover:scale-100 peer-hover:opacity-100 scale-75 opacity-0 transition-all duration-150 bottom-8 -left-8 px-3 py-1 bg-white text-primary rounded-lg">
+                    FullScreen
+                  </div>
                 </>
               )}
             </div>
+            <LanguageSelector editorSettings={editorSettings} setEditorSettings={setEditorSettings} />
+          </div>
+          <div className="flex flex-row items-center gap-x-3">
+            {!isLoggedIn ? (
+              <p>
+                Please{" "}
+                <Link to="/app/auth/login" className="text-blue-500 font-bold hover:underline">
+                  Login/Signup
+                </Link>{" "}
+                to run or submit your code
+              </p>
+            ) : (
+              <>
+                <button
+                  disabled={isRoom && !roomData?.startedAt}
+                  className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-primary hover:bg-lightPrimary rounded-lg`}
+                  onClick={handleRunCode}
+                >
+                  Run
+                </button>
+                <button
+                  disabled={isRoom && !roomData?.startedAt}
+                  className={`disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1 bg-green-500 hover:bg-easyGreen rounded-lg`}
+                  onClick={handleSubmitCode}
+                >
+                  Submit
+                </button>
+              </>
+            )}
           </div>
         </div>
-        {/* If this is a room add a chat window as third split pane */}
-        {isRoom && (
-          <div className="bg-lightAccent3">
-            <Chat setOpenScoreboard={setOpenScoreboard} isMobileScreen={isMobileScreen} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />
-          </div>
-        )}
-      </Split>
-      {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
-      {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}
-    </ProblemContext.Provider>
-  ) : (
-    <ProblemContext.Provider value={{ problems, activeProblem, isLoading }}>
-      <div className="relative flex flex-col h-full w-full bg-transparentSecondary overflow-x-hidden">
-        <ProblemPanel isRoom={isRoom} handleSubmissionDisplay={handleSubmissionDisplay} handleProblemChange={handleActiveProblemChange} setDisplaySubmission={setDisplaySubmission} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />
-        {isRoom && <Chat setOpenScoreboard={setOpenScoreboard} isMobileScreen={isMobileScreen} showParticipant={showParticipant} setShowParticipant={setShowParticipant} />}
       </div>
       {openScoreboard && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setOpenScoreboard={setOpenScoreboard} />}
       {settingsOpen && <EditorSettings isClosing={isClosing} setIsClosing={setIsClosing} editorSettings={editorSettings} setEditorSettings={setEditorSettings} setSettingsOpen={setSettingsOpen} />}

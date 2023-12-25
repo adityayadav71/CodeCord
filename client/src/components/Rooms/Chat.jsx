@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect, useRef, memo } from "react";
 import { FaUserPlus, FaUserFriends as UserIcon, FaSmile, FaUserAlt, FaCog, FaRocketchat, FaDoorOpen as LeaveIcon, FaDoorClosed as EntryIcon } from "react-icons/fa";
-import { FaCircleXmark as EndIcon } from "react-icons/fa6";
+import { FaCircleXmark as EndIcon, FaRankingStar as ScoreboardIcon } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { AuthContext, loadData } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
@@ -326,7 +326,11 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
   ) : isLoading ? (
     <MobileChatSkeleton />
   ) : (
-    <div className={`absolute flex gap-4 bottom-5 rounded-lg w-[95%] ${mobileChatOpen ? "h-[95%] flex-col" : ""} items-end transition-height duration-300 p-3 m-auto left-0 right-0 bg-secondary h-20`}>
+    <div
+      className={`absolute flex gap-4 bottom-5 rounded-lg w-[95%] ${
+        mobileChatOpen ? "h-[95%] flex-col" : ""
+      } items-end drop-shadow-xl transition-height duration-300 p-3 m-auto left-0 right-0 bg-secondary h-20`}
+    >
       <div ref={chatPanelRef} className={`grow overflow-y-scroll w-full flex flex-col ${mobileChatOpen ? "block" : "hidden"}`} id="chat-window">
         {messageList.map((messageContent, i) => {
           return messageContent?.type === "roomMessage" ? (
@@ -368,9 +372,9 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
           />
         </form>
       </div>
-      <div className="flex gap-3 w-full">
+      <div className="flex gap-1 items-center w-full">
         <Timer roomData={roomData} />
-        <div className="flex gap-3 ml-auto">
+        <div className="flex flex-wrap gap-2 ml-auto">
           {roomData?.owner?._id === userData?._id && (
             <div className="flex flex-row gap-x-3">
               {roomData?.startedAt ? (
@@ -384,6 +388,17 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
               )}
             </div>
           )}
+          <div className="relative">
+            <button
+              className="open-modal peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenScoreboard((prev) => !prev);
+              }}
+            >
+              <ScoreboardIcon className="text-xl" />
+            </button>
+          </div>
           <div className="relative">
             <button
               className="open-modal peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover"
