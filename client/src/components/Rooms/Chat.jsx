@@ -22,7 +22,6 @@ import { startRoom, leaveRoom, endRoom } from "../../api/roomsAPI";
 import Timer from "./Timer";
 import { toast } from "react-hot-toast";
 import Skeleton from "../skeletons/ChatSkeleton";
-import MobileChatSkeleton from "../skeletons/MobileChatSkeleton";
 
 const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
   const { userData, socket } = useContext(AuthContext);
@@ -225,12 +224,9 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
   };
 
   return !isMobileScreen ? (
-    isLoading ? (
-      <Skeleton />
-    ) : (
-      <div className='relative flex flex-col h-full'>
-        <div className='w-full p-3 border-b border-lightSecondary'>
-          <div className='flex flex-row justify-between gap-x-3 mb-4'>
+      <div className="relative flex flex-col h-full">
+        <div className="w-full p-3 border-b border-lightSecondary">
+          <div className="flex flex-row justify-between gap-x-3 mb-4">
             {isLoading ? (
               <Skeleton />
             ) : (
@@ -398,9 +394,7 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
         </div>
       </div>
     )
-  ) : isLoading ? (
-    <MobileChatSkeleton />
-  ) : (
+   : (
     <div
       className={`absolute flex gap-4 bottom-5 rounded-lg w-[95%] ${
         mobileChatOpen ? "h-[95%] flex-col" : ""
