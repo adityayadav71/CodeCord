@@ -506,6 +506,7 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
               className='open-modal peer flex flex-row items-center justify-center p-3 rounded-xl w-12 h-12 bg-lightPrimary hover:bg-hover'
               onClick={(e) => {
                 e.stopPropagation();
+                setMobileChatOpen(false);
                 setShowParticipant((prev) => !prev);
               }}
             >
