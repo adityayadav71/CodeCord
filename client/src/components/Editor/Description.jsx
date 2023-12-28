@@ -15,7 +15,7 @@ const Description = ({ isRoom, handleProblemChange, showParticipant, setShowPart
   const { roomData } = useContext(RoomContext);
 
   return (
-    <div className="p-3 flex flex-col overflow-y-scroll">
+    <div className="p-3 flex flex-col overflow-y-scroll max-sm:no-scrollbar">
       {isLoading ? (
         <Skeleton isRoom={isRoom} isParticipantList={!((roomData?.startedAt && !showParticipant) || !isRoom)} />
       ) : (roomData?.startedAt && !showParticipant) || !isRoom ? (
