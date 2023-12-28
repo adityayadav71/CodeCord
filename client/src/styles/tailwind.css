@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -61,6 +72,19 @@ button {
 
 .hideScrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.swiper-pagination-bullet {
+  width: 30px;
+  height: 5px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  transform: scale(1) !important;
+}
+
+.swiper-pagination-bullet-active {
+  width: 50px;
+  background-color: #0098fa;
 }
 
 .swiper-button-prev {
