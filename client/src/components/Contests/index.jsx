@@ -4,8 +4,8 @@ import UpcomingContest from "./UpcomingContest";
 import PastContest from "./PastContest";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
 import { AuthContext } from "../../App";
 
 const Contest = () => {
@@ -18,9 +18,12 @@ const Contest = () => {
         <div className="flex flex-col lg:w-3/4 md:w-3/5 sm:3/4 max-w-[753px]">
           <h1 className="text-4xl font-bold mb-12">Upcoming Contests</h1>
           <Swiper
-            className="relative mb-9 w-full"
-            navigation={true}
-            modules={[Navigation]}
+            className="relative mb-9 pb-12 w-full"
+            pagination={{
+              clickable: true,
+              dynamicBullets: true,
+            }}
+            modules={[Pagination]}
             spaceBetween={12}
             breakpoints={{
               320: {
