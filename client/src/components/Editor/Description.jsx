@@ -29,10 +29,10 @@ const Description = ({ isRoom, handleProblemChange, showParticipant, setShowPart
             </div>
             {isRoom && (
               <div className="flex items-center gap-x-3">
-                <button className="switch p-1 text-2xl rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300" data-position="prev" onClick={handleProblemChange}>
+                <button className="switch p-1 text-2xl rounded-lg hover:bg-accent1 border border-white transition-all duration-300" data-position="prev" onClick={handleProblemChange}>
                   <LeftIcon />
                 </button>
-                <button className="switch p-1 text-2xl rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300" data-position="next" onClick={handleProblemChange}>
+                <button className="switch p-1 text-2xl rounded-lg hover:bg-accent1 border border-white transition-all duration-300" data-position="next" onClick={handleProblemChange}>
                   <RightIcon />
                 </button>
               </div>

@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import Skeleton from "../skeletons/NavbarProfileSkeleton";
 import favicon from "/svg/favicon.svg";
 import { MobileContext } from "../../layouts/AppLayout";
-import MobileSettings from "./MobileSettings";
+import MobileSettings from "../Rooms/MobileSettings";
 
 const HomeNavbar = ({ handleLogout }) => {
   const { isLoggedIn, isLoading, userData } = useContext(AuthContext);
@@ -151,12 +151,13 @@ const HomeNavbar = ({ handleLogout }) => {
                   <FaUserLarge className="text-2xl hover:cursor-pointer" />
                 )}
               </div>
+              {/* ${profileActive ? "opacity-1 z-20 top-14 translate-y-0" : "opacity-0 z-0 -translate-y-2 top-20"}  */}
               <div
-                className={`${
-                  profileActive ? "opacity-1 z-20 top-14 translate-y-0" : "opacity-0 z-0 -translate-y-2 top-20"
-                } absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
+                className={`
+                opacity-1 z-20 top-14 translate-y-0 absolute right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >
-                <ul className="flex flex-col gap-y-3">
+                <MobileSettings imageURL={imageURL} openRoomModal={openRoomModal} goToActiveRoom={goToActiveRoom} handleLogout={handleLogout} />
+                {/* <ul className="flex flex-col gap-y-3">
                   <li onClick={() => setProfileActive((prev) => !prev)}>
                     <Link to={`/app/user/${userData?.username}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
                       <FaUserLarge />
@@ -173,7 +174,7 @@ const HomeNavbar = ({ handleLogout }) => {
                     <RiLogoutCircleRLine />
                     Logout
                   </li>
-                </ul>
+                </ul> */}
               </div>
             </div>
           </>
@@ -209,7 +210,7 @@ const HomeNavbar = ({ handleLogout }) => {
                 <FaUserLarge className="text-2xl hover:cursor-pointer" />
               )}
             </div>
-            <MobileSettings imageURL={imageURL} openRoomModal={openRoomModal} goToActiveRoom={goToActiveRoom} handleLogout={handleLogout} />
+            {/* <MobileSettings imageURL={imageURL} openRoomModal={openRoomModal} goToActiveRoom={goToActiveRoom} handleLogout={handleLogout} /> */}
           </>
         )}
       </div>
