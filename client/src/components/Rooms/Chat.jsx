@@ -3,18 +3,19 @@ import { FaUserPlus, FaUserFriends as UserIcon, FaSmile, FaUserAlt, FaCog, FaDoo
 import { useForm } from "react-hook-form";
 import { AuthContext, loadData } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
+import { MobileContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
 import InviteLinkModal from "./InviteLinkModal";
 import { startRoom, leaveRoom, endRoom } from "../../api/roomsAPI";
-import Timer from "./Timer";
 import { toast } from "react-hot-toast";
 import Skeleton from "../skeletons/ChatSkeleton";
 import User from "./User";
 import { FaRocketchat } from "react-icons/fa6";
 
-const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant, mobileChatOpen }) => {
+const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
   const { userData, socket } = useContext(AuthContext);
   const { roomData, setRoomData, isLoading } = useContext(RoomContext);
+  const { mobileChatOpen } = useContext(MobileContext)
 
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
@@ -54,109 +55,6 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant, mobileCha
       await socket.emit("send-message", messageData, roomData?.roomId);
 
       setMessageList((prevList) => [...prevList, messageData]);
-    }
-  };
-
-  const handleLeaveRoom = async () => {
-    try {
-      toast(
-        (t) => (
-          <div className="text-lg w-full">
-            <div className="text-xl mb-1 font-semibold">Are you sure you want to leave?</div>
-            <div className="text-md mb-2">You will be removed from the room. You can join back anytime.</div>
-            <div className="flex justify-end gap-3 ml-auto">
-              <button className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300" onClick={() => toast.dismiss(t.id)}>
-                Cancel
-              </button>
-              <button
-                className="px-3 py-1 font-medium rounded-lg bg-accent1 hover:bg-lightAccent1 duration-300 text-white hover:lightAccent1"
-                onClick={async () => {
-                  await leaveRoom(userData.username, roomData?.roomId, socket);
-                  await loadData();
-                  toast.dismiss(t.id);
-                  navigate("/", { replace: true });
-                  toast(
-                    (t) => (
-                      <div className="flex items-center text-lg">
-                        <span className="mr-3 font-semibold">
-                          🚪You left the <b>room</b>
-                        </span>
-                        <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
-                          Dismiss
-                        </button>
-                      </div>
-                    ),
-                    { duration: Infinity }
-                  );
-                }}
-              >
-                Leave
-              </button>
-            </div>
-          </div>
-        ),
-        {
-          duration: Infinity, // Prevent auto-dismissal
-        }
-      );
-    } catch (err) {
-      toast.error("Something went wrong! Please try again.");
-    }
-  };
-
-  const handleEndRoom = async () => {
-    try {
-      toast(
-        (t) => (
-          <div className="text-lg w-full">
-            <div className="text-xl mb-1 font-semibold">Are you sure you want to end?</div>
-            <div className="text-md mb-2">The room will be ended for all the participants.</div>
-            <div className="flex justify-end gap-3 ml-auto">
-              <button className="px-3 py-1 font-medium rounded-lg bg-gray-300 hover:bg-gray-200 duration-300" onClick={() => toast.dismiss(t.id)}>
-                Cancel
-              </button>
-              <button
-                className="px-3 py-1 font-medium rounded-lg bg-hardRed hover:bg-redBackGround duration-300 text-white hover:lightAccent1"
-                onClick={async () => {
-                  await endRoom(roomData?.roomId, socket);
-                  await loadData();
-                  toast.dismiss(t.id);
-                  navigate("/", { replace: true });
-                  toast(
-                    (t) => (
-                      <div className="flex items-center text-lg">
-                        <span className="mr-3 font-semibold">
-                          🛑 You ended the <b>room</b>
-                        </span>
-                        <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
-                          Dismiss
-                        </button>
-                      </div>
-                    ),
-                    { duration: Infinity }
-                  );
-                }}
-              >
-                End
-              </button>
-            </div>
-          </div>
-        ),
-        {
-          duration: Infinity, // Prevent auto-dismissal
-        }
-      );
-    } catch (err) {
-      toast.error("Something went wrong! Please try again.");
-    }
-  };
-
-  const handleStartRoom = async () => {
-    try {
-      const room = await startRoom(roomData?.roomId, socket);
-      setRoomData(room);
-    } catch (err) {
-      window.alert(err);
     }
   };
 

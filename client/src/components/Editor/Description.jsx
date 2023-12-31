@@ -102,36 +102,11 @@ const Description = ({ isRoom, handleProblemChange, showParticipant, setShowPart
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 px-3 py-6 rounded-xl grow">
+        <div className="flex flex-col gap-3 p-3 rounded-xl grow">
           <div className={`flex ${roomData?.startedAt ? "flex-row" : "lg:flex-row flex-col"} lg:items-center`}>
-            <div className="flex-col">
-              <h1 className="text-2xl font-bold">{roomData?.name}</h1>
-              <p className="text-base text-grey1 mb-3">{roomData?.participants?.length || 0} participants</p>
-            </div>
-
-            {roomData?.startedAt ? (
-              <div className="flex gap-3 ml-auto">
-                <div className="relative">
-                  <button className="peer p-2 w-10 h-10 flex justify-center items-center rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300">
-                    <FaPhoneAlt className="text-xl" />
-                  </button>
-                  <div className="absolute z-[-10] peer-hover:z-50 peer-hover:scale-100 peer-hover:opacity-100 scale-75 w-max opacity-0 transition-all duration-150 top-12 right-0 px-3 py-1 bg-white text-primary rounded-lg">
-                    Join Voice Chat
-                  </div>
-                </div>
-                <button
-                  className="switch p-2 w-10 h-10 flex justify-center items-center rounded-lg bg-grey3 hover:bg-accent1 transition-all duration-300"
-                  data-position="prev"
-                  onClick={() => {
-                    setShowParticipant((prevState) => !prevState);
-                  }}
-                >
-                  <IoClose className="text-3xl" />
-                </button>
-              </div>
-            ) : (
-              <p className="lg:ml-auto mb-auto text-grey1">Waiting for the host to start the room...</p>
-            )}
+            {!roomData?.startedAt && 
+              <p className="text-grey1">Waiting for the host to start the room...</p>
+            }
           </div>
           {roomData?.participants?.map((participant, i) => (
             <User key={i} userId={participant.userId} username={participant.username} imageURL={participant.avatar} />

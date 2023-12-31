@@ -7,7 +7,7 @@ import Timer from "./Timer";
 const MobileSettings = () => {
   const { roomData } = useContext(RoomContext);
   return (
-    <div className="lg:h-fit lg:w-80 px-2 py-3">
+    <div className="absolute top-14 right-0 bg-secondary shadow-dropDown z-50 rounded-lg lg:h-fit lg:w-80 p-3">
       <div className="flex flex-col mb-2">
         <p className="text-xl font-bold">{roomData?.name}</p>
         <p className="text-grey1">{roomData?.participants?.length || 0} participants</p>

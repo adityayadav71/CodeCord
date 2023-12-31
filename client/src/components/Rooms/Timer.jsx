@@ -54,17 +54,17 @@ function Timer({ roomData }) {
   return isLoading ? (
     <div className="w-full p-6 bg-grey1 animate-pulse"></div>
   ) : !roomEnded ? (
-    <div className="flex lg:flex-row flex-col lg:items-center items-start gap-x-3 gap-y-1 lg:bg-lightSecondary p-0 lg:px-6 lg:py-2 lg:mb-3">
-      <div className="flex sm:gap-3 gap-1 items-center">
+    <div className="flex items-center gap-x-3 gap-y-1">
+      <div className="flex gap-3 items-center">
         <BiAlarm className="text-lg" />
-        <p className="text-xs lg:text-base">Room ends in</p>
+        <p className="text-base">Room ends in</p>
       </div>
       <span className="bg-accent1 rounded-lg px-3 font-bold">{formatTime(timer)}</span>
     </div>
   ) : (
-    <div className="flex lg:gap-3 gap-1 lg:items-center items-start rounded-lg bg-hardRed px-2 py-3 lg:px-6 lg:py-2 lg:mb-3">
+    <div className="flex gap-3 items-center rounded-lg bg-hardRed px-6 py-2 mb-3">
       <BiAlarm className="text-lg" />
-      <p className="text-sm sm:text-base">Room has ended</p>
+      <p className="text-sm">Room has ended</p>
     </div>
   );
 }
