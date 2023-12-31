@@ -57,14 +57,14 @@ function Timer({ roomData }) {
     <div className="flex items-center gap-x-3 gap-y-1">
       <div className="flex gap-3 items-center">
         <BiAlarm className="text-lg" />
-        <p className="text-base">Room ends in</p>
+        <p className="text-base">Round ends in</p>
       </div>
       <span className="bg-accent1 rounded-lg px-3 font-bold">{formatTime(timer)}</span>
     </div>
   ) : (
-    <div className="flex gap-3 items-center rounded-lg bg-hardRed px-6 py-2 mb-3">
+    <div className="flex gap-3 items-center rounded-lg bg-hardRed px-3 py-1">
       <BiAlarm className="text-lg" />
-      <p className="text-sm">Room has ended</p>
+      <p className="text-sm">Round has ended</p>
     </div>
   );
 }

@@ -1,40 +1,21 @@
 import { useState, useContext, useEffect, useRef, memo } from "react";
-import { FaUserPlus, FaUserFriends as UserIcon, FaSmile, FaUserAlt, FaCog, FaDoorOpen as LeaveIcon, FaDoorClosed as EntryIcon } from "react-icons/fa";
+import { FaUserFriends as UserIcon, FaSmile, FaUserAlt } from "react-icons/fa";
+import { IoMdChatbubbles as ChatIcon } from "react-icons/io";
 import { useForm } from "react-hook-form";
-import { AuthContext, loadData } from "../../App";
+import { AuthContext } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { MobileContext } from "../../layouts/AppLayout";
-import { useNavigate } from "react-router-dom";
-import InviteLinkModal from "./InviteLinkModal";
-import { startRoom, leaveRoom, endRoom } from "../../api/roomsAPI";
-import { toast } from "react-hot-toast";
-import Skeleton from "../skeletons/ChatSkeleton";
 import User from "./User";
-import { FaRocketchat } from "react-icons/fa6";
 
-const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
+const Chat = ({ isMobileScreen }) => {
   const { userData, socket } = useContext(AuthContext);
-  const { roomData, setRoomData, isLoading } = useContext(RoomContext);
-  const { mobileChatOpen } = useContext(MobileContext)
+  const { roomData, setRoomData } = useContext(RoomContext);
+  const { mobileChatOpen } = useContext(MobileContext);
 
-  const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
   const [messageList, setMessageList] = useState([]);
   const [participants, setParticipants] = useState(roomData?.participants?.length || 0);
-  const [inviteLinkModal, setInviteLinkModal] = useState(false);
   const [isChatOpen, setChatOpen] = useState(true);
-
-  useEffect(() => {
-    const closeModal = (event) => {
-      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal")) {
-        setInviteLinkModal("");
-      }
-    };
-    document.addEventListener("click", closeModal);
-    return () => {
-      document.removeEventListener("click", closeModal);
-    };
-  }, []);
 
   const sendMessage = async (formData) => {
     if (formData.message !== "") {
@@ -91,7 +72,7 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
           } rounded-lg`}
           onClick={() => setChatOpen(true)}
         >
-          <FaRocketchat className="text-xl" />
+          <ChatIcon className="text-xl" />
           <p>CHAT</p>
         </button>
         <button
@@ -160,11 +141,11 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
     </div>
   ) : (
     <div
-      className={`absolute flex gap-4 top-5 rounded-lg w-[95%] ${
-        mobileChatOpen ? "h-[95%] flex-col" : ""
-      } items-end drop-shadow-xl transition-height duration-300 p-3 m-auto left-0 right-0 bg-secondary h-20`}
+      className={`modal absolute flex gap-4 top-5 rounded-lg w-[95%] ${
+        mobileChatOpen ? "h-[95%] flex-col" : "h-0"
+      } items-end drop-shadow-xl transition-height p-0 duration-300 m-auto left-0 right-0 bg-secondary`}
     >
-      <div ref={chatPanelRef} className={`grow overflow-y-scroll w-full flex flex-col ${mobileChatOpen ? "block" : "hidden"}`} id="chat-window">
+      <div ref={chatPanelRef} className={`grow overflow-y-scroll p-3 w-full flex flex-col ${mobileChatOpen ? "block" : "hidden"}`} id="chat-window">
         {messageList.map((messageContent, i) => {
           return messageContent?.type === "roomMessage" ? (
             <div key={i} className="flex flex-row items-center justify-between gap-x-1 px-3 py-2 mb-3 bg-primary rounded-lg">
@@ -193,7 +174,7 @@ const Chat = ({ setOpenScoreboard, isMobileScreen, setShowParticipant }) => {
           );
         })}
       </div>
-      <div className={`relative ${mobileChatOpen ? "block" : "hidden"} w-full bg-secondary`}>
+      <div className={`relative ${mobileChatOpen ? "block" : "hidden"} m-auto mb-3 w-[95%]`}>
         <FaSmile className="absolute top-1/2 -translate-y-1/2 right-6" />
         <form onSubmit={handleSubmit(sendMessage)}>
           <input

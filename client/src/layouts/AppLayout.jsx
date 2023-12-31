@@ -21,7 +21,7 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
   const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
 
-  const isMobileScreen = window.innerWidth <= 640; 
+  const isMobileScreen = window.innerWidth <= 640;
   const handleClick = () => {
     setIsMobileNavbarOpen((prev) => !prev);
   };
@@ -52,14 +52,11 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
     socket?.on("room-ended", () => {
       toast(
         (t) => (
-          <div className='flex items-center text-lg'>
-            <span className='mr-3 font-semibold'>
+          <div className="flex items-center text-lg">
+            <span className="mr-3 font-semibold">
               🛑 The <b>room was ended</b> by the host.
             </span>
-            <button
-              className='px-3 py-1 text-md rounded-lg bg-gray-300 border'
-              onClick={() => toast.dismiss(t.id)}
-            >
+            <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
               Dismiss
             </button>
           </div>
@@ -79,21 +76,12 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
           handleClick,
           isMobileSettingsOpen,
           handleSettingsClick,
-          mobileChatOpen
+          mobileChatOpen,
+          setMobileChatOpen,
         }}
       >
-        <div
-          className={`flex flex-col ${
-            !isMobileScreen ? "h-full" : ""
-          }`}
-        >
-          {isRoom ? (
-            <RoomNavbar isMobileScreen={isMobileScreen} />
-          ) : (
-            isMobileScreen ? 
-              <MobileNavbar handleLogout={handleLogout} />
-            : <Navbar handleLogout={handleLogout} />
-          )}
+        <div className={`flex flex-col ${!isMobileScreen ? "h-full" : ""}`}>
+          {isRoom ? <RoomNavbar isMobileScreen={isMobileScreen} /> : isMobileScreen ? <MobileNavbar handleLogout={handleLogout} /> : <Navbar handleLogout={handleLogout} />}
           <Outlet />
           {!params?.name && <Copyright />}
         </div>
