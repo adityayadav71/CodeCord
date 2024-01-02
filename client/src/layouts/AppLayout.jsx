@@ -1,16 +1,16 @@
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/HomePage/Navbar";
-import MobileNavbar from "../components/HomePage/MobileNavbar";
 import Copyright from "../utilities/Copyright";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getRoomData } from "../api/roomsAPI";
 import { AuthContext } from "../App";
 import { toast } from "react-hot-toast";
+import RoomNavbar from "../components/HomePage/RoomNavbar";
 
 export const RoomContext = createContext(null);
 export const MobileContext = createContext(null);
 
-const AppLayout = ({ handleLogout }) => {
+const AppLayout = ({ handleLogout, location = undefined }) => {
   const params = useParams();
   const navigate = useNavigate();
   const { userData, socket } = useContext(AuthContext);
@@ -18,12 +18,17 @@ const AppLayout = ({ handleLogout }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileNavbarOpen, setIsMobileNavbarOpen] = useState(false);
   const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
+  const [mobileChatOpen, setMobileChatOpen] = useState(false);
+
+  const isMobileScreen = window.innerWidth <= 640;
   const handleClick = () => {
     setIsMobileNavbarOpen((prev) => !prev);
   };
   const handleSettingsClick = () => {
     setIsMobileSettingsOpen((prev) => !prev);
   };
+
+  const isRoom = location?.pathname?.startsWith("/app/room") || false;
 
   useEffect(() => {
     let room = userData?.activeRoom;
@@ -50,7 +55,10 @@ const AppLayout = ({ handleLogout }) => {
             <span className="mr-3 font-semibold">
               🛑 The <b>room was ended</b> by the host.
             </span>
-            <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
+            <button
+              className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
+              onClick={() => toast.dismiss(t.id)}
+            >
               Dismiss
             </button>
           </div>
@@ -64,10 +72,22 @@ const AppLayout = ({ handleLogout }) => {
 
   return (
     <RoomContext.Provider value={{ roomData, setRoomData, isLoading }}>
-      <MobileContext.Provider value={{ isMobileNavbarOpen, handleClick, isMobileSettingsOpen, handleSettingsClick }}>
-        <div className={`flex flex-col ${window.innerWidth >= 640 ? "h-full" : ""}`}>
-          <Navbar handleLogout={handleLogout} />
-          <MobileNavbar handleLogout={handleLogout} />
+      <MobileContext.Provider
+        value={{
+          isMobileNavbarOpen,
+          handleClick,
+          isMobileSettingsOpen,
+          handleSettingsClick,
+          mobileChatOpen,
+          setMobileChatOpen,
+        }}
+      >
+        <div className={`flex flex-col ${!isMobileScreen ? "h-full" : ""}`}>
+          {isRoom ? (
+            <RoomNavbar isMobileScreen={isMobileScreen} />
+          ) : (
+            <Navbar handleLogout={handleLogout} />
+          )}
           <Outlet />
           {!params?.name && <Copyright />}
         </div>

@@ -13,6 +13,10 @@
   }
 }
 
+.custom-width {
+  width: calc(100% + 5px);
+}
+
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 12px;

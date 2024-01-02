@@ -33,7 +33,9 @@ const Login = (props) => {
       });
       setSocket(socket);
       navigate("/", { replace: true });
-      toast.success("Logged in successfully!");
+      toast.success("Logged in successfully!", {
+        duration: 2000,
+      });
     } catch (err) {
       setAPIErrors(<FormErrors message={err.response.data.message} />);
     }

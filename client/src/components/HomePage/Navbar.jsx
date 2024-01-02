@@ -1,6 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FaBell, FaBars, FaMagnifyingGlass, FaGear, FaUserLarge, FaPlus } from "react-icons/fa6";
+import {
+  FaBell,
+  FaBars,
+  FaMagnifyingGlass,
+  FaGear,
+  FaUserLarge,
+  FaPlus,
+} from "react-icons/fa6";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { AuthContext } from "../../App";
 import CreateRoom from "../Rooms/CreateRoom";
@@ -43,14 +50,19 @@ const HomeNavbar = ({ handleLogout }) => {
         replace: false,
       });
     } else {
-      toast.error("User has not joined any room! Please try reloading the page.");
+      toast.error(
+        "User has not joined any room! Please try reloading the page."
+      );
     }
   };
 
   const closeRoomModal = (event) => {
     if (
       event.target.classList.contains("modal-close-btn") ||
-      (!event.target.closest(".modal") && !event.target.classList.contains("open-modal") && !event.target.closest(".profile") && !event.target.closest(".searchbar"))
+      (!event.target.closest(".modal") &&
+        !event.target.classList.contains("open-modal") &&
+        !event.target.closest(".profile") &&
+        !event.target.closest(".searchbar"))
     ) {
       setIsClosing(true);
       setTimeout(() => {
@@ -70,16 +82,25 @@ const HomeNavbar = ({ handleLogout }) => {
   }, []);
 
   useEffect(() => {
-    const imgURL = userData?.profile?.avatar && `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
+    const imgURL =
+      userData?.profile?.avatar &&
+      `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
     setImageURL(imgURL);
   }, [userData]);
 
   return (
     <div className="flex flex-row sm:justify-start justify-between sm:p-0 py-3 px-6 border-b max-w-[2560px] border-b-accent2 w-full">
       <div className="flex sm:items-stretch items-center gap-3">
-        <FaBars className="sm:hidden text-5xl p-3 rounded-lg border border-grey3" onClick={handleClick} />
+        <FaBars
+          className="sm:hidden text-5xl p-3 rounded-lg border border-grey3"
+          onClick={handleClick}
+        />
         <Link to="/">
-          <img className="p-3 w-18 hover:cursor-pointer" src={favicon} alt="logo" />
+          <img
+            className="p-3 w-18 hover:cursor-pointer"
+            src={favicon}
+            alt="logo"
+          />
         </Link>
       </div>
 
@@ -87,7 +108,11 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/contest"
-            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/contest") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
+              isActive(pathname, "/app/contest")
+                ? "border-b-2 border-b-accent1"
+                : ""
+            }`}
           >
             Contest
           </NavLink>
@@ -95,7 +120,11 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/problem"
-            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/problem") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
+              isActive(pathname, "/app/problem")
+                ? "border-b-2 border-b-accent1"
+                : ""
+            }`}
           >
             Problems
           </NavLink>
@@ -103,16 +132,26 @@ const HomeNavbar = ({ handleLogout }) => {
         <li className="flex">
           <NavLink
             to="/app/rooms"
-            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${isActive(pathname, "/app/rooms") ? "border-b-2 border-b-accent1" : ""}`}
+            className={`box-border p-4 text-lg cursor-pointer hover:bg-accent2 transition duration-300 ${
+              isActive(pathname, "/app/rooms")
+                ? "border-b-2 border-b-accent1"
+                : ""
+            }`}
           >
             Rooms
           </NavLink>
         </li>
       </ul>
       <div className="sm:flex flex-row items-center gap-x-6 ml-auto mr-3 hidden">
-        <div className={"searchbar hidden relative lg:flex flex-row items-center right-3"}>
+        <div
+          className={
+            "searchbar hidden relative lg:flex flex-row items-center right-3"
+          }
+        >
           <FaMagnifyingGlass
-            className={`absolute ${searchbarActive ? "left-4" : "text-2xl translate-x-64"} hover:cursor-pointer transition-all duration-300`}
+            className={`absolute ${
+              searchbarActive ? "left-4" : "text-2xl translate-x-64"
+            } hover:cursor-pointer transition-all duration-300`}
             onClick={() => setSearchbarActive((prev) => !prev)}
           />
           <input
@@ -141,35 +180,55 @@ const HomeNavbar = ({ handleLogout }) => {
               </button>
             )}
             <FaBell className="text-2xl hover:cursor-pointer hover:text-accent1" />
-            <div className="relative profile sm:block hidden" onClick={() => setProfileActive((prev) => !prev)}>
+            <div
+              className="relative profile sm:block hidden"
+              onClick={() => setProfileActive((prev) => !prev)}
+            >
               <div className="w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2">
                 {isLoading ? (
                   <Skeleton />
                 ) : userData?.profile?.avatar ? (
-                  <img src={imageURL} className="w-full h-full object-cover hover:cursor-pointer" alt="profile-pic" />
+                  <img
+                    src={imageURL}
+                    className="w-full h-full object-cover hover:cursor-pointer"
+                    alt="profile-pic"
+                  />
                 ) : (
                   <FaUserLarge className="text-2xl hover:cursor-pointer" />
                 )}
               </div>
               <div
-                className={`${
-                  profileActive ? "opacity-1 z-20 top-14 translate-y-0" : "opacity-0 z-0 -translate-y-2 top-20"
-                } absolute top-full right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
+                className={`
+                ${
+                  profileActive
+                    ? "opacity-1 z-20 top-14 translate-y-0"
+                    : "opacity-0 z-0 -translate-y-2 top-20"
+                }
+                absolute right-0 mt-3 rounded-lg p-3 w-fit shadow shadow-dropDown bg-secondary transition duration-300`}
               >
                 <ul className="flex flex-col gap-y-3">
                   <li onClick={() => setProfileActive((prev) => !prev)}>
-                    <Link to={`/app/user/${userData?.username}`} className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
+                    <Link
+                      to={`/app/user/${userData?.username}`}
+                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
+                    >
                       <FaUserLarge />
                       Profile
                     </Link>
                   </li>
                   <li onClick={() => setProfileActive((prev) => !prev)}>
-                    <Link to="/app/settings" className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
+                    <Link
+                      to="/app/settings"
+                      className="flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
+                    >
                       <FaGear />
                       Settings
                     </Link>
                   </li>
-                  <li onClick={handleLogout} className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg">
+                  <li
+                    onClick={handleLogout}
+                    className="hover:animate-spin flex flex-row items-center gap-x-3 px-3 py-1 hover:cursor-pointer hover:bg-accent3 rounded-lg"
+                  >
                     <RiLogoutCircleRLine />
                     Logout
                   </li>
@@ -196,24 +255,51 @@ const HomeNavbar = ({ handleLogout }) => {
       </div>
       {/* Changes for Mobile */}
       <div className="flex items-center gap-6">
-        <FaMagnifyingGlass className="sm:hidden hover:cursor-pointer left-4 text-5xl p-3 rounded-lg border border-grey3" onClick={handleClick} />
+        <FaMagnifyingGlass
+          className="sm:hidden hover:cursor-pointer left-4 text-5xl p-3 rounded-lg border border-grey3"
+          onClick={handleClick}
+        />
         {isLoggedIn && (
           <>
-            <FaPlus className="modal sm:hidden hover:cursor-pointer left-4 text-5xl p-3 rounded-lg border border-grey3" onClick={openRoomModal} />
-            <div className="sm:hidden w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2" onClick={handleSettingsClick}>
+            <FaPlus
+              className="modal sm:hidden hover:cursor-pointer left-4 text-5xl p-3 rounded-lg border border-grey3"
+              onClick={openRoomModal}
+            />
+            <div
+              className="sm:hidden w-11 h-11 overflow-clip flex flex-row items-center justify-center rounded-full bg-grey2"
+              onClick={handleSettingsClick}
+            >
               {isLoading ? (
                 <Skeleton />
               ) : userData?.profile?.avatar ? (
-                <img src={imageURL} className="w-full h-full object-cover hover:cursor-pointer" alt="profile-pic" />
+                <img
+                  src={imageURL}
+                  className="w-full h-full object-cover hover:cursor-pointer"
+                  alt="profile-pic"
+                />
               ) : (
                 <FaUserLarge className="text-2xl hover:cursor-pointer" />
               )}
             </div>
-            <MobileSettings imageURL={imageURL} openRoomModal={openRoomModal} goToActiveRoom={goToActiveRoom} handleLogout={handleLogout} />
+            <MobileSettings
+              imageURL={imageURL}
+              openRoomModal={openRoomModal}
+              goToActiveRoom={goToActiveRoom}
+              handleLogout={handleLogout}
+            />
           </>
         )}
       </div>
-      {modalOpen && <CreateRoom isContest={false} roomId={roomId} isClosing={isClosing} closeRoomModal={closeRoomModal} setModalOpen={setModalOpen} isLoading={false} />}
+      {modalOpen && (
+        <CreateRoom
+          isContest={false}
+          roomId={roomId}
+          isClosing={isClosing}
+          closeRoomModal={closeRoomModal}
+          setModalOpen={setModalOpen}
+          isLoading={false}
+        />
+      )}
     </div>
   );
 };

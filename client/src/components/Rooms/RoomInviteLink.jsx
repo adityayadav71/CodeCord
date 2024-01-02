@@ -1,9 +1,13 @@
 import { IoCopy } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { RoomContext } from "../../layouts/AppLayout";
 import Skeleton from "../skeletons/RoomInviteLinkSkeleton";
 
-const RoomInviteLink = ({ isLoading, inviteLink }) => {
+const RoomInviteLink = (props) => {
+  const { roomData, isLoading } = useContext(RoomContext);
+  
   const [message, setMessage] = useState();
+
   const handleCopy = () => {
     const copyText = document.getElementById("invite");
     copyText.select();
@@ -30,7 +34,7 @@ const RoomInviteLink = ({ isLoading, inviteLink }) => {
             id="invite"
             className="w-full ring-2 pr-16 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg"
             type="text"
-            value={inviteLink}
+            value={roomData?.roomId}
             onChange={() => {}}
             placeholder="Invite Code"
           />

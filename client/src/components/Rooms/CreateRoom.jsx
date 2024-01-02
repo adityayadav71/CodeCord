@@ -11,7 +11,7 @@ import ProblemFilter from "../Problems/ProblemFilter";
 import { AuthContext, loadData } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
 import { useNavigate } from "react-router-dom";
-import { updateRoomSettings, getRoomData, joinRoom } from "../../api/roomsAPI";
+import { getRoomData, joinRoom } from "../../api/roomsAPI";
 import { toast } from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
 
@@ -89,7 +89,7 @@ const CreateRoom = ({
         await loadData(); // update user data
 
         // 3. Navigate user to new room
-        navigate(`/app/room/${roomId}`, { replace: false });
+        window.open(`/app/room/${roomId}`, "_blank", "noopener,noreferrer");
       }
     } catch (err) {
       toast.error("Something went wrong! Please try again.");
@@ -117,10 +117,11 @@ const CreateRoom = ({
         await loadData(); // update user data
 
         setModalOpen(null);
-        toast.success("Successfully created a room.");
-        navigate(`/app/room/${roomId}`, {
-          replace: false,
+        toast.success("Successfully created a room.", {
+          duration: 2000,
         });
+
+        window.open(`/app/room/${roomId}`, "_blank", "noopener,noreferrer");
       }
     } catch (err) {
       toast.error("Something went wrong! Please try again.");
@@ -154,20 +155,20 @@ const CreateRoom = ({
         isClosing ? "animate-closeModal" : "animate-openModal"
       } hideScrollbar overflow-x-hidden overflow-y-scroll shadow shadow-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-lightPrimary flex flex-col gap-y-3 rounded-lg p-6`}
     >
-      <div className='flex sm:flex-row flex-col gap-3 mb-3'>
-        <div className='flex flex-col gap-y-3 sm:pr-12 sm:pb-0 pb-4 grow sm:border-r sm:border-r-accent2 sm:border-b-0 border-b border-b-accent2'>
-          <div className='flex flex-row sm:items-start items-center gap-x-3 mb-3'>
-            <h1 className='text-2xl font-bold'>Create Room</h1>
+      <div className="flex sm:flex-row flex-col gap-3 mb-3">
+        <div className="flex flex-col gap-y-3 sm:pr-12 sm:pb-0 pb-4 grow sm:border-r sm:border-r-accent2 sm:border-b-0 border-b border-b-accent2">
+          <div className="flex flex-row sm:items-start items-center gap-x-3 mb-3">
+            <h1 className="text-2xl font-bold">Create Room</h1>
             <RoomVisibility
               visibility={visibility}
               setVisibility={setVisibility}
             />
             <IoClose
-              className='sm:hidden modal-close-btn ml-auto text-5xl p-3 rounded-lg border border-grey3'
+              className="sm:hidden modal-close-btn ml-auto text-5xl p-3 rounded-lg border border-grey3"
               onClick={closeRoomModal}
             />
           </div>
-          <div className='grid grid-cols-4 sm:grid-rows-2 grid-rows-3 gap-5'>
+          <div className="grid grid-cols-4 sm:grid-rows-2 grid-rows-3 gap-5">
             <RoomTypeSelector roomType={roomType} setRoomType={setRoomType} />
             <ParticipantLimit
               participantLimit={participantLimit}
@@ -184,26 +185,26 @@ const CreateRoom = ({
             <RoomInviteLink isLoading={isLoading} inviteLink={roomId} />
           </div>
         </div>
-        <div className='flex flex-col gap-y-3 sm:pl-12 grow-0'>
-          <h1 className='text-xl font-bold sm:mb-12'>Join Room</h1>
+        <div className="flex flex-col gap-y-3 sm:pl-12 grow-0">
+          <h1 className="text-xl font-bold sm:mb-12">Join Room</h1>
           <input
             ref={inviteRef}
             onChange={handleJoinInviteChange}
-            className='ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3'
-            type='text'
-            placeholder='Invite Code'
+            className="ring-2 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg mb-3"
+            type="text"
+            placeholder="Invite Code"
           />
           {isUserJoining ? (
             <button
               onClick={handleJoinRoom}
-              className='w-full p-3 bg-easyGreen hover:bg-greenBackGround duration-300 text-xl font-bold rounded-lg'
+              className="w-full p-3 bg-easyGreen hover:bg-greenBackGround duration-300 text-xl font-bold rounded-lg"
             >
               JOIN
             </button>
           ) : (
             <button
               onClick={handleCreateRoom}
-              className='w-full p-3 bg-easyGreen hover:bg-greenBackGround duration-300 text-xl font-bold rounded-lg'
+              className="w-full p-3 bg-easyGreen hover:bg-greenBackGround duration-300 text-xl font-bold rounded-lg"
             >
               CREATE
             </button>
@@ -211,8 +212,8 @@ const CreateRoom = ({
         </div>
       </div>
       <RoomFilterContext.Provider value={{ filterObj, setFilterObj }}>
-        <div className='flex flex-col gap-x-3 grow sm:overflow-hidden z-10'>
-          <p className='text-base mb-3 text-green-500 font-bold'>
+        <div className="flex flex-col gap-x-3 grow sm:overflow-hidden z-10">
+          <p className="text-base mb-3 text-green-500 font-bold">
             {selected.length !== 0
               ? `${selected.length}/4 problems selected`
               : "Select upto 4 problems"}
@@ -224,7 +225,7 @@ const CreateRoom = ({
             setDifficulty={setDifficulty}
             filterInsideModal={true}
           />
-          <div className='flex grow overflow-y-hidden hideScrollbar rounded-xl mb-3'>
+          <div className="flex grow overflow-y-hidden hideScrollbar rounded-xl mb-3">
             <ProblemList
               setTotalPages={setTotalPages}
               selected={selected}

@@ -117,7 +117,9 @@ const ActiveRooms = () => {
   };
   const handleCopyInviteLink = (roomId) => {
     navigator.clipboard.writeText(roomId);
-    toast.success("Invite Code copied to clipboard!");
+    toast.success("Invite Code copied to clipboard!", {
+      duration: 2000,
+    });
   };
 
   return  isLoading ? (

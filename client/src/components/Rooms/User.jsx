@@ -20,7 +20,7 @@ const User = ({ userId, username, imageURL }) => {
   };
 
   return (
-    <div className="p-4 flex flex-row items-center justify-between bg-hover hover:text-accent1 hover:cursor-pointer rounded-xl">
+    <div className="p-4 flex flex-row items-center justify-between bg-hover hover:cursor-pointer rounded-xl">
       <div className="flex flex-row gap-x-3">
         {imageURL ? (
           <img
@@ -34,7 +34,7 @@ const User = ({ userId, username, imageURL }) => {
           </div>
         )}
         <div>
-          <h1 className="text-xl font-bold">{username}</h1>
+          <h1 className="hover:text-accent1 text-xl font-bold">{username}</h1>
           <p className="text-base text-grey1">user rating</p>
         </div>
       </div>
