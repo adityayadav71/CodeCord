@@ -1,6 +1,5 @@
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/HomePage/Navbar";
-import MobileNavbar from "../components/HomePage/MobileNavbar";
 import Copyright from "../utilities/Copyright";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getRoomData } from "../api/roomsAPI";
@@ -29,7 +28,7 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
     setIsMobileSettingsOpen((prev) => !prev);
   };
 
-  const isRoom = location?.pathname?.startsWith("/app/room") | false;
+  const isRoom = location?.pathname?.startsWith("/app/room") || false;
 
   useEffect(() => {
     let room = userData?.activeRoom;
@@ -56,7 +55,10 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
             <span className="mr-3 font-semibold">
               🛑 The <b>room was ended</b> by the host.
             </span>
-            <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
+            <button
+              className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
+              onClick={() => toast.dismiss(t.id)}
+            >
               Dismiss
             </button>
           </div>
@@ -81,7 +83,11 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
         }}
       >
         <div className={`flex flex-col ${!isMobileScreen ? "h-full" : ""}`}>
-          {isRoom ? <RoomNavbar isMobileScreen={isMobileScreen} /> : isMobileScreen ? <MobileNavbar handleLogout={handleLogout} /> : <Navbar handleLogout={handleLogout} />}
+          {isRoom ? (
+            <RoomNavbar isMobileScreen={isMobileScreen} />
+          ) : (
+            <Navbar handleLogout={handleLogout} />
+          )}
           <Outlet />
           {!params?.name && <Copyright />}
         </div>
