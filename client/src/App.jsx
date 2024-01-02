@@ -73,7 +73,9 @@ function App() {
       const loggedOut = await logout();
       setIsLoggedIn(!loggedOut);
       navigate("/", { replace: true });
-      toast.success("Logged out successfully!");
+      toast.success("Logged out successfully!", {
+        duration: 2000,
+      });
     } catch (err) {
       toast.error("Something went wrong! Please try again.");
     }

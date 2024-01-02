@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { BiAlarm } from "react-icons/bi";
 
 function Timer({ roomData }) {
-  const [timer, setTimer] = useState(roomData?.settings?.timeLimit * 60 || 40 * 60);
+  const [timer, setTimer] = useState(
+    roomData?.settings?.timeLimit * 60 || 40 * 60
+  );
   const [roomEnded, setRoomEnded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,7 +19,9 @@ function Timer({ roomData }) {
           return;
         }
 
-        const timeLeftInSeconds = Math.floor((new Date(roomData.expiresAt) - Date.now()) / 1000);
+        const timeLeftInSeconds = Math.floor(
+          (new Date(roomData.expiresAt) - Date.now()) / 1000
+        );
         setTimer(timeLeftInSeconds);
 
         interval = setInterval(() => {
@@ -59,7 +63,9 @@ function Timer({ roomData }) {
         <BiAlarm className="text-lg" />
         <p className="text-base">Round ends in</p>
       </div>
-      <span className="bg-accent1 rounded-lg px-3 font-bold">{formatTime(timer)}</span>
+      <span className="bg-accent1 rounded-lg px-3 font-bold">
+        {formatTime(timer)}
+      </span>
     </div>
   ) : (
     <div className="flex gap-3 items-center rounded-lg bg-hardRed px-3 py-1">
