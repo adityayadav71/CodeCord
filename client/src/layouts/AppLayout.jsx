@@ -6,6 +6,8 @@ import { getRoomData } from "../api/roomsAPI";
 import { AuthContext } from "../App";
 import { toast } from "react-hot-toast";
 import RoomNavbar from "../components/HomePage/RoomNavbar";
+import Scoreboard from "../components/Rooms/Scoreboard";
+import MobileNavbar from "../components/HomePage/MobileNavbar";
 
 export const RoomContext = createContext(null);
 export const MobileContext = createContext(null);
@@ -19,6 +21,24 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
   const [isMobileNavbarOpen, setIsMobileNavbarOpen] = useState(false);
   const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
+  const [scoreboardOpen, setScoreboardOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    const closeDropdown = (event) => {
+      if (!event.target.closest(".scoreboard")) {
+        setIsClosing(true);
+        setTimeout(() => {
+          setIsClosing(false);
+          setScoreboardOpen(false);
+        }, 300);
+      }
+    };
+    document.addEventListener("click", closeDropdown);
+    return () => {
+      document.removeEventListener("click", closeDropdown);
+    };
+  }, []);
 
   const isMobileScreen = window.innerWidth <= 640;
   const handleClick = () => {
@@ -55,10 +75,7 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
             <span className="mr-3 font-semibold">
               🛑 The <b>room was ended</b> by the host.
             </span>
-            <button
-              className="px-3 py-1 text-md rounded-lg bg-gray-300 border"
-              onClick={() => toast.dismiss(t.id)}
-            >
+            <button className="px-3 py-1 text-md rounded-lg bg-gray-300 border" onClick={() => toast.dismiss(t.id)}>
               Dismiss
             </button>
           </div>
@@ -82,14 +99,12 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
           setMobileChatOpen,
         }}
       >
-        <div className={`flex flex-col ${!isMobileScreen ? "h-full" : ""}`}>
-          {isRoom ? (
-            <RoomNavbar isMobileScreen={isMobileScreen} />
-          ) : (
-            <Navbar handleLogout={handleLogout} />
-          )}
+        <div className="flex flex-col h-full">
+          {isRoom ? <RoomNavbar isMobileScreen={isMobileScreen} setScoreboardOpen={setScoreboardOpen} /> : <Navbar handleLogout={handleLogout} />}
+          <MobileNavbar />
           <Outlet />
           {!params?.name && <Copyright />}
+          {scoreboardOpen && <Scoreboard isClosing={isClosing} setIsClosing={setIsClosing} setScoreboardOpen={setScoreboardOpen} />}
         </div>
       </MobileContext.Provider>
     </RoomContext.Provider>
