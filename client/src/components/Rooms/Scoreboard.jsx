@@ -5,7 +5,7 @@ import { getProblem } from "../../api/problemDataAPI";
 import Skeleton from "../skeletons/ScoreboardSkeleton";
 import { FaUserAlt } from "react-icons/fa";
 
-const Scoreboard = ({ isClosing, setIsClosing, setOpenScoreboard }) => {
+const Scoreboard = ({ isClosing, setIsClosing, setScoreboardOpen }) => {
   const { roomData } = useContext(RoomContext);
   const [isLoading, setIsLoading] = useState(false);
   const [problems, setProblems] = useState([]);
@@ -23,7 +23,7 @@ const Scoreboard = ({ isClosing, setIsClosing, setOpenScoreboard }) => {
   const closeModal = () => {
     setIsClosing(true);
     setTimeout(() => {
-      setOpenScoreboard(false);
+      setScoreboardOpen(false);
       setIsClosing(false);
     }, 300);
   };
