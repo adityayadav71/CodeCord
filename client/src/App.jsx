@@ -32,6 +32,7 @@ function App() {
   const [socket, setSocket] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
+  const isMobileScreen = window.innerWidth <= 640;
 
   loadData = async () => {
     const MIN_DISPLAY_TIME = 500;
@@ -94,58 +95,47 @@ function App() {
         setIsLoading,
       }}
     >
-      <div className='relative w-full h-full'>
+      <div className="relative w-full h-full">
         {<LoadingScreen isLoggedIn={isLoggedIn} />}
         {isLoggedIn !== undefined && (
-          <div className='mx-auto h-full w-full max-w-[1920px] overflow-x-hidden'>
+          <div className={`mx-auto ${isMobileScreen ? "hideScrollbar" : ""} h-full w-full max-w-[1920px] overflow-x-hidden`}>
             <>
               <Routes>
                 {isLoggedIn ? (
-                  <Route
-                    path='/'
-                    element={<AppLayout handleLogout={handleLogout} />}
-                  >
+                  <Route path="/" element={<AppLayout handleLogout={handleLogout} />}>
                     <Route index element={<Contest />} />
                   </Route>
                 ) : (
-                  <Route path='/' element={<LandingLayout />}>
+                  <Route path="/" element={<LandingLayout />}>
                     <Route index element={<LandingPage />} />
                   </Route>
                 )}
-                <Route path='/create'>
+                <Route path="/create">
                   <Route index element={<CreateRoom />} />
                 </Route>
-                <Route
-                  path='/app'
-                  element={
-                    <AppLayout
-                      handleLogout={handleLogout}
-                      location={location}
-                    />
-                  }
-                >
-                  <Route path='contest' element={<Contest />} />
-                  <Route path='problem'>
+                <Route path="/app" element={<AppLayout handleLogout={handleLogout} location={location} />}>
+                  <Route path="contest" element={<Contest />} />
+                  <Route path="problem">
                     <Route index element={<Problem />} />
-                    <Route path=':name' element={<Editor isRoom={false} />} />
+                    <Route path=":name" element={<Editor isRoom={false} />} />
                   </Route>
-                  <Route path='room'>
+                  <Route path="room">
                     <Route index element={<Problem />} />
-                    <Route path=':name' element={<Editor isRoom={true} />} />
+                    <Route path=":name" element={<Editor isRoom={true} />} />
                   </Route>
-                  <Route path='rooms' element={<ActiveRooms />} />
-                  <Route path='discussion' element={<Discussion />} />
-                  <Route path='tag/:tagname' element={<ProblemTagList />} />
-                  <Route path='user/:username' element={<Profile />} />
-                  <Route path='auth'>
-                    <Route path='signup' element={<SignUp />} />
-                    <Route path='login' element={<Login />} />
-                    <Route path='reset/request' element={<ForgotPassword />} />
-                    <Route path='reset/:token' element={<PasswordReset />} />
+                  <Route path="rooms" element={<ActiveRooms />} />
+                  <Route path="discussion" element={<Discussion />} />
+                  <Route path="tag/:tagname" element={<ProblemTagList />} />
+                  <Route path="user/:username" element={<Profile />} />
+                  <Route path="auth">
+                    <Route path="signup" element={<SignUp />} />
+                    <Route path="login" element={<Login />} />
+                    <Route path="reset/request" element={<ForgotPassword />} />
+                    <Route path="reset/:token" element={<PasswordReset />} />
                   </Route>
                 </Route>
-                <Route path='/notfound' element={<NotFound />} />
-                <Route path='*' element={<NotFound />} />
+                <Route path="/notfound" element={<NotFound />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </>
           </div>

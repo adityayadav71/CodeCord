@@ -77,10 +77,7 @@ const Pagination = ({ totalPages, filterInsideModal }) => {
       </button>
       <Swiper
         className="relative m-0 w-[10rem] sm:w-[16rem] md:w-[20rem] lg:w-[36rem]"
-        navigation={{
-          nextEl: ".pagination-swiper-button-next",
-          prevEl: ".pagination-swiper-button-prev",
-        }}
+        navigation={true}
         modules={[Navigation]}
         spaceBetween={1}
         breakpoints={{

@@ -6,15 +6,13 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { MobileContext } from "../../layouts/AppLayout";
 import { AuthContext } from "../../App";
 
-const MobileNavbar = ({ handleLogout }) => {
+const MobileNavbar = (props) => {
   const { isMobileNavbarOpen, handleClick } = useContext(MobileContext);
-  const { isLoggedIn, isLoading, userData } = useContext(AuthContext);
+  const { isLoggedIn, userData } = useContext(AuthContext);
   const [imageURL, setImageURL] = useState();
 
   useEffect(() => {
-    const imgURL =
-      userData?.profile?.avatar &&
-      `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
+    const imgURL = userData?.profile?.avatar && `data:${userData?.profile?.avatar?.contentType};base64,${userData?.profile?.avatar?.image}`;
     setImageURL(imgURL);
   }, [userData]);
 
@@ -29,9 +27,7 @@ const MobileNavbar = ({ handleLogout }) => {
   if (isFirstRender.current) {
     navbarClasses += " hidden";
   } else {
-    navbarClasses += isMobileNavbarOpen
-      ? " shadow-sidebar animate-openMobileHomeNavbar"
-      : " animate-closeMobileHomeNavbar";
+    navbarClasses += isMobileNavbarOpen ? " shadow-sidebar animate-openMobileHomeNavbar" : " animate-closeMobileHomeNavbar";
   }
 
   return (
@@ -42,10 +38,7 @@ const MobileNavbar = ({ handleLogout }) => {
       </div>
       <ul className="text-2xl leading-10" onClick={handleClick}>
         <li className="mb-6">
-          <Link
-            to="/app/contest"
-            className="hover:text-accent1 transition-all duration-300"
-          >
+          <Link to="/app/contest" className="hover:text-accent1 transition-all duration-300">
             <div className="flex items-center justify-between">
               <p>Contests</p>
               <FaChevronRight />
@@ -53,10 +46,7 @@ const MobileNavbar = ({ handleLogout }) => {
           </Link>
         </li>
         <li className="mb-6">
-          <Link
-            to="/app/problem"
-            className="hover:text-accent1 transition-all duration-300"
-          >
+          <Link to="/app/problem" className="hover:text-accent1 transition-all duration-300">
             <div className="flex items-center justify-between">
               <p>Problems</p>
               <FaChevronRight />
@@ -64,10 +54,7 @@ const MobileNavbar = ({ handleLogout }) => {
           </Link>
         </li>
         <li className="mb-6">
-          <Link
-            to="/app/rooms"
-            className="hover:text-accent1 transition-all duration-300"
-          >
+          <Link to="/app/rooms" className="hover:text-accent1 transition-all duration-300">
             <div className="flex items-center justify-between">
               <p>Rooms</p>
               <FaChevronRight />
