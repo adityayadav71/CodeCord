@@ -48,7 +48,7 @@ const AppLayout = ({ handleLogout, location = undefined }) => {
     setIsMobileSettingsOpen((prev) => !prev);
   };
 
-  const isRoom = location?.pathname?.startsWith("/app/room") || false;
+  const isRoom = location?.pathname?.startsWith("/app/room/") || false;
 
   useEffect(() => {
     let room = userData?.activeRoom;
