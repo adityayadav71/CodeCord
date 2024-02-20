@@ -26,17 +26,17 @@ const HomeNavbar = ({ handleLogout }) => {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [roomId, setRoomId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [imageURL, setImageURL] = useState();
   const [profileActive, setProfileActive] = useState(false);
   const [searchbarActive, setSearchbarActive] = useState(false);
-  const [roomId, setRoomId] = useState(null);
-  const [isClosing, setIsClosing] = useState(false);
 
   const openRoomModal = async () => {
-    setModalOpen(false);
-    const roomID = nanoid();
     try {
+      setModalOpen(false);
+      const roomID = nanoid();
       setRoomId(roomID);
       setModalOpen(true);
     } catch (err) {
@@ -297,7 +297,6 @@ const HomeNavbar = ({ handleLogout }) => {
           isClosing={isClosing}
           closeRoomModal={closeRoomModal}
           setModalOpen={setModalOpen}
-          isLoading={false}
         />
       )}
     </div>
