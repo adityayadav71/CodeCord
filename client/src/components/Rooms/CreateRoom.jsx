@@ -10,7 +10,6 @@ import RoomVisibility from "./RoomVisibility";
 import ProblemFilter from "../Problems/ProblemFilter";
 import { AuthContext, loadData } from "../../App";
 import { RoomContext } from "../../layouts/AppLayout";
-import { useNavigate } from "react-router-dom";
 import { getRoomData, joinRoom } from "../../api/roomsAPI";
 import { toast } from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
@@ -23,13 +22,11 @@ const CreateRoom = ({
   isClosing,
   closeRoomModal,
   setModalOpen,
-  isLoading,
 }) => {
   // Declaring Contexts and Refs
   const inviteRef = useRef(null);
   const { userData, socket } = useContext(AuthContext);
   const { setRoomData } = useContext(RoomContext);
-  const navigate = useNavigate();
   // Declaring States
   const [isUserJoining, setIsUserJoining] = useState(false);
   const [isLimitActive, setLimitActive] = useState(false);
@@ -182,7 +179,7 @@ const CreateRoom = ({
               hrs={hrs}
               mins={mins}
             />
-            <RoomInviteLink isLoading={isLoading} inviteLink={roomId} />
+            <RoomInviteLink inviteLink={roomId} />
           </div>
         </div>
         <div className="flex flex-col gap-y-3 sm:pl-12 grow-0">
