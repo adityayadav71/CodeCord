@@ -64,7 +64,7 @@ const Problem = ({ selected, setSelected, unselected, setUnSelected, number, nam
           </Link>
         </div>
         <div className="w-32">{acceptance}%</div>
-        <div className={`w-32 font-bold ${difficulty === "easy" ? "text-easyGreen" : difficulty === "medium" ? "text-mediumYellow" : "text-hardRed"}`}>
+        <div className={`w-32 ${difficulty === "easy" ? "text-easyGreen" : difficulty === "medium" ? "text-mediumYellow" : "text-hardRed"}`}>
           {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
         </div>
         <p className="hideScrollbar w-32 flex flex-row gap-x-3">{submissions}</p>
