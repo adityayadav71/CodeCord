@@ -20,8 +20,8 @@ const createSendToken = (user, statusCode, req, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "PROD" ? "none" : "",
-    secure: req.secure || req.headers["x-forwarded-proto"] === "https",
+    sameSite: "none",
+    secure: true,
   };
   res.cookie("jwt", token, cookieOptions);
 
@@ -70,8 +70,8 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.logout = catchAsync(async (req, res, next) => {
   res.clearCookie("jwt", {
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "",
-    secure: req.secure || req.headers["x-forwarded-proto"] === "https",
+    sameSite: "none",
+    secure: true,
   });
   res.status(200).json({ status: "success" });
 });
