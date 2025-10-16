@@ -9,7 +9,6 @@ import { AuthContext } from "../../App";
 import { FilterContext } from "./index";
 import { RoomFilterContext } from "../Rooms/CreateRoom";
 import { getRandomProblems } from "../../api/problemDataAPI";
-import { createRoom } from "../../api/roomsAPI";
 import { nanoid } from "nanoid";
 import { toast } from "react-hot-toast";
 
@@ -142,27 +141,43 @@ const ProblemFilter = ({ selected, setSelected, setUnSelected, setDifficulty, fi
     setActiveTags(() => []);
   };
 
-  const [modal, setModal] = useState();
+  const [roomId, setRoomId] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const closeRoomModal = (event) => {
+    if (
+      event.target.classList.contains("modal-close-btn") ||
+      (!event.target.closest(".modal") &&
+        !event.target.classList.contains("open-modal") &&
+        !event.target.closest(".profile") &&
+        !event.target.closest(".searchbar"))
+    ) {
+      setIsClosing(true);
+      setTimeout(() => {
+        setIsClosing(false);
+        setModalOpen(false);
+      }, 300);
+      setProfileActive(false);
+      setSearchbarActive(false);
+    }
+  };
+
   const openRoomModal = async () => {
     try {
+      setModalOpen(false);
       const roomID = nanoid();
-      // 1. Create Room in Database - Return RoomID
-      const result = await createRoom(userData?.userId, roomID);
-      setModal(<CreateRoom isContest={true} roomId={result.id} />);
+      setRoomId(roomID);
+      setModalOpen(true);
     } catch (err) {
       toast.error("Something went wrong! Please try again.");
     }
   };
 
   useEffect(() => {
-    const closeModal = (event) => {
-      if (!event.target.closest(".modal") && !event.target.classList.contains("open-modal")) {
-        setModal("");
-      }
-    };
-    document.addEventListener("click", closeModal);
+    document.addEventListener("click", closeRoomModal);
     return () => {
-      document.removeEventListener("click", closeModal);
+      document.removeEventListener("click", closeRoomModal);
     };
   }, []);
 
@@ -223,8 +238,6 @@ const ProblemFilter = ({ selected, setSelected, setUnSelected, setDifficulty, fi
             </button>
           )
         )}
-
-        {modal}
       </div>
       <div className="flex flex-row">
         <div className="modal relative grow flex flex-row py-3 gap-3 flex-wrap max-w-[723px] h-fit">
@@ -248,6 +261,15 @@ const ProblemFilter = ({ selected, setSelected, setUnSelected, setDifficulty, fi
           </button>
         )}
       </div>
+      {modalOpen && (
+        <CreateRoom
+          isContest={true}
+          roomId={roomId}
+          isClosing={isClosing}
+          closeRoomModal={closeRoomModal}
+          setModalOpen={setModalOpen}
+        />
+      )}
     </div>
   );
 };

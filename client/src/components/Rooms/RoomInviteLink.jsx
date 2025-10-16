@@ -3,8 +3,8 @@ import { useState, useContext } from "react";
 import { RoomContext } from "../../layouts/AppLayout";
 import Skeleton from "../skeletons/RoomInviteLinkSkeleton";
 
-const RoomInviteLink = (props) => {
-  const { roomData, isLoading } = useContext(RoomContext);
+const RoomInviteLink = ({ inviteLink }) => {
+  const { isLoading } = useContext(RoomContext);
   
   const [message, setMessage] = useState();
 
@@ -14,6 +14,7 @@ const RoomInviteLink = (props) => {
     navigator.clipboard.writeText(copyText.value);
     setMessage("Copied to Clipboard!");
   };
+
   return (
     <div className="sm:col-span-2 col-span-4">
       <div className="flex items-center w-full">
@@ -34,7 +35,7 @@ const RoomInviteLink = (props) => {
             id="invite"
             className="w-full ring-2 pr-16 ring-inset ring-accent1 bg-secondary p-3 focus:outline-none rounded-lg"
             type="text"
-            value={roomData?.roomId}
+            value={inviteLink}
             onChange={() => {}}
             placeholder="Invite Code"
           />

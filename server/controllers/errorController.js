@@ -6,8 +6,22 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const key = err.message.split("index:")[1].split("dup key")[0].split("_")[0];
-  const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
+  let key, value;
+  if (err && err.keyValue) {
+    key = Object.keys(err.keyValue)[0];
+    value = err.keyValue[key];
+  } else {
+    key = errorMessage.split("index:")[1].split("dup key")[0].split("_")[0].trim();
+    const valueMatch = errorMessage.match(/\{(.+?)\}/);
+    if (valueMatch && valueMatch[1]) {
+      const valuePart = valueMatch[1].split(":")[1].trim();
+      try {
+        value = JSON.parse(valuePart);
+      } catch (e) {
+        value = valuePart;
+      }
+    }
+  }
 
   const message = `This ${key} already exists: ${value}. Please use another value!`;
   return new AppError(message, 400);

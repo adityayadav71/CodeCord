@@ -2,8 +2,11 @@ extends baseEmail
 
 block content
   p Hi #{firstName},
-  p Welcome to CodeCord, we're glad to have you 🎉🙏
-  p We're all a big familiy here, so make sure to upload your profile photo so we get to know you a bit better!
+  p Welcome to CodeCord! 🚀 We're thrilled to have you join our vibrant community of coders. At CodeCord, we believe in the power of collaboration to solve complex problems, learn new skills, and create amazing projects together.
+  
+  p Get Started with Your Profile!
+  p To make collaboration more personal and engaging, we encourage you to upload your profile photo. It's a great way for the community to get to know you better. Simply click the link below to add your photo.
+  
   table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
     tbody
       tr
@@ -12,6 +15,25 @@ block content
             tbody
               tr
                 td
-                  a(href=`${url}`, target='_blank') Upload profile photo
-  p If you need any help with setting up your profile, please don't hesitate to contact me!
-  p - Aditya Yadav, CEO
+                  a(href=`${url}`, target='_blank') Upload Profile Photo
+  
+  p Why CodeCord?
+  ul
+  li
+    strong Collaborate in Real-Time: 
+    | Work on code together with peers from around the world, as if you were sitting next to each other.
+  li
+    strong Learn and Grow: 
+    | Whether you're a beginner or an experienced developer, there's always something new to learn. Dive into our tutorials, challenges, and community projects.
+  li
+    strong Share Your Expertise: 
+    | Got knowledge to share? Help others out and establish yourself as an expert in our community.
+  br
+  p Stay Connected
+  | Join our forums and chat groups to connect with fellow coders, share ideas, and find collaborators for your next project. Don't forget to follow us on social media for the latest updates and events!
+  
+  p We can't wait to see what you'll create and contribute to the CodeCord community. If you have any questions or need assistance, our support team is here for you.
+  
+  p Happy Coding!
+  
+  p The CodeCord Team

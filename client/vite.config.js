@@ -1,12 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { compression } from 'vite-plugin-compression2'
+import compression from 'vite-plugin-compression';
 
 export default defineConfig({
   plugins: [
-    react(), 
-    compression(),
-    compression({ algorithm: 'brotliCompress', exclude: [/\.(br)$/, /\.(gz)$/], deleteOriginalAssets: true })
+    react(),
+    compression({ algorithm: 'gzip', ext: '.gz' }),
+    compression({ algorithm: 'brotliCompress', ext: '.br' })
   ],
   server: {
     host: true,
@@ -20,6 +20,7 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: 'dist',
     rollupOptions: {
       output: {
         manualChunks: {
